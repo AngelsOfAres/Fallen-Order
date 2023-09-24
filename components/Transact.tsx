@@ -7,6 +7,7 @@ import NfdLookup from 'components/NfdLookup'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { convertAlgosToMicroalgos } from 'utils'
 import algodClient from 'lib/algodClient'
+import { Box } from '@chakra-ui/react'
 
 export default function Transact() {
   const { activeAddress, signTransactions, sendTransactions } = useWallet()
@@ -114,7 +115,17 @@ export default function Transact() {
   }
 
   return (
-    <div className="bg-white shadow rounded-lg lg:flex lg:flex-col">
+    <Box
+      m={6}
+      w='400px'
+      bg="black" // Background color
+      borderRadius="8px" // Rounded corners
+      boxShadow="0 0 1px 1px rgba(255, 179, 0, 0.5) inset, 0 0 10px 5px rgba(255, 179, 0, 0.5)" // Animated orange glow effect
+      transition="box-shadow 0.3s ease-in-out" // Animation duration and easing
+      _hover={{
+        boxShadow: '0 0 2px 2px rgba(255, 179, 0, 0.8) inset, 0 0 20px 10px rgba(255, 179, 0, 0.8)', // Orange glow on hover
+      }}
+    >
       <div className="p-5 sm:px-6">
         <h3 className="text-lg font-medium leading-6 text-gray-900">Send</h3>
       </div>
@@ -189,6 +200,6 @@ export default function Transact() {
           </div>
         </form>
       </div>
-    </div>
+    </Box>
   )
 }

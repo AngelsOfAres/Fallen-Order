@@ -3,7 +3,7 @@ export default function Spinner() {
     <div className="flex items-center justify-center">
       <div
         style={{ borderTopColor: 'transparent' }}
-        className="w-24 h-24 border-8 border-sky-300 rounded-full animate-spin"
+        className="w-24 h-24 border-8 border-orange-300 rounded-full animate-spin"
       />
     </div>
   )

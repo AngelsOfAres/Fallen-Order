@@ -84,10 +84,10 @@ export default function SelectMenu<T extends SelectMenuOption>({
           )}
 
           <div className="relative mt-1">
-            <Listbox.Button className="relative w-full cursor-default rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 sm:text-sm">
+            <Listbox.Button className="relative w-full cursor-default rounded-md border border-gray-300 bg-orange-100 py-2 pl-3 pr-10 text-left shadow-sm focus:border-orange-400 focus:outline-none focus:ring-1 focus:ring-orange-400 sm:text-sm">
               <span className="block truncate">{selected.label}</span>
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                <ChevronUpDownIcon className="h-5 w-5 text-orange-500" aria-hidden="true" />
               </span>
             </Listbox.Button>
 
@@ -98,7 +98,7 @@ export default function SelectMenu<T extends SelectMenuOption>({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-orange-100 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                 {renderOptions()}
               </Listbox.Options>
             </Transition>

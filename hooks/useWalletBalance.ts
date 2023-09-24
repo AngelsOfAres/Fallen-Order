@@ -9,6 +9,7 @@ export default function useWalletBalance() {
   const [walletAvailableBalance, setWalletAvailableBalance] = useState<string | null>(null)
 
   const { activeAccount } = useWallet()
+  console.log(activeAccount)
 
   const getAccountInfo = async () => {
     if (!activeAccount) throw new Error('No selected account.')

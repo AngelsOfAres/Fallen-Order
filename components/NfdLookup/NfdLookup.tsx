@@ -4,7 +4,6 @@ import { Fragment, useMemo, useState } from 'react'
 import useNfdSearch, { nfdSearchByPrefix } from './NfdLookup.hooks'
 import { NfdRecordThumbnail } from './NfdLookup.types'
 import Tooltip from 'components/Tooltip'
-import styles from 'styles/Tooltip.module.css'
 import useDebounce from 'hooks/useDebounce'
 import { classNames, isValidName } from 'utils'
 
@@ -209,7 +208,7 @@ export default function NfdLookup({
               >
                 <Image src="/nfd.svg" alt="NFD" width={400} height={400} />
               </a>
-              <Tooltip anchorId="nfd-badge" content={nfdMatch.name} className={styles.custom} />
+              <Tooltip anchorId="nfd-badge" content={nfdMatch.name} />
             </div>
           )}
         </div>

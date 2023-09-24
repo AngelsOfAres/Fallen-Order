@@ -1,54 +1,75 @@
-import { useQuery } from '@tanstack/react-query'
-import Image from 'next/image'
-import { ReactNode } from 'react'
+import Link from 'next/link'
+import * as React from 'react'
+import {
+    Flex,
+    HStack,
+    Button,
+    Center,
+    Menu,
+    MenuItem,
+    MenuButton,
+    Image,
+    MenuList,
+    MenuDivider,
+    useColorModeValue,
+    useColorMode,
+  } from '@chakra-ui/react';
+  import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon, InfoIcon, UpDownIcon } from '@chakra-ui/icons';
+  import styles from '../styles/glow.module.css'
+import Connect from './Connect';
 
-export default function Navbar() {
-  const { data, isLoading, error } = useQuery(['ver'], () =>
-    fetch('/api/version').then((res) => res.json())
-  )
+  export default function Navbar() {
+  const buttonText4 = useColorModeValue('orange.300','cyan.300')
+  const borderC = useColorModeValue('orange.600','cyan.600')
+  const { colorMode, toggleColorMode } = useColorMode()
+  const navBG = useColorModeValue(styles.navglowL, styles.navglowD)
 
-  const renderGitHubLink = () => {
-    const Link = (props: { children: ReactNode }) => (
-      <a
-        href="https://github.com/TxnLab/use-wallet"
-        className="rounded-md py-2 px-3 text-sm font-medium text-white hover:bg-sky-400"
-        target="_blank"
-        rel="noreferrer"
-      >
-        {props.children}
-      </a>
+    return (
+      <>
+    <Flex
+      className={navBG}
+      w="100%"
+      h="64px"
+      alignItems="center"
+      justifyContent="space-between"
+      px={8}
+      boxShadow="lg"
+    >
+        <Button
+          variant="ghost"
+          onClick={toggleColorMode}
+        >
+          {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+        </Button>
+        <Image
+          src="/logo.svg"
+          alt="Fallen Order"
+          w="60px"
+        />
+        <Menu>
+          <MenuButton
+            as={Button}
+            variant="ghost" // Transparent button
+          >
+            <HamburgerIcon />
+          </MenuButton>
+          <MenuList
+            bgColor="black"
+            borderRadius="4px"
+            fontSize="12px"
+            fontFamily="Orbitron"
+            mt={2}
+          >
+            <Center>
+                <MenuItem
+                  borderRadius='4px'
+                >
+                <Connect />
+                </MenuItem>
+            </Center>
+          </MenuList>
+        </Menu>
+    </Flex>
+      </>
     )
-
-    if (isLoading) {
-      return null
-    }
-
-    if (error) {
-      return <Link>View on GitHub</Link>
-    }
-
-    return <Link>Version {data.version}</Link>
-  }
-
-  return (
-    <nav className="bg-sky-500" aria-label="Global">
-      <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
-        <div className="flex h-16 justify-between">
-          <div className="flex items-center px-2 w-full justify-between sm:w-auto sm:justify-start lg:px-0">
-            <div className="flex flex-shrink-0 items-center">
-              <Image
-                src="/use-wallet.svg"
-                alt="UseWallet"
-                width={640}
-                height={107}
-                className="h-5 w-auto"
-              />
-            </div>
-
-            <div className="ml-8 lg:flex lg:space-x-4">{renderGitHubLink()}</div>
-          </div>
-        </div>
-      </div>
-    </nav>
-  )
 }
