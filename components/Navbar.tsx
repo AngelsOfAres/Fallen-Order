@@ -14,13 +14,11 @@ import {
     useColorModeValue,
     useColorMode,
   } from '@chakra-ui/react';
-  import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon, InfoIcon, UpDownIcon } from '@chakra-ui/icons';
+  import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon, InfoIcon, UpDownIcon } from '@chakra-ui/icons'
   import styles from '../styles/glow.module.css'
 import Connect from './Connect';
 
   export default function Navbar() {
-  const buttonText4 = useColorModeValue('orange.300','cyan.300')
-  const borderC = useColorModeValue('orange.600','cyan.600')
   const { colorMode, toggleColorMode } = useColorMode()
   const navBG = useColorModeValue(styles.navglowL, styles.navglowD)
 
@@ -36,34 +34,26 @@ import Connect from './Connect';
       boxShadow="lg"
     >
         <Button
+          mx='16px'
           variant="ghost"
           onClick={toggleColorMode}
         >
           {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
         </Button>
+        <Link href='/'>
         <Image
           src="/logo.svg"
           alt="Fallen Order"
           w="60px"
         />
+        </Link>
         <Menu>
-          <MenuButton
-            as={Button}
-            variant="ghost" // Transparent button
-          >
+          <MenuButton mx='16px' as={Button} variant="ghost">
             <HamburgerIcon />
           </MenuButton>
-          <MenuList
-            bgColor="black"
-            borderRadius="4px"
-            fontSize="12px"
-            fontFamily="Orbitron"
-            mt={2}
-          >
+          <MenuList bgColor="black" borderRadius="8px" fontSize="12px" fontFamily="Orbitron" mt='28px' >
             <Center>
-                <MenuItem
-                  borderRadius='4px'
-                >
+                <MenuItem closeOnSelect={false} borderRadius='8px'>
                 <Connect />
                 </MenuItem>
             </Center>

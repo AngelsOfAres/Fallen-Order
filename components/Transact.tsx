@@ -65,7 +65,7 @@ export default function Transact() {
   const sendTransaction = async () => {
     try {
       if (!activeAddress) {
-        throw new Error('Wallet not connected')
+        throw new Error('Wallet Not Connected!')
       }
 
       const from = activeAddress
@@ -127,8 +127,14 @@ export default function Transact() {
       }}
     >
       <div className="p-5 sm:px-6">
-        <h3 className="text-lg font-medium leading-6 text-orange-300">Donate</h3>
+        <h3 className="text-lg font-medium leading-6 text-orange-200">Donate</h3>
       </div>
+      
+      <div className="mt-1 sm:col-span-4 sm:mt-0">
+              <div className="flex pl-6 pb-2 rounded-md shadow-sm max-w-md text-orange-200">
+                  Receiver: support.irl.algo
+              </div>
+            </div>
       <div className="border-t border-orange-100 p-5 sm:p-0 lg:flex lg:flex-col lg:flex-1">
         <form
           onSubmit={handleSubmit}
@@ -137,7 +143,7 @@ export default function Transact() {
           <div className="space-y-2 sm:space-y-0 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
             <label
               htmlFor="amount"
-              className="block text-sm font-medium text-orange-300 sm:mt-px sm:pt-2"
+              className="block text-sm font-medium text-orange-200 sm:mt-px sm:pt-2"
             >
               Amount
             </label>

@@ -80,7 +80,7 @@ export default function Account() {
                     type="button"
                     className="relative inline-flex items-center first:rounded-l-md last:rounded-r-md border border-orange-200 bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium text-orange-200 hover:text-black hover:bg-orange-200 focus:z-20 outline-brand-500"
                     data-clipboard-text={activeAccount.address}
-                    data-clipboard-message="Address copied to clipboard"
+                    data-clipboard-message="Address Copied!"
                     onClick={copyToClipboard}
                     id="copy-address"
                     data-tooltip-content="Copy Address"

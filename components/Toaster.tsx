@@ -69,7 +69,7 @@ export default function CustomToaster() {
                 {t.type !== 'loading' && (
                   <div className="ml-4 flex-shrink-0 flex">
                     <button
-                      className="bg-orange-700 rounded-md inline-flex text-black hover:text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700"
+                      className="bg-black rounded-md inline-flex text-orange-500 hover:text-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
                       onClick={() => toast.dismiss(t.id)}
                     >
                       <XMarkIcon className="h-5 w-5" aria-hidden="true" />
