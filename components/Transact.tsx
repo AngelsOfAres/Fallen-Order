@@ -13,7 +13,7 @@ export default function Transact() {
   const { activeAddress, signTransactions, sendTransactions } = useWallet()
 
   const [algoAmount, setAlgoAmount] = useState<string>('')
-  const [receiver, setReceiver] = useState<string>('')
+  const [receiver, setReceiver] = useState<string>('U2NCG2KFXHBYGOD5ZTJWPAR7Z4QV7WUHYE3RG3SL2T7OMMWGPLFBIKIBQY')
 
   const { walletAvailableBalance } = useWalletBalance()
 
@@ -116,28 +116,28 @@ export default function Transact() {
 
   return (
     <Box
-      m={6}
+      m='20px'
       w='400px'
-      bg="black" // Background color
-      borderRadius="8px" // Rounded corners
-      boxShadow="0 0 1px 1px rgba(255, 179, 0, 0.5) inset, 0 0 10px 5px rgba(255, 179, 0, 0.5)" // Animated orange glow effect
-      transition="box-shadow 0.3s ease-in-out" // Animation duration and easing
+      bg="black"
+      borderRadius="8px"
+      boxShadow="0 0 1px 1px rgba(255, 179, 0, 0.5) inset, 0 0 10px 5px rgba(255, 179, 0, 0.5)"
+      transition="box-shadow 0.3s ease-in-out"
       _hover={{
-        boxShadow: '0 0 2px 2px rgba(255, 179, 0, 0.8) inset, 0 0 20px 10px rgba(255, 179, 0, 0.8)', // Orange glow on hover
+        boxShadow: '0 0 2px 2px rgba(255, 179, 0, 0.8) inset, 0 0 20px 10px rgba(255, 179, 0, 0.8)',
       }}
     >
       <div className="p-5 sm:px-6">
-        <h3 className="text-lg font-medium leading-6 text-gray-900">Send</h3>
+        <h3 className="text-lg font-medium leading-6 text-orange-300">Donate</h3>
       </div>
-      <div className="border-t border-gray-200 p-5 sm:p-0 lg:flex lg:flex-col lg:flex-1">
+      <div className="border-t border-orange-100 p-5 sm:p-0 lg:flex lg:flex-col lg:flex-1">
         <form
           onSubmit={handleSubmit}
-          className="sm:divide-y sm:divide-gray-200 lg:flex lg:flex-col lg:flex-1"
+          className="sm:divide-y sm:divide-orange-100 lg:flex lg:flex-col lg:flex-1"
         >
           <div className="space-y-2 sm:space-y-0 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
             <label
               htmlFor="amount"
-              className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+              className="block text-sm font-medium text-orange-300 sm:mt-px sm:pt-2"
             >
               Amount
             </label>
@@ -148,41 +148,20 @@ export default function Transact() {
                     type="text"
                     name="amount"
                     id="amount"
-                    className="block w-full rounded-none rounded-l-md border-gray-300 focus:border-sky-500 focus:ring-sky-500 sm:text-sm"
+                    className="block w-full rounded-none rounded-l-md border-orange-300 text-orange-200 bg-black focus:border-orange-300 focus:ring-orange-400 sm:text-sm"
                     value={algoAmount}
                     onChange={handleAmountChange}
-                    placeholder="0.000000 ALGO"
+                    placeholder="0.000 ALGO"
                   />
                 </div>
                 <button
                   type="button"
-                  className="relative -ml-px inline-flex items-center space-x-2 rounded-r-md border border-gray-300 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                  className="relative -ml-px inline-flex items-center space-x-2 rounded-r-md border border-orange-300 bg-black px-4 py-2 text-sm font-medium text-orange-400 hover:bg-black focus:border-orange-300 focus:outline-none focus:ring-1 focus:ring-orange-500"
                   onClick={() => setAlgoAmount('')}
                 >
-                  Reset
+                  Clear
                 </button>
               </div>
-            </div>
-          </div>
-
-          <div className="py-4 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
-            <label
-              htmlFor="receiver"
-              className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-            >
-              Receiver
-            </label>
-            <div className="mt-1 sm:col-span-4 sm:mt-0">
-              <NfdLookup
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm leading-5"
-                value={receiver}
-                onChange={(value) => setReceiver(value)}
-                placeholder={activeAddress}
-                ariaDescribedby="lookup-description"
-              />
-              <p className="mt-2 text-sm text-gray-500" id="lookup-description">
-                Paste an address or search for an NFD
-              </p>
             </div>
           </div>
 
@@ -191,10 +170,10 @@ export default function Transact() {
               <p className="flex items-center text-sm text-red-600">{renderValidationMessage()}</p>
               <button
                 type="submit"
-                className="inline-flex justify-center rounded-md border border-transparent bg-sky-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-50 disabled:bg-sky-600"
+                className="inline-flex justify-center rounded-md border border-transparent bg-orange-500 py-2 px-4 text-sm font-medium text-black shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:bg-orange-500"
                 disabled={!activeAddress || !hasSufficientBalance || !isValidRecipient}
               >
-                Sign and send transaction
+                Donate!
               </button>
             </div>
           </div>

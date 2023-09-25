@@ -27,7 +27,7 @@ export default function Account() {
   return (
     
       <Box
-        m={6}
+        m='20px'
         w='400px'
         bg="black"
         borderRadius="8px"
@@ -51,42 +51,40 @@ export default function Account() {
                   {activeProvider.metadata.name}
                 </>
               )}
-              <h3 className="text-lg font-medium leading-6 text-white">Active Account</h3>
+              <h3 className="text-lg font-medium leading-6 text-orange-200">Active Account</h3>
         </HStack>
       </div>
-      <div className="border-t border-gray-500 px-5 py-2 sm:p-0">
-        <dl className="sm:divide-y sm:divide-gray-500">
+      <div className="border-t border-orange-100 px-5 py-2 sm:p-0">
+        <dl className="sm:divide-y sm:divide-orange-100">
           <div className="py-3 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
-            <dt className="inline-flex items-center text-sm font-medium text-white">Name</dt>
+            <dt className="inline-flex items-center text-sm font-medium text-orange-200">Name</dt>
             <dd className="text-white sm:col-span-4 truncate">{activeAccount.name}</dd>
           </div>
           <div className="py-3 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
-            <dt className="inline-flex items-center text-sm font-medium text-white">Address</dt>
+            <dt className="inline-flex items-center text-sm font-medium text-orange-200">Address</dt>
             <dd className="text-white sm:col-span-4 flex items-center min-w-0">
               <span className="truncate">{shortaddress}</span>
               <div className="flex items-center flex-nowrap -my-1">
                 <div className="inline-flex -space-x-px rounded-md shadow-sm ml-3 sm:ml-4">
                   <a
                     href={`https://algoexplorer.io/address/${activeAccount.address}`}
-                    className="relative inline-flex items-center first:rounded-l-md last:rounded-r-md border border-gray-500 bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium text-white hover:text-black hover:bg-gray-300 focus:z-20 outline-brand-500"
+                    className="relative inline-flex items-center first:rounded-l-md last:rounded-r-md border border-orange-200 bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium text-orange-200 hover:text-black hover:bg-orange-200 focus:z-20 outline-brand-500"
                     target="_blank"
                     rel="noreferrer"
                     id="view-on-algoexplorer"
-                    data-tooltip-content="View on AlgoExplorer"
+                    data-tooltip-content="AlgoExplorer"
                   >
-                    <span className="sr-only">View on AlgoExplorer</span>
                     <ArrowTopRightOnSquareIcon className="h-5 w-5" aria-hidden="true" />
                   </a>
                   <button
                     type="button"
-                    className="relative inline-flex items-center first:rounded-l-md last:rounded-r-md border border-gray-500 bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium text-white hover:text-black hover:bg-gray-300 focus:z-20 outline-brand-500"
+                    className="relative inline-flex items-center first:rounded-l-md last:rounded-r-md border border-orange-200 bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium text-orange-200 hover:text-black hover:bg-orange-200 focus:z-20 outline-brand-500"
                     data-clipboard-text={activeAccount.address}
                     data-clipboard-message="Address copied to clipboard"
                     onClick={copyToClipboard}
                     id="copy-address"
-                    data-tooltip-content="Copy address"
+                    data-tooltip-content="Copy Address"
                   >
-                    <span className="sr-only">Copy address</span>
                     <ClipboardIcon className="h-5 w-5" aria-hidden="true" />
                   </button>
                 </div>
@@ -96,7 +94,7 @@ export default function Account() {
             </dd>
           </div>
           <div className="py-3 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
-            <dt className="inline-flex items-center text-sm font-medium text-white">Balance</dt>
+            <dt className="inline-flex items-center text-sm font-medium text-orange-200">Balance</dt>
             <HStack className="inline-flex items-center text-white sm:col-span-4 truncate">
               <strong id='max-balance' data-tooltip-content="Available Balance" className="block font-semibold">{roundedAvBalance}A</strong>
               {walletAvailableBalance !== walletBalance && (

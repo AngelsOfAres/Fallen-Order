@@ -35,7 +35,7 @@ export default function Home() {
         </Center>
       )}
     <Center my='24px'>
-      <SimpleGrid w='100%' minChildWidth='500px' spacing='16px' justifyItems='center'>
+      <SimpleGrid w='85%' minChildWidth='500px' spacing='16px' justifyItems='center'>
           <Account />
           <Transact />
       </SimpleGrid>

@@ -55,7 +55,7 @@ export default function CustomToaster() {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="max-w-md w-full bg-white shadow-2xl rounded-lg pointer-events-auto flex ring-1 ring-gray-900 ring-opacity-5 sm:shadow-lg">
+          <div className="max-w-md w-full bg-orange-500 shadow-2xl rounded-lg pointer-events-auto flex ring-1 ring-orange-500 ring-opacity-5 sm:shadow-lg">
             <div className="flex-1 w-0 p-4">
               <div className="flex items-start">
                 {renderIcon(t.type)}
@@ -69,10 +69,9 @@ export default function CustomToaster() {
                 {t.type !== 'loading' && (
                   <div className="ml-4 flex-shrink-0 flex">
                     <button
-                      className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
+                      className="bg-orange-700 rounded-md inline-flex text-black hover:text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700"
                       onClick={() => toast.dismiss(t.id)}
                     >
-                      <span className="sr-only">Close</span>
                       <XMarkIcon className="h-5 w-5" aria-hidden="true" />
                     </button>
                   </div>
