@@ -59,9 +59,6 @@ export default function Connect() {
         value: account.address,
         label: (
           <>
-            <span className="inline-flex items-center rounded bg-orange-400 px-2.5 py-0.5 text-sm font-medium text-black mr-3">
-              {account.name}
-            </span>
             <span className="text-sm">{activeAccount?.address.substring(0, 5) + "..." + activeAccount?.address.substring(activeAccount.address.length - 5)}</span>
           </>
         ),
@@ -93,31 +90,17 @@ export default function Connect() {
                         'block truncate'
                       )}
                     >
-                      <span
-                        className={classNames(
-                          selected && active
-                            ? 'bg-orange-400 text-black'
-                            : selected
-                            ? 'bg-orange-400 text-black'
-                            : active
-                            ? 'bg-orange-400 text-black'
-                            : 'bg-orange.300 text-orange-500',
-                          'inline-flex items-center rounded px-2.5 py-0.5 text-sm font-medium mr-3'
-                        )}
-                      >
-                        {option.account.name}
-                      </span>
                       <span className="text-sm">{option.account.address.substring(0, 5) + "..." + option.account.address.substring(option.account.address.length - 5)}</span>
                     </span>
   
                     {selected ? (
                       <span
                         className={classNames(
-                          active ? 'text-white' : 'text-sky-600',
+                          active ? 'text-black' : 'text-orange-500',
                           'absolute inset-y-0 right-0 flex items-center pr-3'
                         )}
                       >
-                        <CheckIcon color='orange' className="h-5 w-5" aria-hidden="true" />
+                        <CheckIcon color='black' className="h-5 w-5" aria-hidden="true" />
                       </span>
                     ) : null}
                   </>

@@ -7,9 +7,9 @@ import { formatPrice } from 'utils'
 export default function useWalletBalance() {
   const [walletBalance, setWalletBalance] = useState<string | null>(null)
   const [walletAvailableBalance, setWalletAvailableBalance] = useState<string | null>(null)
+  const [assetList, setAssetList] = useState<any | null>(null)
 
   const { activeAccount } = useWallet()
-  console.log(activeAccount)
 
   const getAccountInfo = async () => {
     if (!activeAccount) throw new Error('No selected account.')
@@ -24,15 +24,13 @@ export default function useWalletBalance() {
   })
 
   useEffect(() => {
-    if (
-      accountInfo &&
-      accountInfo.amount !== undefined &&
-      accountInfo['min-balance'] !== undefined
-    ) {
+    if (accountInfo && accountInfo.amount !== undefined && accountInfo['min-balance'] !== undefined) {
       const balance = formatPrice(accountInfo.amount, false, { minimumFractionDigits: 6 })
       const availableBalance = formatPrice(accountInfo.amount - accountInfo['min-balance'], false, {
         minimumFractionDigits: 6
       })
+      const assets = accountInfo.assets
+      setAssetList(assets)
 
       if (balance !== walletBalance) {
         setWalletBalance(balance)
@@ -49,12 +47,15 @@ export default function useWalletBalance() {
         return
       }
     } else {
+      setAssetList([])
       setWalletBalance('0.000000')
       setWalletAvailableBalance('0.000000')
     }
-  }, [accountInfo, walletBalance, walletAvailableBalance])
+  }, [accountInfo, assetList, walletBalance, walletAvailableBalance])
 
   return {
+    accountInfo,
+    assetList,
     walletBalance,
     walletAvailableBalance
   }

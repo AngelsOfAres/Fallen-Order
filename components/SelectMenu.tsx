@@ -43,7 +43,7 @@ export default function SelectMenu<T extends SelectMenuOption>({
         key={option.value}
         className={({ active }) =>
           classNames(
-            active ? 'text-white bg-sky-600' : 'text-gray-900',
+            active ? 'text-black bg-orange-400' : 'text-black',
             'relative cursor-default select-none py-2 pl-3 pr-10'
           )
         }
@@ -52,7 +52,16 @@ export default function SelectMenu<T extends SelectMenuOption>({
         {({ selected, active }) => (
           <>
             <span
-              className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}
+            className={classNames(
+                      selected && active
+                        ? 'bg-orange-400 text-black'
+                        : selected
+                        ? 'bg-orange-400 text-black'
+                        : active
+                        ? 'bg-black text-orange-500'
+                        : 'bg-orange.300',
+                      'inline-flex items-center rounded px-2.5 py-0.5 text-sm font-medium mr-3'
+                    )}
             >
               {option.label}
             </span>
@@ -60,7 +69,7 @@ export default function SelectMenu<T extends SelectMenuOption>({
             {selected ? (
               <span
                 className={classNames(
-                  active ? 'text-white' : 'text-sky-600',
+                  active ? 'text-black' : 'text-orange-500',
                   'absolute inset-y-0 right-0 flex items-center pr-3'
                 )}
               >
@@ -84,13 +93,12 @@ export default function SelectMenu<T extends SelectMenuOption>({
           )}
 
           <div className="relative mt-1">
-            <Listbox.Button className="relative w-full cursor-default rounded-md border border-gray-300 bg-orange-100 py-2 pl-3 pr-10 text-left shadow-sm focus:border-orange-400 focus:outline-none focus:ring-1 focus:ring-orange-400 sm:text-sm">
+            <Listbox.Button className="relative w-full cursor-default rounded-md border border-black bg-orange-100 py-2 pl-3 pr-10 text-left shadow-sm focus:border-orange-400 focus:outline-none focus:ring-1 focus:ring-orange-400 sm:text-sm">
               <span className="block truncate">{selected.label}</span>
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                <ChevronUpDownIcon className="h-5 w-5 text-orange-500" aria-hidden="true" />
+                <ChevronUpDownIcon className="h-5 w-5 text-black" aria-hidden="true" />
               </span>
             </Listbox.Button>
-
             <Transition
               show={open}
               as={Fragment}

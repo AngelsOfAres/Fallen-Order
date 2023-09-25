@@ -11,7 +11,6 @@ export default function Account() {
   const shortaddress = activeAccount?.address.substring(0, 5) + "..." + activeAccount?.address.substring(activeAccount.address.length - 5)
 
   const { walletBalance, walletAvailableBalance } = useWalletBalance()
-  console.log(walletBalance, walletAvailableBalance)
   
   const roundedBalance = walletBalance !== null ? parseFloat(walletBalance).toFixed(3) : '';
   const roundedAvBalance = walletAvailableBalance !== null ? parseFloat(walletAvailableBalance).toFixed(3) : '';
@@ -25,7 +24,6 @@ export default function Account() {
   }
 
   return (
-    
       <Box
         m='20px'
         w='400px'
