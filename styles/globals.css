@@ -5,3 +5,19 @@
 body {
     font-family: 'Orbitron', sans-serif;
 }
+
+.custom-table {
+    margin: 12px !important;
+  }
+
+.custom-table tbody tr:not(:last-child) {
+    border-bottom: 1px solid rgb(235, 145, 0);
+  }
+
+.column-header {
+padding: 8px; /* Add padding to the table headers for column spacing */
+}
+
+.column-cell {
+padding: 8px; /* Add padding to the table cells for column spacing */
+}

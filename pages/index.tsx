@@ -8,6 +8,7 @@ import Transact from 'components/Transact'
 import { Box, Center, Grid, GridItem, SimpleGrid, Text } from '@chakra-ui/react'
 import styles from "../styles/text.module.css"
 import { FullGlowButton } from 'components/Buttons'
+import WalletTransactionSearch from 'components/WalletSearch'
 
 export default function Home() {
   const { isReady, isActive } = useWallet()
@@ -34,12 +35,15 @@ export default function Home() {
           <Connect />
         </Center>
       )}
+    <Center><a href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></a></Center>
+    {isActive ? (
     <Center my='24px'>
       <SimpleGrid w='85%' minChildWidth='500px' spacing='16px' justifyItems='center'>
           <Account />
           <Transact />
       </SimpleGrid>
     </Center>
+    ) : null}
     </>
   )
 }
