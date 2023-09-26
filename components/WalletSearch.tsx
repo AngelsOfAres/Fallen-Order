@@ -47,11 +47,13 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
                 >
                   {transaction.id.substring(0, 5) + "..." + transaction.id.substring(transaction.id.length - 5)}
                 </a>
-              </Td>{transaction['payment-transaction']
+              </Td>
+              <Td textAlign="center" className="column-cell">{transaction['payment-transaction']
                     ? 'ALGO'
                     : transaction['asset-transfer-transaction']['asset-id']
                 }
-              <Td textAlign="center"  className="column-cell">{transaction['payment-transaction']
+            </Td>
+              <Td textAlign="center" className="column-cell">{transaction['payment-transaction']
                     ? (transaction['payment-transaction']['amount']/1000000).toFixed(3)
                     : transaction['asset-transfer-transaction']['amount']
                 }</Td>
