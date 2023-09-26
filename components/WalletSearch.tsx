@@ -19,7 +19,7 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
       };
     const handleNote = (note: any) => {
     if (!note || typeof note !== 'string') {
-        return 'N/A';
+        return '-';
     }
     const cleanedNote = atob(note);
     return cleanedNote;
