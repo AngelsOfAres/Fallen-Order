@@ -146,14 +146,14 @@ const WalletTransactionSearch = () => {
         className="relative w-80 my-2 cursor-default rounded-md border border-black bg-orange-100 text-center shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 sm:text-sm"
         value={wallet1}
         onChange={(value) => setWallet1(value)}
-        placeholder={"Enter Address 1"}
+        placeholder={"Enter Address/NFD 1"}
         ariaDescribedby="lookup-description"
         />
         <NfdLookup
         className="relative w-80 my-2 cursor-default rounded-md border border-black bg-orange-100 text-center shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 sm:text-sm"
         value={wallet2}
         onChange={(value) => setWallet2(value)}
-        placeholder={"Enter Address 2"}
+        placeholder={"Enter Address/NFD 2"}
         ariaDescribedby="lookup-description"
         />
         <Center m={4}><FullGlowButton fontsize='16px' text='Search' onClick={handleSearch} /></Center>
