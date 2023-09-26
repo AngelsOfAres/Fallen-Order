@@ -17,6 +17,13 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
     const removeExtraLineBreaks = (text: any) => {
         return text.replace(/\n{2,}/g, '\n')
       };
+    const handleNote = (note: any) => {
+    if (!note || typeof note !== 'string') {
+        return 'N/A';
+    }
+    const cleanedNote = atob(note);
+    return cleanedNote;
+    };
   return (
     <Center my='12px'>
     <TableContainer>
@@ -34,17 +41,22 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
             <Tr key={index} className={styles.tableText}>
               <Td textAlign="center"  className="column-cell">
                 <a
-                  href={`https://algoexplorer.io/tx/${transaction.id}`} // Replace with your external URL
+                  href={`https://algoexplorer.io/tx/${transaction.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   {transaction.id.substring(0, 5) + "..." + transaction.id.substring(transaction.id.length - 5)}
                 </a>
-              </Td>
-              <Td textAlign="center"  className="column-cell">{transaction['asset-transfer-transaction']['asset-id']}</Td>
-              <Td textAlign="center"  className="column-cell">{transaction['asset-transfer-transaction']['amount']}</Td>
+              </Td>{transaction['payment-transaction']
+                    ? 'ALGO'
+                    : transaction['asset-transfer-transaction']['asset-id']
+                }
+              <Td textAlign="center"  className="column-cell">{transaction['payment-transaction']
+                    ? (transaction['payment-transaction']['amount']/1000000).toFixed(3)
+                    : transaction['asset-transfer-transaction']['amount']
+                }</Td>
               <Td textAlign="center"  className="column-cell">
-                <Text whiteSpace="pre-wrap">{removeExtraLineBreaks(atob(transaction.note))}</Text>
+                <Text whiteSpace="pre-wrap">{removeExtraLineBreaks(handleNote(transaction.note))}</Text>
               </Td>
             </Tr>
           ))}
