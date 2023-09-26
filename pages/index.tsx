@@ -35,7 +35,7 @@ export default function Home() {
           <Connect />
         </Center>
       )}
-    <Center><a href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></a></Center>
+    <Center  my='12px'><a href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></a></Center>
     {isActive ? (
     <Center my='24px'>
       <SimpleGrid w='85%' minChildWidth='500px' spacing='16px' justifyItems='center'>
