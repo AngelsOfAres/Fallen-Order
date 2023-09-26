@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FullGlowButton } from './Buttons'
-import { Center, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react'
+import { Box, Center, Image, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react'
 import styles from "../styles/text.module.css"
 import NfdLookup from './NfdLookup';
+import algodClient from 'lib/algodClient';
 
 interface Transaction {
     id: string;
@@ -25,6 +26,30 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
     const cleanedNote = atob(note);
     return cleanedNote;
     };
+    function removeTrailingZeros(number: any) {
+        let numberString = number.toString();
+        
+        if (numberString.includes('.')) {
+            numberString = numberString.replace(/\.?0*$/, '');
+            return parseFloat(numberString);
+        } else {
+            return parseInt(numberString, 10);
+        }
+    }
+    function formatNumberAbbreviated(number: any) {
+        const symbols = ["", "K", "M", "B", "T"];
+        let symbolIndex = 0;
+        if (number < 1 || number >= 1e12) {
+            return number.toString();
+        }
+        while (number >= 1000) {
+            number /= 1000;
+            symbolIndex++;
+        }
+        const formattedNumber = parseFloat(number.toFixed(3)).toString()
+        return formattedNumber + symbols[symbolIndex];
+        }
+      
   return (
     <Center my='12px'>
     <TableContainer>
@@ -49,14 +74,24 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
                   {transaction.id.substring(0, 5) + "..." + transaction.id.substring(transaction.id.length - 5)}
                 </a>
               </Td>
+              <Td textAlign="center" className="column-cell">
+                  {transaction['payment-transaction'] ? (
+                    <Center>
+                      <Image boxSize={8} src="algologo.png" />
+                    </Center>
+                  ) : (
+                    <a
+                    href={`https://algoexplorer.io/asset/${transaction['asset-transfer-transaction']['asset-id']}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >
+                    {transaction['name']}
+                    </a>
+                  )}
+                </Td>
               <Td textAlign="center" className="column-cell">{transaction['payment-transaction']
-                    ? 'ALGO'
-                    : transaction['asset-transfer-transaction']['asset-id']
-                }
-            </Td>
-              <Td textAlign="center" className="column-cell">{transaction['payment-transaction']
-                    ? (transaction['payment-transaction']['amount']/1000000).toFixed(3)
-                    : transaction['asset-transfer-transaction']['amount']
+                    ? formatNumberAbbreviated(removeTrailingZeros((transaction['payment-transaction']['amount']/1000000).toFixed(3)))
+                    : formatNumberAbbreviated(removeTrailingZeros(transaction['asset-transfer-transaction']['amount']))
                 }</Td>
               <Td textAlign="center"  className="column-cell">
                 <Text whiteSpace="pre-wrap">{removeExtraLineBreaks(handleNote(transaction.note))}</Text>
@@ -69,6 +104,7 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
     </Center>
   );
 };
+
 
 async function fetchTxns(wallet1: any, wallet2: any, limit: number = 100, nextToken?: string): Promise<{ transactions: Transaction[], nextToken?: string }> {
     const transactionsUrl = `https://mainnet-idx.algonode.cloud/v2/accounts/${wallet1}/transactions?limit=${limit}&next=${nextToken || ''}`;
@@ -99,7 +135,6 @@ async function fetchTxns(wallet1: any, wallet2: any, limit: number = 100, nextTo
       if (data['next-token']) {
         result.nextToken = data['next-token'];
       }
-      console.log(result)
       return result;
     } catch (error) {
       console.error('Error fetching and filtering transactions:', error);
@@ -112,8 +147,31 @@ const WalletTransactionSearch = () => {
   const [wallet1, setWallet1] = useState('');
   const [wallet2, setWallet2] = useState('');
   const [fetchedTransactions, setFetchedTransactions] = useState<Transaction[]>([]);
-  const [receiver, setReceiver] = useState<string>('')
+  const [decimalsMap, setDecimalsMap] = useState({})
 
+  async function fetchNameDecimals(transactions: any) {
+    const newDecimalsMap: { [key: string]: any } = {};
+  
+    for (const transaction of transactions) {
+      let assetId;
+  
+      if (transaction['asset-transfer-transaction']) {
+        assetId = transaction['asset-transfer-transaction']['asset-id'];
+  
+      try {
+        const assetInfo = await algodClient.getAssetByID(assetId).do();
+        const decimals = assetInfo.params.decimals
+        transaction['asset-transfer-transaction']['amount'] = transaction['asset-transfer-transaction']['amount']/(10**decimals)
+        transaction['name'] = assetInfo.params.name
+      } catch (error) {
+        console.error('Error fetching asset info:', error);
+      }
+    }
+    }
+  
+    setDecimalsMap(newDecimalsMap);
+  }
+  
   const handleSearch = async () => {
     try {
       const transactionLimit = 10000
@@ -130,8 +188,9 @@ const WalletTransactionSearch = () => {
   
         nextToken = newNextToken;
       }
-  
-      setFetchedTransactions(allTransactions);
+
+      fetchNameDecimals(allTransactions)
+      setFetchedTransactions(allTransactions)
     } catch (error) {
       console.error('Error fetching transactions:', error);
     }
@@ -159,7 +218,9 @@ const WalletTransactionSearch = () => {
         <Center m={4}><FullGlowButton fontsize='16px' text='Search' onClick={handleSearch} /></Center>
       </div>
       {fetchedTransactions.length > 0? 
-      <TransactionList transactions={fetchedTransactions} /> : null}
+        <Box className='w-fit mx-auto px-3 border border-orange-500 rounded-xl' style={{ maxWidth: '90%' }}>
+            <TransactionList transactions={fetchedTransactions} />
+        </Box> : null}
     </div>
   );
 };
