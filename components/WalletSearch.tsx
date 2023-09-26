@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { FullGlowButton } from './Buttons'
 import { Center, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react'
 import styles from "../styles/text.module.css"
+import NfdLookup from './NfdLookup';
 
 interface Transaction {
     id: string;
@@ -111,6 +112,7 @@ const WalletTransactionSearch = () => {
   const [wallet1, setWallet1] = useState('');
   const [wallet2, setWallet2] = useState('');
   const [fetchedTransactions, setFetchedTransactions] = useState<Transaction[]>([]);
+  const [receiver, setReceiver] = useState<string>('')
 
   const handleSearch = async () => {
     try {
@@ -140,19 +142,19 @@ const WalletTransactionSearch = () => {
     <div className='mt-6'>
       <h1 className={styles.hText}>Wallet-2-Wallet Search</h1>
       <div className="flex flex-col items-center justify-center">
-        <input
-          className='relative w-80 p-2 mb-2 cursor-default rounded-md border border-black bg-orange-100 text-center shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 sm:text-sm'
-          type="text"
-          placeholder="Enter Wallet Address 1"
-          value={wallet1}
-          onChange={(e) => setWallet1(e.target.value)}
+      <NfdLookup
+        className="relative w-80 my-2 cursor-default rounded-md border border-black bg-orange-100 text-center shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 sm:text-sm"
+        value={wallet1}
+        onChange={(value) => setWallet1(value)}
+        placeholder={"Enter Address 1"}
+        ariaDescribedby="lookup-description"
         />
-        <input
-          className='relative w-80  p-2 mb-2 cursor-default rounded-md border border-black bg-orange-100 text-center shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 sm:text-sm'
-          type="text"
-          placeholder="Enter Wallet Address 2"
-          value={wallet2}
-          onChange={(e) => setWallet2(e.target.value)}
+        <NfdLookup
+        className="relative w-80 my-2 cursor-default rounded-md border border-black bg-orange-100 text-center shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 sm:text-sm"
+        value={wallet2}
+        onChange={(value) => setWallet2(value)}
+        placeholder={"Enter Address 2"}
+        ariaDescribedby="lookup-description"
         />
         <Center m={4}><FullGlowButton fontsize='16px' text='Search' onClick={handleSearch} /></Center>
       </div>

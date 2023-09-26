@@ -150,7 +150,7 @@ export default function NfdLookup({
     if (suggestions.length === 0) {
       return (
         <div className="cursor-default select-none relative py-2 px-4 text-gray-500">
-          No matches found, try a different name
+          No matches found!
         </div>
       )
     }
@@ -162,8 +162,8 @@ export default function NfdLookup({
             onClick={() => setNfdMatch(suggestion)}
             className={classNames(
               active || suggestion.name === value
-                ? 'bg-sky-600 text-white'
-                : 'bg-white text-gray-900',
+                ? 'bg-orange-100 text-black'
+                : 'bg-orange-200 text-gray-8',
               'cursor-default select-none py-2 px-4 truncate'
             )}
           >
@@ -171,11 +171,11 @@ export default function NfdLookup({
             {suggestion.depositAccount && (
               <span
                 className={classNames(
-                  active || suggestion.name === value ? 'text-white' : '',
+                  active || suggestion.name === value ? 'text-gray-800' : '',
                   'ml-4'
                 )}
               >
-                {suggestion.depositAccount}
+                {suggestion.depositAccount.substring(0, 5) + "..." + suggestion.depositAccount.substring(suggestion.depositAccount.length - 5)}
               </span>
             )}
           </li>
@@ -187,7 +187,6 @@ export default function NfdLookup({
   return (
     <Combobox value={value} onChange={handleComboBoxChange}>
       <div className="relative">
-        <div className="relative w-full text-left bg-white rounded-md cursor-default focus:outline-none sm:text-sm">
           <Combobox.Input
             className={classNames(nfdMatch ? 'pr-12' : '', className)}
             onChange={handleInputChange}
@@ -203,7 +202,7 @@ export default function NfdLookup({
                 href={`https://app.nf.domains/name/${nfdMatch.name}`}
                 target="_blank"
                 id="nfd-badge"
-                className="relative rounded-full overflow-hidden h-7 w-7 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-sky-500 group border-2 border-white"
+                className="relative rounded-full overflow-hidden h-7 w-7 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-orange-400 group border border-black"
                 rel="noreferrer"
               >
                 <Image src="/nfd.svg" alt="NFD" width={400} height={400} />
@@ -211,7 +210,6 @@ export default function NfdLookup({
               <Tooltip anchorId="nfd-badge" content={nfdMatch.name} />
             </div>
           )}
-        </div>
         <Transition
           as={Fragment}
           leave="transition ease-in duration-100"
@@ -219,7 +217,7 @@ export default function NfdLookup({
           leaveTo="opacity-0"
         >
           {showOptions ? (
-            <Combobox.Options className="absolute w-full z-10 py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <Combobox.Options className="absolute w-full z-10 overflow-auto text-base bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               {renderOptions()}
             </Combobox.Options>
           ) : (
