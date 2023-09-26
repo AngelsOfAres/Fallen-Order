@@ -1,5 +1,6 @@
 import { useWallet } from '@txnlab/use-wallet'
 import Head from 'next/head'
+import Link from 'next/link'
 import Account from 'components/Account'
 import React, { useState } from 'react'
 import Connect from 'components/Connect'
@@ -35,7 +36,7 @@ export default function Home() {
           <Connect />
         </Center>
       )}
-    <Center  my='12px'><a href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></a></Center>
+    <Center  my='12px'><Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link></Center>
     {isActive ? (
     <Center my='24px'>
       <SimpleGrid w='85%' minChildWidth='500px' spacing='16px' justifyItems='center'>
