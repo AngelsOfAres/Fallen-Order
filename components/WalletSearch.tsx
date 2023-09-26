@@ -100,8 +100,8 @@ const WalletTransactionSearch = () => {
 
   const handleSearch = async () => {
     try {
-      const transactionLimit = 100; // Set your desired limit here
-      let nextToken;
+      const transactionLimit = 10000
+      let nextToken: string | undefined;
       const allTransactions: Transaction[] = [];
   
       while (allTransactions.length < transactionLimit) {
