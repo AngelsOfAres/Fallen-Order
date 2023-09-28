@@ -5,6 +5,7 @@ import styles from "../styles/text.module.css"
 import NfdLookup from './NfdLookup';
 import algodClient from 'lib/algodClient'
 import styles2 from '../styles/glow.module.css'
+import Footer from './Footer';
 
 interface Transaction {
     id: string;
@@ -256,6 +257,7 @@ const WalletTransactionSearch = () => {
             <TransactionList transactions={fetchedTransactions} />
         </Box>
       </> : null}
+    <Footer />
     </div>
   );
 };

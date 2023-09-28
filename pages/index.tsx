@@ -6,7 +6,7 @@ import React, { useState } from 'react'
 import Connect from 'components/Connect'
 import Navbar from 'components/Navbar'
 import Transact from 'components/Transact'
-import { Center, useColorModeValue, SimpleGrid, Text } from '@chakra-ui/react'
+import { Center, useColorModeValue, SimpleGrid, Text, Box } from '@chakra-ui/react'
 import { FullGlowButton } from 'components/Buttons'
 import styles2 from '../styles/glow.module.css'
 import Footer from 'components/Footer'
@@ -30,8 +30,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
+      <Box h='100%'>
       <Text mt='20px' className={`${gradientText} responsive-font`}>Welcome to Algo Hour!</Text>
-      <Text mb='24px' className='hText text-center pt-2' textColor={xLightColor}>Any donations sent to support.irl.algo are used to support the show.<br />Thank you!</Text>
+      <Text mb='24px' className='hText pt-2' textAlign='center' textColor={xLightColor}>Any donations sent to support.irl.algo are used to support the show.<br />Thank you!</Text>
       <Center><FullGlowButton fontsize='16px' text={isActive? 'Wallet' : 'Connect!'} onClick={handleToggleMenu} /></Center>
       {isMenuOpen && (
         <Center my='24px'>
@@ -48,6 +49,7 @@ export default function Home() {
     </Center>
     ) : null}
     <Footer />
+    </Box>
     </>
   )
 }
