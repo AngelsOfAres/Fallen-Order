@@ -73,7 +73,7 @@ export default function Account() {
                 <div className="inline-flex -space-x-px rounded-md shadow-sm ml-3 sm:ml-4">
                   <a
                     href={`https://algoexplorer.io/address/${activeAccount.address}`}
-                    className={`relative inline-flex items-center first:rounded-l-md last:rounded-r-md border border-${clipColor2} bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium text-${clipColor} hover:text-black hover:bg-${clipColor} focus:z-20 outline-brand-500`}
+                    className={`relative inline-flex items-center first:rounded-l-md last:rounded-r-md border border-${clipColor2} bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium text-${clipColor} hover:text-black hover:bg-${clipColor} focus:z-20`}
                     target="_blank"
                     rel="noreferrer"
                     id="view-on-algoexplorer"
@@ -83,7 +83,7 @@ export default function Account() {
                   </a>
                   <button
                     type="button"
-                    className={`relative inline-flex items-center first:rounded-l-md last:rounded-r-md border border-${clipColor2} bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium text-${clipColor} hover:text-black hover:bg-${clipColor} focus:z-20 outline-brand-500`}
+                    className={`relative inline-flex items-center first:rounded-l-md last:rounded-r-md border border-${clipColor2} bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium text-${clipColor} hover:text-black hover:bg-${clipColor} focus:z-20`}
                     data-clipboard-text={activeAccount.address}
                     data-clipboard-message="Address Copied!"
                     onClick={copyToClipboard}

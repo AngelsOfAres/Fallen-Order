@@ -81,7 +81,7 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
               <Td textAlign="center" textColor={xLightColor}>
                   {transaction['payment-transaction'] ? (
                     <Center>
-                      <Image boxSize={4} src="algologo.png" />
+                      <Image boxSize={4} src="algologo.png" alt='Algorand Logo'/>
                     </Center>
                   ) : (
                     <a

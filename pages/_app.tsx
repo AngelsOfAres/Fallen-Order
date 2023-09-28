@@ -32,16 +32,23 @@ export default function App({ Component, pageProps, router }: AppProps) {
     debug: true
   })
 
-  const customTheme = extendTheme({
+  const theme = extendTheme({
+    components: {},
+    fonts: {},
+    fontSizes: {},
     styles: {
-      global: {},
+      global: (props: any) => ({
+        'html, body': {
+          background: props.colorMode === 'dark' ? 'black' : 'black',
+        }
+      }),
     },
   });
 
   return (
     <>
       <Toaster />
-      <ChakraProvider theme={customTheme}>
+      <ChakraProvider theme={theme}>
       <WalletProvider value={walletProviders}>
         <QueryClientProvider client={queryClient}>
           <Component {...pageProps} />
