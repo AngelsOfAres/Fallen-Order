@@ -2,22 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    font-family: 'Orbitron', sans-serif;
+
+* {
+    font-family: 'Orbitron', sans-serif !important;
+    font-size: 12px;
 }
 
-.custom-table {
-    margin: 12px !important;
+@media (min-width: 768px) {
+    * {
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 1024px) {
+    * {
+        font-size: 18px;
+    }
+}
+
+.responsive-font {
+    font-size: 24px;
+}
+
+.hFont {
+    font-size: 16px;
+}
+
+@media (min-width: 768px) {
+    .responsive-font {
+        font-size: 28px;
+    }
+    .hFont {
+        font-size: 18px;
+    }
+}
+@media (min-width: 1024px) {
+    .responsive-font {
+        font-size: 32px;
+    }
+    .hFont {
+        font-size: 20px;
+    }
+}
+@media (min-width: 1368px) {
+    .responsive-font {
+        font-size: 36px;
+    }
+    .hFont {
+        font-size: 24px;
+    }
+}
+
+*:focus {
+    box-shadow: none !important;
   }
-
-.custom-table tbody tr:not(:last-child) {
-    border-bottom: 1px solid rgb(235, 145, 0);
-  }
-
-.column-header {
-padding: 8px; /* Add padding to the table headers for column spacing */
-}
-
-.column-cell {
-padding: 8px; /* Add padding to the table cells for column spacing */
-}

@@ -3,25 +3,29 @@ import { useWallet } from '@txnlab/use-wallet'
 import algosdk from 'algosdk'
 import { useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
-import NfdLookup from 'components/NfdLookup'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { convertAlgosToMicroalgos } from 'utils'
 import algodClient from 'lib/algodClient'
-import { Box, Center, Select, Text } from '@chakra-ui/react'
+import { Box, useColorMode, useColorModeValue, Text, Input, Button } from '@chakra-ui/react'
 import styles from '../styles/glow.module.css'
 import { classNames } from 'utils'
 import { Listbox } from '@headlessui/react'
 import SelectMenu from 'components/SelectMenu'
-import { CheckIcon } from '@heroicons/react/20/solid'
+import { FullGlowButton } from './Buttons'
 
 export default function Transact() {
   const { activeAddress, signTransactions, sendTransactions } = useWallet()
-
   const [algoAmount, setAlgoAmount] = useState<string>('')
   const [assetID, setAssetID] = useState<number>(0)
   const [tokenBal, setTokenBal] = useState<number>(0)
   const [decimals, setDecimals] = useState<number>(0)
+  const { colorMode } = useColorMode();
   const [receiver, setReceiver] = useState<string>('U2NCG2KFXHBYGOD5ZTJWPAR7Z4QV7WUHYE3RG3SL2T7OMMWGPLFBIKIBQY')
+  const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)  
+  const xLightColor = useColorModeValue('orange.100','cyan.100')
+  const lightColor = useColorModeValue('orange.300','cyan.300')
+  const medColor = useColorModeValue('orange.500','cyan.500')
+  const mediumColor = colorMode === "light" ? "orange-400" : "cyan-500";
 
   const { accountInfo, assetList, walletAvailableBalance } = useWalletBalance()
 
@@ -37,9 +41,7 @@ export default function Transact() {
   const hasSufficientBalance = useMemo(() => {
     const sendAmount = algoAmount === '' ? 0 : convertAlgosToMicroalgos(parseFloat(algoAmount))
     const availableBalance = convertAlgosToMicroalgos(parseFloat(walletAvailableBalance || '0'))
-
     const txnCost = sendAmount + 1000
-
     return availableBalance >= txnCost
   }, [algoAmount, walletAvailableBalance])
 
@@ -65,14 +67,14 @@ export default function Transact() {
     message = tokenBal < parseFloat(algoAmount) ? 'Insufficient balance' : null
     }
     else {
-    message = !hasSufficientBalance ? 'Insufficient balance' : null
+    message = !hasSufficientBalance ? 'Insufficient Balance!' : null
     }
 
     return (
       <>
       {message ? (
         <>
-          <ExclamationCircleIcon className="mr-1.5 h-5 w-5 text-red-500" aria-hidden="true" />
+          <ExclamationCircleIcon className="mr-1.5 h-8 w-8 text-red-500" aria-hidden="true" />
           {message}
         </>
       ) : null}
@@ -91,7 +93,6 @@ export default function Transact() {
       const amount = algoAmount === '' ? 0 : convertAlgosToMicroalgos(parseFloat(algoAmount))
       const note = Uint8Array.from('Donation Received!'.split("").map(x => x.charCodeAt(0)))
       const suggestedParams = await algodClient.getTransactionParams().do()
-
       const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
         from,
         to,
@@ -186,14 +187,20 @@ export default function Transact() {
   const options = [
     {
       value: 0,
-      label: 'ALGO',
+      label: (
+        <>
+          <span className={`inline-flex items-center rounded bg-${mediumColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
+            ALGO
+          </span>
+        </>
+      ),
       asset: 0,
     },
     ...(assetList ? assetList.map((asset: Asset) => ({
       value: asset['asset-id'],
       label: (
         <>
-          <span className="inline-flex items-center rounded bg-orange-400 px-2.5 py-0.5 text-sm font-medium text-black mr-3">
+          <span className={`inline-flex items-center rounded bg-${mediumColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
             {asset['asset-id']}
           </span>
         </>
@@ -234,106 +241,64 @@ export default function Transact() {
   }
   
   return (
-    <Box m='20px' w='400px' bg="black" borderRadius="8px" boxShadow="0 0 1px 1px rgba(255, 179, 0, 0.5) inset, 0 0 10px 5px rgba(255, 179, 0, 0.5)" 
-      transition="box-shadow 0.3s ease-in-out"
-      _hover={{
-        boxShadow: '0 0 2px 2px rgba(255, 179, 0, 0.8) inset, 0 0 20px 10px rgba(255, 179, 0, 0.8)',
-      }}>
+    <Box className={boxGlow} m='20px' minW='275px' maxW='600px' bg="black" borderRadius="20px">
       <div className="p-5 sm:px-6 flex justify-center items-center">
-        <h3 className="text-lg font-medium leading-6 text-orange-200">Donate</h3>
+        <Text className='hFont' textColor={lightColor}>Donate</Text>
       </div>   
-      <div className="mt-1 sm:col-span-4 sm:mt-0">
-        <div className="flex pl-5 pb-2 rounded-md shadow-sm max-w-md text-orange-200">Receiver: support.irl.algo</div>
+      <div className="pl-5 sm:col-span-4 sm:mt-0">
+        <Text textColor={xLightColor}>Receiver: support.irl.algo</Text>
       </div>
       <>
-      <div className="border-t border-orange-100 p-5 sm:p-0 lg:flex lg:flex-col lg:flex-1">
-      <div className="mx-5 py-2">
+      <div className="mx-5 py-1">
       <SelectMenu selected={selected} setSelected={(selected) => handleSelectChange(selected)}>
         {options.map((option) => (
-          <Listbox.Option key={option.value} className={({ active }) =>
-          classNames(
-            active ? 'text-orange-500 bg-black' : 'text-black',
-            'relative cursor-default select-none py-2 pl-3 pr-10'
+          <Listbox.Option key={option.value} className={({ active }) => classNames(
+            active ? `text-white bg-${mediumColor}` : 'text-black',
+            `relative cursor-pointer select-none py-2 pl-3 pr-10`
           )
-        } value={option}>
-            {({ selected, active }) => (
-              <div
-                className={classNames(
-                  active ? 'text-orange-500 bg-black' : 'text-black',
-                  'relative select-none px-1 py-2'
-                )}
-              >
-                <div
-                  className={classNames(
-                    selected ? 'font-semibold' : 'font-normal',
-                    'block truncate'
-                  )}
-                >
+        }
+        value={option}>
                 <span className="text-sm">{option.label}</span>
-                  <span
-                    className={classNames(
-                      selected && active
-                        ? 'bg-orange-400 text-black'
-                        : selected
-                        ? 'bg-orange-400 text-black'
-                        : active
-                        ? 'bg-black text-orange-500'
-                        : 'bg-orange.300',
-                      'inline-flex items-center rounded px-2.5 py-0.5 text-sm font-medium mr-3'
-                    )}
-                  >
+                  <span className='text-sm pl-2'>
                     {option.value}
                   </span>
-                </div>
-                {selected ? (
-                  <span
-                    className={classNames(
-                      active ? 'text-black' : 'text-orange-500',
-                      'absolute inset-y-0 right-0 flex items-center pr-3'
-                    )}
-                  >
-                    <CheckIcon color="orange" className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                ) : null}
-              </div>
-            )}
           </Listbox.Option>
         ))}
       </SelectMenu>
       </div>
-      </div>
       </>
-      <div className="border-t border-orange-100 p-5 sm:p-0 lg:flex lg:flex-col lg:flex-1">
-        <form onSubmit={handleSubmit} className="sm:divide-y sm:divide-orange-100 lg:flex lg:flex-col lg:flex-1">
+      <div className="p-5 sm:p-0 lg:flex lg:flex-col lg:flex-1">
+        <form onSubmit={handleSubmit} className="lg:flex lg:flex-col lg:flex-1">
           <div className="space-y-2 sm:space-y-0 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
-            <label htmlFor="amount" className="block text-sm font-medium text-orange-200 sm:mt-px sm:pt-2">Amount</label>
-            <div className="mt-1 sm:col-span-4 sm:mt-0">
+            <label htmlFor="amount" className="block text-sm whitespace-nowrap font-medium sm:mt-px sm:pt-2"><Text textColor={xLightColor}>Amount</Text></label>
+            <div className="mt-1 sm:col-span-4 pl-4 sm:mt-0">
               <div className="flex rounded-md shadow-sm max-w-md">
-                <div className="relative flex flex-grow items-stretch focus-within:z-10">
-                  <input
+                <div className="relative flex max-w-1 flex-grow items-stretch focus-within:z-10">
+                  <Input
                     type="text"
                     name="amount"
                     id="amount"
-                    className="block w-full rounded-none rounded-l-md border-orange-300 text-orange-200 bg-black focus:border-orange-300 focus:ring-orange-400 sm:text-sm"
+                    borderRightRadius={'0px'}
+                    _hover={{bgColor: 'black'}}
+                    _focus={{borderColor: medColor}}
+                    textColor={xLightColor}
+                    borderColor={medColor}
+                    className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`}
                     value={algoAmount}
                     onChange={handleAmountChange}
                     placeholder="0.000"
                   />
                 </div>
-                <button type="button" className="relative -ml-px inline-flex items-center space-x-2 rounded-r-md border border-orange-300 bg-black px-4 py-2 text-sm font-medium text-orange-400 hover:bg-black focus:border-orange-300 focus:outline-none focus:ring-1 focus:ring-orange-500" onClick={() => setAlgoAmount('')}>
+                <Button _hover={{bgColor: 'black', textColor: medColor}} bgColor='black' textColor={xLightColor} borderWidth={1} borderLeftRadius={'0px'} borderColor={medColor} type="button" className="relative -ml-px inline-flex items-center space-x-2 rounded-r-md px-4 py-2" onClick={() => setAlgoAmount('')}>
                   Clear
-                </button>
+                </Button>
               </div>
             </div>
           </div>
           <div className="pt-5 sm:py-5 sm:px-6 lg:flex lg:flex-col lg:flex-1 lg:justify-center">
             <div className="flex items-center justify-between">
               <p className="flex items-center text-sm text-red-600">{renderValidationMessage()}</p>
-              <button type="submit"
-                className="inline-flex justify-center rounded-md border border-transparent bg-orange-500 py-2 px-4 text-sm font-medium text-black shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:bg-orange-500"
-                disabled={!activeAddress || !isValidRecipient || assetID != 0 ? tokenBal < parseFloat(algoAmount) : !hasSufficientBalance}>
-                Donate!
-              </button>
+              <FullGlowButton text='Donate!' onClick={handleSubmit} disabled={!activeAddress || !isValidRecipient || assetID != 0 ? tokenBal < parseFloat(algoAmount) : !hasSufficientBalance}/>
             </div>
           </div>
         </form>

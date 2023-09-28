@@ -18,14 +18,15 @@ import {
       type?: any,
       icon?: any,
       id?: any,
+      disabled?: any,
       leftIcon?: any,
       onClick?: (event: any) => void;
   };
   
-  export const FullGlowButton = ({ fontsize, type, leftIcon, ref, text, onClick }: textProp) => {
+  export const FullGlowButton = ({ fontsize, type, leftIcon, ref, text, onClick, disabled }: textProp) => {
     return (
-    <Button borderRadius='6px' px='6px' className={useColorModeValue(styles.fullglowL, styles.fullglowD)} leftIcon={leftIcon? leftIcon : null} _hover={{textColor:'white'}} textColor='black' fontSize={fontsize? fontsize : '12px'} fontFamily="Orbitron" size='xs' ref={ref} type={type} onClick={onClick}>
-        <Text px={2} zIndex={1}>{text}</Text>
+    <Button borderRadius='10px' className={useColorModeValue(styles.fullglowL, styles.fullglowD)} leftIcon={leftIcon? leftIcon : null} _hover={{textColor:'white'}} textColor='black' fontSize={fontsize? fontsize : '12px'} fontFamily="Orbitron" size='md' ref={ref} type={type} onClick={onClick} isDisabled={disabled}>
+        <Text zIndex={1}>{text}</Text>
     </Button>
     )
   }

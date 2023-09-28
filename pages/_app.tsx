@@ -7,6 +7,7 @@ import algosdk from 'algosdk'
 import Toaster from 'components/Toaster'
 import { NODE_NETWORK, NODE_PORT, NODE_TOKEN, NODE_URL } from 'constants/env'
 import type { AppProps } from 'next/app'
+import { ChakraProvider, extendTheme, useColorModeValue } from "@chakra-ui/react"
 
 import 'styles/globals.css'
 import "@fontsource/orbitron"
@@ -31,15 +32,22 @@ export default function App({ Component, pageProps, router }: AppProps) {
     debug: true
   })
 
+  const customTheme = extendTheme({
+    styles: {
+      global: {},
+    },
+  });
+
   return (
     <>
       <Toaster />
-
+      <ChakraProvider theme={customTheme}>
       <WalletProvider value={walletProviders}>
         <QueryClientProvider client={queryClient}>
           <Component {...pageProps} />
         </QueryClientProvider>
       </WalletProvider>
+      </ChakraProvider>
     </>
   )
 }

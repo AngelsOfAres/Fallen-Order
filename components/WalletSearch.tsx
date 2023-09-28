@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { FullGlowButton } from './Buttons'
-import { Box, Center, Image, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react'
+import { Box, Center, Image, Progress, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr, useColorModeValue, useColorMode } from '@chakra-ui/react'
 import styles from "../styles/text.module.css"
 import NfdLookup from './NfdLookup';
-import algodClient from 'lib/algodClient';
+import algodClient from 'lib/algodClient'
+import styles2 from '../styles/glow.module.css'
 
 interface Transaction {
     id: string;
@@ -14,8 +15,11 @@ interface TransactionListProps {
     transactions: Transaction[];
   }
 
+
 const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
-    console.log(transactions)
+    const xLightColor = useColorModeValue('orange.100','cyan.100')
+    const lightColor = useColorModeValue('orange.300','cyan.300')
+    const mediumColor = useColorModeValue('orange.500','cyan.500')
     const removeExtraLineBreaks = (text: any) => {
         return text.replace(/\n{2,}/g, '\n')
       };
@@ -53,19 +57,19 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
   return (
     <Center my='12px'>
     <TableContainer>
-      <Table className="custom-table">
-        <Thead className={styles.sText}>
+      <Table>
+        <Thead>
           <Tr>
-            <Th textAlign="center" className="column-header">Txn ID</Th>
-            <Th textAlign="center" className="column-header">ASA</Th>
-            <Th textAlign="center" className="column-header">Amount</Th>
-            <Th textAlign="center" className="column-header">Note</Th>
+            <Th textAlign="center" textColor={lightColor}>Txn ID</Th>
+            <Th textAlign="center" textColor={lightColor}>ASA</Th>
+            <Th textAlign="center" textColor={lightColor}>Amount</Th>
+            <Th textAlign="center" textColor={lightColor}>Note</Th>
           </Tr>
         </Thead>
-        <Tbody className='text-orange-100'>
+        <Tbody>
           {transactions.map((transaction: any, index: any) => (
             <Tr key={index} className={styles.tableText}>
-              <Td textAlign="center"  className="column-cell">
+              <Td textAlign="center"  textColor={mediumColor}>
                 <a
                   href={`https://algoexplorer.io/tx/${transaction.id}`}
                   target="_blank"
@@ -74,10 +78,10 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
                   {transaction.id.substring(0, 5) + "..." + transaction.id.substring(transaction.id.length - 5)}
                 </a>
               </Td>
-              <Td textAlign="center" className="column-cell">
+              <Td textAlign="center" textColor={xLightColor}>
                   {transaction['payment-transaction'] ? (
                     <Center>
-                      <Image boxSize={8} src="algologo.png" />
+                      <Image boxSize={4} src="algologo.png" />
                     </Center>
                   ) : (
                     <a
@@ -89,11 +93,11 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
                     </a>
                   )}
                 </Td>
-              <Td textAlign="center" className="column-cell">{transaction['payment-transaction']
+              <Td textAlign="center" textColor={xLightColor}>{transaction['payment-transaction']
                     ? formatNumberAbbreviated(removeTrailingZeros((transaction['payment-transaction']['amount']/1000000).toFixed(3)))
                     : formatNumberAbbreviated(removeTrailingZeros(transaction['asset-transfer-transaction']['amount']))
                 }</Td>
-              <Td textAlign="center"  className="column-cell">
+              <Td textAlign="center" textColor={xLightColor}>
                 <Text whiteSpace="pre-wrap">{removeExtraLineBreaks(handleNote(transaction.note))}</Text>
               </Td>
             </Tr>
@@ -106,7 +110,7 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
 };
 
 
-async function fetchTxns(wallet1: any, wallet2: any, limit: number = 100, nextToken?: string): Promise<{ transactions: Transaction[], nextToken?: string }> {
+async function fetchTxns(wallet1: any, wallet2: any, limit: number = 1000, nextToken?: string): Promise<{ transactions: Transaction[], nextToken?: string }> {
     const transactionsUrl = `https://mainnet-idx.algonode.cloud/v2/accounts/${wallet1}/transactions?limit=${limit}&next=${nextToken || ''}`;
   
     try {
@@ -148,6 +152,20 @@ const WalletTransactionSearch = () => {
   const [wallet2, setWallet2] = useState('');
   const [fetchedTransactions, setFetchedTransactions] = useState<Transaction[]>([]);
   const [decimalsMap, setDecimalsMap] = useState({})
+  const [loading, setLoading] = useState(false)
+  const { colorMode } = useColorMode();
+  const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
+  const buttonText5 = useColorModeValue('yellow','cyan')
+  const xLightColor = useColorModeValue('orange.100','cyan.100')
+  const lightColor = useColorModeValue('orange.300','cyan.300')
+  const mediumColor = useColorModeValue('orange.500','cyan.500')
+  const darkColor = useColorModeValue('orange.700','cyan.700')
+  
+  const borderColorClass = colorMode === "light" ? 'orange-500' : 'cyan-400'
+  const baseColorDash = colorMode === "light" ? 'orange-500' : 'cyan-500'
+  const lightColorDash = colorMode === "light" ? 'orange-100' : 'cyan-50'
+  const gradientText = useColorModeValue(styles2.textAnimatedGlowL, styles2.textAnimatedGlowD)
+  
 
   async function fetchNameDecimals(transactions: any) {
     const newDecimalsMap: { [key: string]: any } = {};
@@ -174,23 +192,30 @@ const WalletTransactionSearch = () => {
   
   const handleSearch = async () => {
     try {
+    setLoading(true)
       const transactionLimit = 10000
       let nextToken: string | undefined;
       const allTransactions: Transaction[] = [];
   
       while (allTransactions.length < transactionLimit) {
-        const { transactions, nextToken: newNextToken } = await fetchTxns(wallet1, wallet2, transactionLimit - allTransactions.length, nextToken);
-        allTransactions.push(...transactions);
-  
-        if (!newNextToken) {
-          break;
-        }
-  
-        nextToken = newNextToken;
+        try {
+          const { transactions, nextToken: newNextToken } = await fetchTxns(wallet1, wallet2, transactionLimit - allTransactions.length, nextToken);
+          allTransactions.push(...transactions);
+    
+          if (!newNextToken) {
+            break;
+          }
+    
+          nextToken = newNextToken;
+        } catch (error) {
+            console.error("Error fetching transactions:", error);
+            setLoading(false)
+            return
+          }
       }
-
       fetchNameDecimals(allTransactions)
       setFetchedTransactions(allTransactions)
+      setLoading(false)
     } catch (error) {
       console.error('Error fetching transactions:', error);
     }
@@ -199,28 +224,40 @@ const WalletTransactionSearch = () => {
 
   return (
     <div className='mt-6'>
-      <h1 className={styles.hText}>Wallet-2-Wallet Search</h1>
+    <Text my='20px' className={`${gradientText} responsive-font`}>Wallet-2-Wallet Search</Text>
       <div className="flex flex-col items-center justify-center">
       <NfdLookup
-        className="relative w-80 my-2 cursor-default rounded-md border border-black bg-orange-100 text-center shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 sm:text-sm"
+        className={`text-black relative w-80 my-2 cursor-default rounded-md border border-${borderColorClass} bg-${lightColorDash} text-center shadow-sm focus:border-${borderColorClass} focus:outline-none focus:ring-1 sm:text-sm`}
         value={wallet1}
         onChange={(value) => setWallet1(value)}
         placeholder={"Enter Address/NFD 1"}
         ariaDescribedby="lookup-description"
         />
         <NfdLookup
-        className="relative w-80 my-2 cursor-default rounded-md border border-black bg-orange-100 text-center shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 sm:text-sm"
+        className={`text-black relative w-80 my-2 cursor-default rounded-md border border-${borderColorClass} bg-${lightColorDash} text-center shadow-sm focus:border-${borderColorClass} focus:outline-none focus:ring-1 sm:text-sm`}
         value={wallet2}
         onChange={(value) => setWallet2(value)}
         placeholder={"Enter Address/NFD 2"}
         ariaDescribedby="lookup-description"
         />
-        <Center m={4}><FullGlowButton fontsize='16px' text='Search' onClick={handleSearch} /></Center>
+        {loading ?
+        <>
+          <Text textColor={xLightColor} align={'center'} className='pt-4 text-sm'>Please wait while transactions load.<br/>This may take a while if wallets have high volume.</Text>
+          <Box w='250px' my='24px'>
+              <Progress size='xs' bgGradient={progress} colorScheme={buttonText5} isIndeterminate borderRadius='xl'/>
+          </Box>
+        </>
+        : 
+        <Center m={4}><FullGlowButton fontsize='16px' text='Search' onClick={handleSearch} isLoading={loading} /></Center>
+        }
       </div>
       {fetchedTransactions.length > 0? 
-        <Box className='w-fit mx-auto px-3 border border-orange-500 rounded-xl' style={{ maxWidth: '90%' }}>
+      <>
+      <Text textColor={xLightColor} align={'center'} className='py-4 text-lg'>Total Txns: <strong className='text-lg'>{fetchedTransactions.length}</strong></Text>
+        <Box className={`w-fit mx-auto px-3 border border-${baseColorDash} rounded-xl`} style={{ maxWidth: '90%' }}>
             <TransactionList transactions={fetchedTransactions} />
-        </Box> : null}
+        </Box>
+      </> : null}
     </div>
   );
 };

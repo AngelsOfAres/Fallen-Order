@@ -6,14 +6,17 @@ import React, { useState } from 'react'
 import Connect from 'components/Connect'
 import Navbar from 'components/Navbar'
 import Transact from 'components/Transact'
-import { Box, Center, Grid, GridItem, SimpleGrid, Text } from '@chakra-ui/react'
+import { Center, useColorModeValue, SimpleGrid, Text } from '@chakra-ui/react'
 import styles from "../styles/text.module.css"
 import { FullGlowButton } from 'components/Buttons'
-import WalletTransactionSearch from 'components/WalletSearch'
+import styles2 from '../styles/glow.module.css'
+import Footer from 'components/Footer'
 
 export default function Home() {
-  const { isReady, isActive } = useWallet()
+  const { isActive } = useWallet()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const gradientText = useColorModeValue(styles2.textAnimatedGlowL, styles2.textAnimatedGlowD)
+  const xLightColor = useColorModeValue('orange.100','cyan.100')
 
   const handleToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -28,23 +31,24 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <Text mt='20px' className={styles.hText}>Welcome to Algo Hour!</Text>
-      <Text mb='24px' className={styles.sText} textColor='white'>Any donations sent to support.irl.algo are used to support the show. Thank you!</Text>
+      <Text mt='20px' className={`${gradientText} responsive-font`}>Welcome to Algo Hour!</Text>
+      <Text mb='24px' className='hText text-center pt-2' textColor={xLightColor}>Any donations sent to support.irl.algo are used to support the show. Thank you!</Text>
       <Center><FullGlowButton fontsize='16px' text={isActive? 'Wallet' : 'Connect!'} onClick={handleToggleMenu} /></Center>
       {isMenuOpen && (
         <Center my='24px'>
           <Connect />
         </Center>
       )}
-    <Center  my='12px'><Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link></Center>
+    <Center  my='20px'><Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link></Center>
     {isActive ? (
     <Center my='24px'>
-      <SimpleGrid w='85%' minChildWidth='500px' spacing='16px' justifyItems='center'>
+      <SimpleGrid w='85%' minChildWidth='275px' spacing='16px' justifyItems='center'>
           <Account />
           <Transact />
       </SimpleGrid>
     </Center>
     ) : null}
+    <Footer />
     </>
   )
 }

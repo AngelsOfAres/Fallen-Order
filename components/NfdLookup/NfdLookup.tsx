@@ -6,6 +6,7 @@ import { NfdRecordThumbnail } from './NfdLookup.types'
 import Tooltip from 'components/Tooltip'
 import useDebounce from 'hooks/useDebounce'
 import { classNames, isValidName } from 'utils'
+import { useColorMode } from "@chakra-ui/react"
 
 interface NfdLookupProps {
   value: string
@@ -26,6 +27,12 @@ export default function NfdLookup({
   limit = 10,
   ariaDescribedby
 }: NfdLookupProps) {
+  const { colorMode } = useColorMode()
+  const borderColorClass = colorMode === "light" ? 'orange-500' : 'cyan-400'
+  const baseColorDash = colorMode === "light" ? 'orange-500' : 'cyan-500'
+  const lightColorDash = colorMode === "light" ? 'orange-100' : 'cyan-50'
+  const borderColor = colorMode === "light" ? 'orange-500' : 'cyan-500'
+
   const debouncedQuery = useDebounce(value, 500)
 
   const trimExtension = (name: string) => {
@@ -141,7 +148,7 @@ export default function NfdLookup({
 
     if (error) {
       return (
-        <div className="cursor-default select-none relative py-2 px-4 text-gray-500">
+        <div className="cursor-default select-none relative py-2 px-4 text-gray-700">
           <span className="text-red-500">Error:</span> {error.message}
         </div>
       )
@@ -149,7 +156,7 @@ export default function NfdLookup({
 
     if (suggestions.length === 0) {
       return (
-        <div className="cursor-default select-none relative py-2 px-4 text-gray-500">
+        <div className="cursor-default select-none relative py-2 px-4 text-gray-700">
           No matches found!
         </div>
       )
@@ -162,16 +169,15 @@ export default function NfdLookup({
             onClick={() => setNfdMatch(suggestion)}
             className={classNames(
               active || suggestion.name === value
-                ? 'bg-orange-100 text-black'
-                : 'bg-orange-200 text-gray-8',
+                ? `text-white bg-${baseColorDash}`
+                : `text-black bg-${lightColorDash}`,
               'cursor-default select-none py-2 px-4 truncate'
             )}
-          >
+          >            
             <span className="font-medium">{suggestion.name}</span>
             {suggestion.depositAccount && (
               <span
-                className={classNames(
-                  active || suggestion.name === value ? 'text-gray-800' : '',
+                className={classNames(active ? 'text-white' : 'text-black',
                   'ml-4'
                 )}
               >
@@ -202,7 +208,7 @@ export default function NfdLookup({
                 href={`https://app.nf.domains/name/${nfdMatch.name}`}
                 target="_blank"
                 id="nfd-badge"
-                className="relative rounded-full overflow-hidden h-7 w-7 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-orange-400 group border border-black"
+                className={`relative rounded-full overflow-hidden h-7 w-7 focus:outline-none group border border-${borderColor}`}
                 rel="noreferrer"
               >
                 <Image src="/nfd.svg" alt="NFD" width={400} height={400} />

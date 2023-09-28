@@ -24,22 +24,10 @@ import Connect from './Connect';
 
     return (
       <>
-    <Flex
-      className={navBG}
-      w="100%"
-      h="64px"
-      alignItems="center"
-      justifyContent="space-between"
-      px={8}
-      boxShadow="lg"
-    >
-        <Button
-          mx='16px'
-          variant="ghost"
-          onClick={toggleColorMode}
-        >
-          {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-        </Button>
+    <Flex className={navBG} w="100%" h="64px" alignItems="center" justifyContent="space-between">
+        <Button ml={2} _hover={{textColor:'white'}} _active={{bgColor:'transparent'}} textColor='black' fontSize='14px' fontFamily="Orbitron" size='md' bgColor='transparent' onClick={toggleColorMode}>
+                  {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+            </Button>
         <Link href='/'>
         <Image
           src="/logo.svg"
@@ -48,15 +36,19 @@ import Connect from './Connect';
         />
         </Link>
         <Menu>
-          <MenuButton mx='16px' as={Button} variant="ghost">
+          <MenuButton
+            _hover={{textColor:'white'}} _active={{bgColor:'transparent'}} textColor='black' fontSize='14px' fontFamily="Orbitron" size='md' bgColor='transparent' 
+            as={Button}
+            cursor={'pointer'}
+            minW={0}
+            mr={2}
+            >
             <HamburgerIcon />
           </MenuButton>
-          <MenuList bgColor="black" borderRadius="8px" fontSize="12px" fontFamily="Orbitron" mt='28px' >
-            <Center>
-                <MenuItem closeOnSelect={false} borderRadius='8px'>
-                <Connect />
+          <MenuList p={0} m={3} borderRadius='20px'>
+                <MenuItem closeOnSelect={false} p={0} m={0}  borderRadius='20px'>
+                  <Connect />
                 </MenuItem>
-            </Center>
           </MenuList>
         </Menu>
     </Flex>
