@@ -28,10 +28,9 @@ export default function NfdLookup({
   ariaDescribedby
 }: NfdLookupProps) {
   const { colorMode } = useColorMode()
-  const borderColorClass = colorMode === "light" ? 'orange-500' : 'cyan-400'
-  const baseColorDash = colorMode === "light" ? 'orange-500' : 'cyan-500'
-  const lightColorDash = colorMode === "light" ? 'orange-100' : 'cyan-50'
-  const borderColor = colorMode === "light" ? 'orange-500' : 'cyan-500'
+  const bgColor1 = colorMode === "light" ? 'bg-orange-500' : 'bg-cyan-500'
+  const bgColor2 = colorMode === "light" ? 'bg-orange-100' : 'bg-cyan-50'
+  const borderColor = colorMode === "light" ? 'border-orange-500' : 'border-cyan-500'
 
   const debouncedQuery = useDebounce(value, 500)
 
@@ -148,7 +147,7 @@ export default function NfdLookup({
 
     if (error) {
       return (
-        <div className="cursor-default select-none relative py-2 px-4 text-gray-700">
+        <div className="cursor-default select-none relative py-2 px-4 text-gray-600">
           <span className="text-red-500">Error:</span> {error.message}
         </div>
       )
@@ -156,7 +155,7 @@ export default function NfdLookup({
 
     if (suggestions.length === 0) {
       return (
-        <div className="cursor-default select-none relative py-2 px-4 text-gray-700">
+        <div className="cursor-default select-none relative py-2 px-4 text-gray-600">
           No matches found!
         </div>
       )
@@ -169,8 +168,8 @@ export default function NfdLookup({
             onClick={() => setNfdMatch(suggestion)}
             className={classNames(
               active || suggestion.name === value
-                ? `text-white bg-${baseColorDash}`
-                : `text-black bg-${lightColorDash}`,
+                ? `text-white ${bgColor1}`
+                : `text-black ${bgColor2}`,
               'cursor-default select-none py-2 px-4 truncate'
             )}
           >            
@@ -208,7 +207,7 @@ export default function NfdLookup({
                 href={`https://app.nf.domains/name/${nfdMatch.name}`}
                 target="_blank"
                 id="nfd-badge"
-                className={`relative rounded-full overflow-hidden h-7 w-7 focus:outline-none group border border-${borderColor}`}
+                className={`relative rounded-full overflow-hidden h-7 w-7 focus:outline-none group border ${borderColor}`}
                 rel="noreferrer"
               >
                 <Image src="/nfd.svg" alt="NFD" width={400} height={400} />
@@ -223,7 +222,7 @@ export default function NfdLookup({
           leaveTo="opacity-0"
         >
           {showOptions ? (
-            <Combobox.Options className="absolute w-full z-10 overflow-auto text-base bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <Combobox.Options className={`absolute w-full z-10 overflow-auto text-base border ${borderColor} ${bgColor2} rounded-md shadow-lg focus:outline-none sm:text-sm`}>
               {renderOptions()}
             </Combobox.Options>
           ) : (

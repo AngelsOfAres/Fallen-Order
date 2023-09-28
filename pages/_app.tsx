@@ -7,14 +7,14 @@ import algosdk from 'algosdk'
 import Toaster from 'components/Toaster'
 import { NODE_NETWORK, NODE_PORT, NODE_TOKEN, NODE_URL } from 'constants/env'
 import type { AppProps } from 'next/app'
-import { ChakraProvider, extendTheme, useColorModeValue } from "@chakra-ui/react"
+import { ChakraProvider, extendTheme } from "@chakra-ui/react"
 
 import 'styles/globals.css'
 import "@fontsource/orbitron"
 
 const queryClient = new QueryClient()
 
-export default function App({ Component, pageProps, router }: AppProps) {
+export default function App({ Component, pageProps }: AppProps) {
   const walletProviders = useInitializeProviders({
     providers: [
       { id: PROVIDER_ID.DEFLY, clientStatic: DeflyWalletConnect },
@@ -33,12 +33,9 @@ export default function App({ Component, pageProps, router }: AppProps) {
   })
 
   const theme = extendTheme({
-    components: {},
-    fonts: {},
-    fontSizes: {},
     styles: {
       global: (props: any) => ({
-        'html, body': {
+        'body': {
           background: props.colorMode === 'dark' ? 'black' : 'black',
         }
       }),

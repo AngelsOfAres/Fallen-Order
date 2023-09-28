@@ -68,7 +68,7 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
         </Thead>
         <Tbody>
           {transactions.map((transaction: any, index: any) => (
-            <Tr key={index} className={styles.tableText}>
+            <Tr key={index}>
               <Td textAlign="center"  textColor={mediumColor}>
                 <a
                   href={`https://algoexplorer.io/tx/${transaction.id}`}
@@ -157,13 +157,11 @@ const WalletTransactionSearch = () => {
   const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
   const buttonText5 = useColorModeValue('yellow','cyan')
   const xLightColor = useColorModeValue('orange.100','cyan.100')
-  const lightColor = useColorModeValue('orange.300','cyan.300')
-  const mediumColor = useColorModeValue('orange.500','cyan.500')
-  const darkColor = useColorModeValue('orange.700','cyan.700')
   
-  const borderColorClass = colorMode === "light" ? 'orange-500' : 'cyan-400'
   const baseColorDash = colorMode === "light" ? 'orange-500' : 'cyan-500'
-  const lightColorDash = colorMode === "light" ? 'orange-100' : 'cyan-50'
+  const borderColor = colorMode === "light" ? 'border-orange-500' : 'border-cyan-400'
+  const bgColor = colorMode === "light" ? 'bg-orange-100' : 'bg-cyan-50'
+  const focusBorderColor = colorMode === "light" ? 'focus:border-orange-500' : 'focus:border-cyan-400'
   const gradientText = useColorModeValue(styles2.textAnimatedGlowL, styles2.textAnimatedGlowD)
   
 
@@ -227,14 +225,14 @@ const WalletTransactionSearch = () => {
     <Text my='20px' className={`${gradientText} responsive-font`}>Wallet-2-Wallet Search</Text>
       <div className="flex flex-col items-center justify-center">
       <NfdLookup
-        className={`text-black relative w-80 my-2 cursor-default rounded-md border border-${borderColorClass} bg-${lightColorDash} text-center shadow-sm focus:border-${borderColorClass} focus:outline-none focus:ring-1 sm:text-sm`}
+        className={`text-black relative w-80 my-2 cursor-default rounded-md border ${borderColor} ${bgColor} text-center shadow-sm ${focusBorderColor} focus:outline-none focus:ring-1 sm:text-sm`}
         value={wallet1}
         onChange={(value) => setWallet1(value)}
         placeholder={"Enter Address/NFD 1"}
         ariaDescribedby="lookup-description"
         />
         <NfdLookup
-        className={`text-black relative w-80 my-2 cursor-default rounded-md border border-${borderColorClass} bg-${lightColorDash} text-center shadow-sm focus:border-${borderColorClass} focus:outline-none focus:ring-1 sm:text-sm`}
+        className={`text-black relative w-80 my-2 cursor-default rounded-md border ${borderColor} ${bgColor} text-center shadow-sm ${focusBorderColor} focus:outline-none focus:ring-1 sm:text-sm`}
         value={wallet2}
         onChange={(value) => setWallet2(value)}
         placeholder={"Enter Address/NFD 2"}

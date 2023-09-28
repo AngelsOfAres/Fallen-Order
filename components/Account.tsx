@@ -14,17 +14,14 @@ export default function Account() {
 
   const { walletBalance, walletAvailableBalance } = useWalletBalance()
   
-  const roundedBalance = walletBalance !== null ? parseFloat(walletBalance).toFixed(3) : '';
-  const roundedAvBalance = walletAvailableBalance !== null ? parseFloat(walletAvailableBalance).toFixed(3) : '';
-  const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
+  const roundedBalance = walletBalance !== null ? parseFloat(walletBalance).toFixed(3) : ''
+  const roundedAvBalance = walletAvailableBalance !== null ? parseFloat(walletAvailableBalance).toFixed(3) : ''
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
-  const xLightColor = useColorModeValue('orange.100','cyan.100')
   const lightColor = useColorModeValue('orange.300','cyan.300')
-  const medColor = useColorModeValue('orange.500','cyan.500')
-  const darkColor = useColorModeValue('orange.700','cyan.700')
-  const clipColor = colorMode === "light" ? "orange-200" : "cyan-200"
-  const clipColor2 = colorMode === "light" ? "orange-200" : "cyan-300"
-  const plainColor = colorMode === "light" ? "orange" : "cyan"
+  const borderColor = colorMode === "light" ? "border-orange-200" : "border-cyan-200"
+  const bgColor = colorMode === "light" ? "bg-orange-200" : "bg-cyan-200"
+  const textColor = colorMode === "light" ? "text-orange-200" : "text-cyan-200"
+  const hoverBgColor = colorMode === "light" ? "hover:bg-orange-200" : "hover:bg-cyan-200"
 
   const activeProvider = providers?.find(
     (provider) => provider.metadata.id === activeAccount?.providerId
@@ -73,7 +70,7 @@ export default function Account() {
                 <div className="inline-flex -space-x-px rounded-md shadow-sm ml-3 sm:ml-4">
                   <a
                     href={`https://algoexplorer.io/address/${activeAccount.address}`}
-                    className={`relative inline-flex items-center first:rounded-l-md last:rounded-r-md border border-${clipColor2} bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium text-${clipColor} hover:text-black hover:bg-${clipColor} focus:z-20`}
+                    className={`relative inline-flex items-center first:rounded-l-md last:rounded-r-md border ${borderColor} bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium ${textColor} hover:text-black ${hoverBgColor} focus:z-20`}
                     target="_blank"
                     rel="noreferrer"
                     id="view-on-algoexplorer"
@@ -83,7 +80,7 @@ export default function Account() {
                   </a>
                   <button
                     type="button"
-                    className={`relative inline-flex items-center first:rounded-l-md last:rounded-r-md border border-${clipColor2} bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium text-${clipColor} hover:text-black hover:bg-${clipColor} focus:z-20`}
+                    className={`relative inline-flex items-center first:rounded-l-md last:rounded-r-md border ${borderColor} bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium ${textColor} hover:text-black ${hoverBgColor} focus:z-20`}
                     data-clipboard-text={activeAccount.address}
                     data-clipboard-message="Address Copied!"
                     onClick={copyToClipboard}

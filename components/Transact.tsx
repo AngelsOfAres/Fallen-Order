@@ -25,7 +25,7 @@ export default function Transact() {
   const xLightColor = useColorModeValue('orange.100','cyan.100')
   const lightColor = useColorModeValue('orange.300','cyan.300')
   const medColor = useColorModeValue('orange.500','cyan.500')
-  const mediumColor = colorMode === "light" ? "orange-400" : "cyan-500";
+  const bgColor = colorMode === "light" ? "bg-orange-400" : "bg-cyan-500";
 
   const { accountInfo, assetList, walletAvailableBalance } = useWalletBalance()
 
@@ -189,7 +189,7 @@ export default function Transact() {
       value: 0,
       label: (
         <>
-          <span className={`inline-flex items-center rounded bg-${mediumColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
+          <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
             ALGO
           </span>
         </>
@@ -200,7 +200,7 @@ export default function Transact() {
       value: asset['asset-id'],
       label: (
         <>
-          <span className={`inline-flex items-center rounded bg-${mediumColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
+          <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
             {asset['asset-id']}
           </span>
         </>
@@ -253,7 +253,7 @@ export default function Transact() {
       <SelectMenu selected={selected} setSelected={(selected) => handleSelectChange(selected)}>
         {options.map((option) => (
           <Listbox.Option key={option.value} className={({ active }) => classNames(
-            active ? `text-white bg-${mediumColor}` : 'text-black',
+            active ? `text-white ${bgColor}` : 'text-black',
             `relative cursor-pointer select-none py-2 pl-3 pr-10`
           )
         }

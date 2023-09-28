@@ -1,7 +1,6 @@
 import { Provider, PROVIDER_ID, useWallet } from '@txnlab/use-wallet'
-import { Box, Button, useColorModeValue, Text, VStack, Image, HStack, useColorMode } from '@chakra-ui/react'
-import { CheckIcon, BoltIcon } from '@heroicons/react/20/solid'
-import { useMemo } from 'react'
+import { Box, Button, useColorModeValue, Text, VStack, Image, useColorMode } from '@chakra-ui/react'
+import { CheckIcon } from '@heroicons/react/20/solid'
 import { Listbox } from '@headlessui/react'
 import { MdNotInterested } from "react-icons/md"
 import SelectMenu from 'components/SelectMenu'
@@ -16,14 +15,9 @@ export default function Connect() {
   const boxGlow = useColorModeValue(styles2.boxGlowL, styles2.boxGlowD)
   const text100 = useColorModeValue('orange.100', 'cyan.100')
   const text400 = useColorModeValue('orange.400', 'cyan.400')
-  const lightColor = "orange-100"
-  const darkColor = "cyan-50"
-  const lightColor2 = "orange-400"
-  const darkColor2 = "cyan-500"
 
-  const colorModeLight = colorMode === "light" ? lightColor : darkColor;
-  const colorModeLight2 = colorMode === "light" ? lightColor2 : darkColor2;
-  const colorModeLightPlain = colorMode === "light" ? "orange" : "cyan";
+  const menuBG = colorMode === "light" ? "bg-orange-400" : "bg-cyan-500"
+  const textColor = colorMode === "light" ? "text-orange-400" : "text-cyan-500"
 
   const renderActiveAccount = (provider: Provider) => {
     if (
@@ -50,7 +44,7 @@ export default function Connect() {
           <SelectMenu selected={selected} setSelected={(selected) => provider.setActiveAccount(selected.value)}>
             {options.map((option) => (
               <Listbox.Option key={option.value} className={({ active }) => classNames(
-                    active ? `text-white bg-${colorModeLight2}` : 'text-black',
+                    active ? `text-white ${menuBG}` : 'text-black',
                     `relative cursor-pointer select-none py-2 pl-3 pr-10`
                   )
                 }
@@ -65,7 +59,7 @@ export default function Connect() {
                     </span>
                     {selected ? (
                       <span className={classNames(
-                          active ? 'text-black' : `text-${colorModeLight2}`,
+                          active ? 'text-black' : `${textColor}`,
                           'absolute inset-y-0 right-0 flex items-center pr-3'
                         )}>
                         <CheckIcon className="h-5 w-5" aria-hidden="true" />
