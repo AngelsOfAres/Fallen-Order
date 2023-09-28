@@ -253,7 +253,7 @@ export default function Transact() {
   }
   
   return (
-    <Box className={boxGlow} m='20px' minW='275px' maxW='600px' bg="black" borderRadius="20px">
+    <Box className={boxGlow} m='20px' minW='275px' maxW='420px' bg="black" borderRadius="20px">
       <div className="p-5 sm:px-6 flex justify-center items-center">
         <Text className='hFont' textColor={lightColor}>Donate</Text>
       </div>   
@@ -263,7 +263,7 @@ export default function Transact() {
       <>
       <div className="mx-5 py-1">
       <SelectMenu selected={selected} setSelected={(selected) => handleSelectChange(selected)}>
-        {options.map((option) => (
+        {options.map((option: any) => (
           <Listbox.Option key={option.value} className={({ active }) => classNames(
             active ? `text-white ${bgColor}` : 'text-black',
             `relative cursor-pointer select-none py-2 pl-3 pr-10`

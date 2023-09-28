@@ -36,7 +36,7 @@ export default function Account() {
         className={boxGlow}
         m='20px'
         minW='275px'
-        maxW='600px'
+        maxW='420px'
         bg="black"
         borderRadius="20px"
       >

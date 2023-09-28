@@ -8,6 +8,7 @@ export default function useWalletBalance() {
   const [walletBalance, setWalletBalance] = useState<string | null>(null)
   const [walletAvailableBalance, setWalletAvailableBalance] = useState<string | null>(null)
   const [assetList, setAssetList] = useState<any | null>(null)
+  const [createdAssets, setCreatedAssets] = useState<any | null>(null)
 
   const { activeAccount } = useWallet()
 
@@ -30,7 +31,9 @@ export default function useWalletBalance() {
         minimumFractionDigits: 6
       })
       const assets = accountInfo.assets
+      const created = accountInfo['created-assets']
       setAssetList(assets)
+      setCreatedAssets(created)
 
       if (balance !== walletBalance) {
         setWalletBalance(balance)
@@ -48,14 +51,16 @@ export default function useWalletBalance() {
       }
     } else {
       setAssetList([])
+      setCreatedAssets([])
       setWalletBalance('0.000000')
       setWalletAvailableBalance('0.000000')
     }
-  }, [accountInfo, assetList, walletBalance, walletAvailableBalance])
+  }, [accountInfo, assetList, createdAssets, walletBalance, walletAvailableBalance])
 
   return {
     accountInfo,
     assetList,
+    createdAssets,
     walletBalance,
     walletAvailableBalance
   }
