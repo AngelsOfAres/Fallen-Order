@@ -19,6 +19,7 @@ export default function Transact() {
   const [assetID, setAssetID] = useState<number>(0)
   const [tokenBal, setTokenBal] = useState<number>(0)
   const [decimals, setDecimals] = useState<number>(0)
+  const [customNote, setCusstomNote] = useState<string>('')
   const { colorMode } = useColorMode();
   const [receiver, setReceiver] = useState<string>('U2NCG2KFXHBYGOD5ZTJWPAR7Z4QV7WUHYE3RG3SL2T7OMMWGPLFBIKIBQY')
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)  
@@ -36,6 +37,17 @@ export default function Transact() {
       return
     }
     setAlgoAmount(amount)
+  }
+
+  const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const note = e.target.value
+    const regExp = /^[a-zA-Z0-9_!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\s]+$/
+
+    if (note !== '' && note.match(regExp) === null) {
+      return
+    }
+    setCusstomNote(note)
+    console.log(note)
   }
 
   const hasSufficientBalance = useMemo(() => {
@@ -91,7 +103,7 @@ export default function Transact() {
       const from = activeAddress
       const to = receiver === '' ? activeAddress : receiver
       const amount = algoAmount === '' ? 0 : convertAlgosToMicroalgos(parseFloat(algoAmount))
-      const note = Uint8Array.from('Donation Received!'.split("").map(x => x.charCodeAt(0)))
+      const note = Uint8Array.from(customNote.split("").map(x => x.charCodeAt(0)))
       const suggestedParams = await algodClient.getTransactionParams().do()
       const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
         from,
@@ -135,7 +147,7 @@ export default function Transact() {
       const to = receiver === '' ? activeAddress : receiver
       const assetIndex = assetID
       const amount = parseFloat(algoAmount)*(10**decimals)
-      const note = Uint8Array.from('Donation Received!'.split("").map(x => x.charCodeAt(0)))
+      const note = Uint8Array.from(customNote.split("").map(x => x.charCodeAt(0)))
       const suggestedParams = await algodClient.getTransactionParams().do()
       const transaction = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
         from,
@@ -292,6 +304,28 @@ export default function Transact() {
                 <Button _hover={{bgColor: 'black', textColor: medColor}} bgColor='black' textColor={xLightColor} borderWidth={1} borderLeftRadius={'0px'} borderColor={medColor} type="button" className="relative -ml-px inline-flex items-center space-x-2 rounded-r-md px-4 py-2" onClick={() => setAlgoAmount('')}>
                   Clear
                 </Button>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-2 sm:space-y-0 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
+            <label htmlFor="amount" className="block text-sm whitespace-nowrap font-medium sm:mt-px sm:pt-2"><Text textColor={xLightColor}>Note</Text></label>
+            <div className="mt-1 sm:col-span-4 pl-4 sm:mt-0">
+              <div className="flex rounded-md shadow-sm max-w-md">
+                <div className="relative flex max-w-1 flex-grow items-stretch focus-within:z-10">
+                  <Input
+                    type="text"
+                    name="note"
+                    id="note"
+                    _hover={{bgColor: 'black'}}
+                    _focus={{borderColor: medColor}}
+                    textColor={xLightColor}
+                    borderColor={medColor}
+                    className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`}
+                    value={customNote}
+                    onChange={handleNoteChange}
+                    placeholder="Custom Note Here"
+                  />
+                </div>
               </div>
             </div>
           </div>
