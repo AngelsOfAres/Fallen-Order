@@ -18,6 +18,7 @@ export default function Account() {
   const roundedAvBalance = walletAvailableBalance !== null ? parseFloat(walletAvailableBalance).toFixed(3) : ''
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
   const lightColor = useColorModeValue('orange.300','cyan.300')
+  const medColor = useColorModeValue('orange.500','cyan.500')
   const borderColor = colorMode === "light" ? "border-orange-200" : "border-cyan-200"
   const bgColor = colorMode === "light" ? "bg-orange-200" : "bg-cyan-200"
   const textColor = colorMode === "light" ? "text-orange-200" : "text-cyan-200"
@@ -53,7 +54,7 @@ export default function Account() {
                   />
                 </>
               )}
-              <Text className='hFont' textColor={lightColor}>Active Account</Text>
+              <Text className='hFont' textColor={medColor}>Active Account</Text>
         </HStack>
       </div>
       <div className="px-5 py-2 sm:p-0">

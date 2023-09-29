@@ -44,25 +44,23 @@ export default function AssetDestroy() {
 
       const encodedTransaction = algosdk.encodeUnsignedTransaction(transaction)
 
-      toast.loading('Waiting for user to sign...', { id: 'txn', duration: Infinity })
+      toast.loading('Awaiting Signature...', { id: 'txn', duration: Infinity })
 
       const signedTransactions = await signTransactions([encodedTransaction])
 
-      toast.loading('Sending transaction...', { id: 'txn', duration: Infinity })
+      toast.loading('Destroying Asset...', { id: 'txn', duration: Infinity })
 
       const waitRoundsToConfirm = 4
 
       const { id } = await sendTransactions(signedTransactions, waitRoundsToConfirm)
 
-      console.log(`Successfully sent transaction. Transaction ID: ${id}`)
-
-      toast.success('Transaction successful!', {
+      toast.success('Asset Successfully Destroyed!', {
         id: 'txn',
         duration: 5000
       })
     } catch (error) {
       console.error(error)
-      toast.error('Transaction failed', { id: 'txn' })
+      toast.error('Oops! Asset Destruction Failed!', { id: 'txn' })
     }
   }
 
@@ -164,7 +162,7 @@ export default function AssetDestroy() {
   return (
     <Box className={boxGlow} m='20px' minW='275px' maxW='420px' bg="black" borderRadius="20px">
       <div className="pt-5 sm:px-6 flex justify-center items-center">
-        <Text className='hFont' textColor={lightColor}>Destroy Asset</Text>
+        <Text className='hFont' textColor={medColor}>Destroy Asset</Text>
       </div>
       <>
       <div className="mx-5 pb-1 pt-3">

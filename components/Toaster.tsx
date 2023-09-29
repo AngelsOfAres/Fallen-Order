@@ -1,3 +1,4 @@
+import { useColorMode } from '@chakra-ui/react'
 import { Transition } from '@headlessui/react'
 import { CheckCircleIcon, XCircleIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { Fragment } from 'react'
@@ -5,7 +6,7 @@ import toast, { Toaster, resolveValue } from 'react-hot-toast'
 
 const Loading = () => (
   <svg
-    className="animate-spin h-6 w-6 text-gray-900"
+    className="animate-spin h-6 w-6 text-black"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
@@ -20,13 +21,19 @@ const Loading = () => (
 )
 
 export default function CustomToaster() {
+  const { colorMode } = useColorMode()
+  const bgColor = colorMode === "light" ? "bg-orange-500" : "bg-cyan-500"
+  const borderColor = colorMode === "light" ? "border:bg-orange-500" : "borderg-cyan-500"
+  const ringColor = colorMode === "light" ? "ring-orange-500" : "ring-cyan-500"
+  const textColor = colorMode === "light" ? "text-orange-500" : "text-cyan-500"
+  const focusringColor = colorMode === "light" ? "focus:ring-orange-500" : "focus:ring-cyan-500"
   const renderIcon = (type: string) => {
     const getIcon = (type: string) => {
       switch (type) {
         case 'success':
-          return <CheckCircleIcon className="h-6 w-6 text-green-400" />
+          return <CheckCircleIcon fill='black' className="h-6 w-6" />
         case 'error':
-          return <XCircleIcon className="h-6 w-6 text-red-400" />
+          return <XCircleIcon fill='black' className="h-6 w-6" />
         case 'loading':
           return <Loading />
         default:
@@ -55,7 +62,7 @@ export default function CustomToaster() {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="max-w-md w-full bg-orange-500 shadow-2xl rounded-lg pointer-events-auto flex ring-1 ring-orange-500 ring-opacity-5 sm:shadow-lg">
+          <div className={`max-w-md w-full ${bgColor} shadow-2xl rounded-lg pointer-events-auto flex ring-1 ${ringColor} ring-opacity-5 sm:shadow-lg`}>
             <div className="flex-1 w-0 p-4">
               <div className="flex items-start">
                 {renderIcon(t.type)}
@@ -69,7 +76,7 @@ export default function CustomToaster() {
                 {t.type !== 'loading' && (
                   <div className="ml-4 flex-shrink-0 flex">
                     <button
-                      className="bg-black rounded-md inline-flex text-orange-500 hover:text-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+                      className={`bg-black rounded-md inline-flex ${textColor} focus:outline-none focus:ring-2 focus:ring-offset-2 ${focusringColor}`}
                       onClick={() => toast.dismiss(t.id)}
                     >
                       <XMarkIcon className="h-5 w-5" aria-hidden="true" />

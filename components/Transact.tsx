@@ -115,7 +115,7 @@ export default function Transact() {
 
       const encodedTransaction = algosdk.encodeUnsignedTransaction(transaction)
 
-      toast.loading('Waiting for user to sign...', { id: 'txn', duration: Infinity })
+      toast.loading('Awaiting Signature...', { id: 'txn', duration: Infinity })
 
       const signedTransactions = await signTransactions([encodedTransaction])
 
@@ -133,7 +133,7 @@ export default function Transact() {
       })
     } catch (error) {
       console.error(error)
-      toast.error('Transaction failed', { id: 'txn' })
+      toast.error('Oops! $ALGO Donation Failed!', { id: 'txn' })
     }
   }
 
@@ -160,7 +160,7 @@ export default function Transact() {
 
       const encodedTransaction = algosdk.encodeUnsignedTransaction(transaction)
 
-      toast.loading('Waiting for user to sign...', { id: 'txn', duration: Infinity })
+      toast.loading('Awaiting Signature...', { id: 'txn', duration: Infinity })
 
       const signedTransactions = await signTransactions([encodedTransaction])
 
@@ -178,7 +178,7 @@ export default function Transact() {
       })
     } catch (error) {
       console.error(error)
-      toast.error('Transaction Failed! Please confirm decimals and balance!', { id: 'txn' })
+      toast.error('Oops! Token Donation Failed!', { id: 'txn' })
     }
   }
 
@@ -255,10 +255,10 @@ export default function Transact() {
   return (
     <Box className={boxGlow} m='20px' minW='275px' maxW='420px' bg="black" borderRadius="20px">
       <div className="p-5 sm:px-6 flex justify-center items-center">
-        <Text className='hFont' textColor={lightColor}>Donate</Text>
+        <Text className='hFont' textColor={medColor}>Donate</Text>
       </div>   
       <div className="pl-5 sm:col-span-4 sm:mt-0">
-        <Text textColor={xLightColor}>Receiver: support.irl.algo</Text>
+        <Text textColor={lightColor}>Receiver: support.irl.algo</Text>
       </div>
       <>
       <div className="mx-5 py-1">
@@ -282,7 +282,7 @@ export default function Transact() {
       <div className="p-5 sm:p-0 lg:flex lg:flex-col lg:flex-1">
         <form onSubmit={handleSubmit} className="lg:flex lg:flex-col lg:flex-1">
           <div className="space-y-2 sm:space-y-0 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
-            <label htmlFor="amount" className="block text-sm whitespace-nowrap font-medium sm:mt-px sm:pt-2"><Text textColor={xLightColor}>Amount</Text></label>
+            <label htmlFor="amount" className="block text-sm whitespace-nowrap font-medium sm:mt-px sm:pt-2"><Text textColor={lightColor}>Amount</Text></label>
             <div className="mt-1 sm:col-span-4 pl-4 sm:mt-0">
               <div className="flex rounded-md shadow-sm max-w-md">
                 <div className="relative flex max-w-1 flex-grow items-stretch focus-within:z-10">
@@ -308,7 +308,7 @@ export default function Transact() {
             </div>
           </div>
           <div className="space-y-2 sm:space-y-0 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
-            <label htmlFor="amount" className="block text-sm whitespace-nowrap font-medium sm:mt-px sm:pt-2"><Text textColor={xLightColor}>Note</Text></label>
+            <label htmlFor="amount" className="block text-sm whitespace-nowrap font-medium sm:mt-px sm:pt-2"><Text textColor={lightColor}>Note</Text></label>
             <div className="mt-1 sm:col-span-4 pl-4 sm:mt-0">
               <div className="flex rounded-md shadow-sm max-w-md">
                 <div className="relative flex max-w-1 flex-grow items-stretch focus-within:z-10">

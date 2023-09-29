@@ -11,6 +11,7 @@ import { FullGlowButton } from 'components/Buttons'
 import styles2 from '../styles/glow.module.css'
 import Footer from 'components/Footer'
 import AssetDestroy from 'components/AssetDestroy'
+import AssetCreate from 'components/AssetCreate'
 
 export default function Home() {
   const { isActive } = useWallet()
@@ -47,6 +48,7 @@ export default function Home() {
           <Account />
           <Transact />
           <AssetDestroy />
+          <AssetCreate />
       </SimpleGrid>
     </Center>
     ) : null}
