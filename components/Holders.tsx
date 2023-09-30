@@ -64,7 +64,7 @@ export default function Holders() {
   }
 }
 
-async function getAssetHolders(assetId: number, retryCount = 0) {
+async function getAssetHolders(assetId: number, retryCount = 0): Promise<any[]> {
   try {
     const apiEndpoint = `https://mainnet-idx.algonode.cloud/v2/assets/${assetId}/balances${!opted ? `?currency-greater-than=${minBal}` : ''}`;
     const response = await axios.get(apiEndpoint);

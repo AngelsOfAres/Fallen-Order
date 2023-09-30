@@ -43,17 +43,19 @@ export default function Home() {
         </Center>
       )}
     <Center  my='20px'><Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link></Center>
-    {isActive ? (
     <Center my='24px'>
       <SimpleGrid w='85%' minChildWidth='350px' spacing='16px' justifyItems='center'>
-          <Account />
-          <Transact />
-          <Holders />
-          <AssetDestroy />
-          <AssetCreate />
+        {isActive ? (
+          <>
+            <Account />
+            <Transact />
+            <AssetDestroy />
+            <AssetCreate />
+          </>
+        ) : null}
+        <Holders />
       </SimpleGrid>
     </Center>
-    ) : null}
     <Footer />
     </Box>
     </>
