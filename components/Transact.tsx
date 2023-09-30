@@ -308,7 +308,7 @@ export default function Transact() {
             </div>
           </div>
           <div className="space-y-2 sm:space-y-0 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
-            <label htmlFor="amount" className="block text-sm whitespace-nowrap font-medium sm:mt-px sm:pt-2"><Text textColor={lightColor}>Note</Text></label>
+            <label htmlFor="amount" className="block text-sm pt-4 whitespace-nowrap font-medium sm:mt-px sm:pt-2"><Text textColor={lightColor}>Note</Text></label>
             <div className="mt-1 sm:col-span-4 pl-4 sm:mt-0">
               <div className="flex rounded-md shadow-sm max-w-md">
                 <div className="relative flex max-w-1 flex-grow items-stretch focus-within:z-10">

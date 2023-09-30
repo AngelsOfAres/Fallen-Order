@@ -12,6 +12,7 @@ import styles2 from '../styles/glow.module.css'
 import Footer from 'components/Footer'
 import AssetDestroy from 'components/AssetDestroy'
 import AssetCreate from 'components/AssetCreate'
+import Holders from 'components/Holders'
 
 export default function Home() {
   const { isActive } = useWallet()
@@ -44,9 +45,10 @@ export default function Home() {
     <Center  my='20px'><Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link></Center>
     {isActive ? (
     <Center my='24px'>
-      <SimpleGrid w='85%' minChildWidth='400px' spacing='16px' justifyItems='center'>
+      <SimpleGrid w='85%' minChildWidth='350px' spacing='16px' justifyItems='center'>
           <Account />
           <Transact />
+          <Holders />
           <AssetDestroy />
           <AssetCreate />
       </SimpleGrid>

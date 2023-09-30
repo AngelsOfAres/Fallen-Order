@@ -109,39 +109,31 @@ export default function AssetDestroy() {
       const nextOptionsStartIndex = loadedOptionsCount;
       const nextOptionsEndIndex = nextOptionsStartIndex + optionsPerPage;
       let nextOptions = options.slice(nextOptionsStartIndex, nextOptionsEndIndex);
-
+  
       if (filterText.trim() !== '') {
         nextOptions = nextOptions.filter((option) =>
           option.value.toString().includes(filterText)
         );
       }
-
-      setVisibleOptions(nextOptions);
-      setCanLoadMore(options.length > nextOptionsEndIndex);
-    } else {
-      let nextOptions = options;
-      
-      if (filterText.trim() !== '') {
-        nextOptions = nextOptions.filter((option) =>
-          option.value.toString().includes(filterText)
-        );
-      }
-
+  
+      setVisibleOptions(nextOptions)
+      setCanLoadMore(options.length > nextOptionsEndIndex)
+    } else if (filterText.trim() !== '') {
+      const nextOptions = options.filter((option) =>
+        option.value.toString().includes(filterText)
+      );
+  
       setVisibleOptions(nextOptions);
       setCanLoadMore(false);
+    } else {
+      setVisibleOptions(options);
+      setCanLoadMore(false);
     }
-  }, [options, loadedOptionsCount, filterText])
+  }, [options, loadedOptionsCount, filterText, optionsPerPage]);
   
-
-
-    const loadMoreOptions = () => {
-    const currentVisibleCount = visibleOptions.length;
-    const nextOptions = options.slice(currentVisibleCount, currentVisibleCount + optionsPerPage);
-    setVisibleOptions(nextOptions)
-    setCanLoadMore(currentVisibleCount + optionsPerPage < options.length)
-    setLoadedOptionsCount((prevCount) => prevCount + optionsPerPage)
-    };
- 
+  const loadMoreOptions = () => {
+    setLoadedOptionsCount((prevCount) => prevCount + optionsPerPage);
+  }
 
   const [selected, setSelected] = useState(options[0])
 
