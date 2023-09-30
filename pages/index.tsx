@@ -49,11 +49,13 @@ export default function Home() {
           <>
             <Account />
             <Transact />
-            <AssetDestroy />
+            <Holders />
             <AssetCreate />
+            <AssetDestroy />
           </>
-        ) : null}
+        ) : 
         <Holders />
+        }
       </SimpleGrid>
     </Center>
     <Footer />

@@ -13,10 +13,20 @@ export default function Account() {
   const shortaddress = activeAccount?.address.substring(0, 5) + "..." + activeAccount?.address.substring(activeAccount.address.length - 5)
 
   const { walletBalance, walletAvailableBalance } = useWalletBalance()
+
+  function removeTrailingZeros(number: any) {
+    let numberString = number.toString();
+    
+    if (numberString.includes('.')) {
+        numberString = numberString.replace(/\.?0*$/, '')
+        return parseFloat(numberString)
+    } else {
+        return parseInt(numberString, 10)
+    }
+  }
   
-  const roundedBalance = walletBalance !== null ? parseFloat(walletBalance).toFixed(3) : ''
-  const roundedAvBalance = walletAvailableBalance !== null ? parseFloat(walletAvailableBalance).toFixed(3) : ''
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
+  const superLightColor = useColorModeValue('orange.50','cyan.50')
   const lightColor = useColorModeValue('orange.300','cyan.300')
   const medColor = useColorModeValue('orange.500','cyan.500')
   const borderColor = colorMode === "light" ? "border-orange-200" : "border-cyan-200"
@@ -61,12 +71,12 @@ export default function Account() {
         <dl>
           <div className="py-3 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
             <dt className="inline-flex items-center text-sm"><Text textColor={lightColor}>Name</Text></dt>
-            <dd className="text-white sm:col-span-4 pl-6 truncate">{activeAccount.name}</dd>
+            <dd className="sm:col-span-4 pl-6 truncate"><Text textColor={superLightColor}>{activeAccount.name}</Text></dd>
           </div>
           <div className="py-3 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
             <dt className="inline-flex items-center text-sm"><Text textColor={lightColor}>Address</Text></dt>
-            <dd className="text-white sm:col-span-4 pl-6 flex items-center min-w-0">
-              <span className="truncate">{shortaddress}</span>
+            <dd className="sm:col-span-4 pl-6 flex items-center min-w-0">
+              <span className="truncate"><Text textColor={superLightColor}>{shortaddress}</Text></span>
               <div className="flex items-center flex-nowrap -my-1">
                 <div className="inline-flex -space-x-px rounded-md shadow-sm ml-3 sm:ml-4">
                   <a
@@ -98,17 +108,19 @@ export default function Account() {
           </div>
           <div className="py-3 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
             <dt className="inline-flex items-center text-sm"><Text textColor={lightColor}>Balance</Text></dt>
-            <HStack className="inline-flex items-center pl-6 text-white sm:col-span-4 truncate">
-              <strong id='max-balance' data-tooltip-content="Available Balance" className="block font-semibold">{roundedAvBalance}A</strong>
-              {walletAvailableBalance !== walletBalance && (
-                <>
-                  <span id="available-balance" data-tooltip-content="Total Balance" className="block text-gray-400">
-                    ({roundedBalance}A)
-                  </span>
-                  <Tooltip anchorId="available-balance" />
-                  <Tooltip anchorId="max-balance" />
-                </>
-              )}
+            <HStack className="inline-flex items-center pl-6 sm:col-span-4 truncate">
+              <Text textColor={superLightColor}>
+                <strong id='max-balance' data-tooltip-content="Available Balance" className="block font-semibold">{walletAvailableBalance}A</strong>
+              </Text>
+                {walletAvailableBalance !== walletBalance && (
+                  <>
+                    <span id="available-balance" data-tooltip-content="Total Balance" className="block text-gray-300">
+                      ({walletBalance}A)
+                    </span>
+                    <Tooltip anchorId="available-balance" />
+                    <Tooltip anchorId="max-balance" />
+                  </>
+                )}
             </HStack>
           </div>
         </dl>

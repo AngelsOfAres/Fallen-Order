@@ -47,7 +47,6 @@ export default function Transact() {
       return
     }
     setCusstomNote(note)
-    console.log(note)
   }
 
   const hasSufficientBalance = useMemo(() => {
@@ -105,6 +104,8 @@ export default function Transact() {
       const amount = algoAmount === '' ? 0 : convertAlgosToMicroalgos(parseFloat(algoAmount))
       const note = Uint8Array.from(customNote.split("").map(x => x.charCodeAt(0)))
       const suggestedParams = await algodClient.getTransactionParams().do()
+      suggestedParams.fee = 1000
+      suggestedParams.flatFee = true
       const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
         from,
         to,
@@ -149,6 +150,8 @@ export default function Transact() {
       const amount = parseFloat(algoAmount)*(10**decimals)
       const note = Uint8Array.from(customNote.split("").map(x => x.charCodeAt(0)))
       const suggestedParams = await algodClient.getTransactionParams().do()
+      suggestedParams.fee = 1000
+      suggestedParams.flatFee = true
       const transaction = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
         from,
         to,
@@ -332,7 +335,7 @@ export default function Transact() {
           <div className="pt-5 sm:py-5 sm:px-6 lg:flex lg:flex-col lg:flex-1 lg:justify-center">
             <div className="flex items-center justify-between">
               <p className="flex items-center text-sm text-red-600">{renderValidationMessage()}</p>
-              <FullGlowButton text='Donate!' onClick={handleSubmit} disabled={!activeAddress || !isValidRecipient || assetID != 0 ? tokenBal < parseFloat(algoAmount) : !hasSufficientBalance}/>
+              <FullGlowButton text='Donate!' onClick={handleSubmit} disabled={!activeAddress || !isValidRecipient || assetID != 0 ? parseFloat(algoAmount) <= 0 || tokenBal < parseFloat(algoAmount) : algoAmount === '' || parseFloat(algoAmount) <= 0 || !hasSufficientBalance}/>
             </div>
           </div>
         </form>

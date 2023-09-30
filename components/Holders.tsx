@@ -5,6 +5,8 @@ import styles from '../styles/glow.module.css'
 import { FullGlowButton } from './Buttons'
 import NfdLookup from './NfdLookup'
 import axios from 'axios'
+import { copyToClipboard } from 'utils/clipboard'
+import { ClipboardIcon } from '@heroicons/react/20/solid'
 
 export default function Holders() {
   const [addressToSearch, setAddressToSearch] = useState<string>('')
@@ -24,7 +26,7 @@ export default function Holders() {
   const medColor = useColorModeValue('orange.500','cyan.500')
   const bgColor = colorMode === "light" ? "bg-orange-400" : "bg-cyan-500"
   const hoverBgColor = colorMode === "light" ? "hover:bg-orange-400" : "hover:bg-cyan-500"
-  const textColor = colorMode === "light" ? "text-orange-900" : "text-cyan-900"
+  const textColor = colorMode === "light" ? "text-orange-200" : "text-cyan-200"
   const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
   const buttonText5 = useColorModeValue('yellow','cyan')
   
@@ -228,9 +230,24 @@ async function getHoldersForMultipleAssets(assetIds: any) {
        <Center mb='16px'>
            <FullGlowButton text='New Search' onClick={toggleNewSearch}/>
        </Center>
-       <Center mb='12px'>
-         <FullGlowButton text='Download!' onClick={downloadTextFile}/>
-       </Center>
+        <Center>
+       <HStack my='12px'>
+          <FullGlowButton text='Download!' onClick={downloadTextFile}/>
+          <div className="rounded-md shadow-sm ml-3 sm:ml-4">
+            <button
+              type="button"
+              className={`relative inline-flex items-center first:rounded-l-md last:rounded-r-md border ${borderColor} bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium ${textColor} hover:text-black ${hoverBgColor} focus:z-20`}
+              data-clipboard-text={convertToText(allHolders)}
+              data-clipboard-message="Holders List Copied!"
+              onClick={copyToClipboard}
+              id="copy-holders"
+              data-tooltip-content="Copy Holders List"
+            >
+            <ClipboardIcon className="h-5 w-5" aria-hidden="true" />
+          </button>
+        </div>
+       </HStack>
+      </Center>
      </>
      }
      <Text mb={8} textAlign='center' textColor={xLightColor} className='pt-4' fontSize='12px'>Assets: <strong>{assetCounter}/{assetIDs.length}</strong> | Holders: <strong>{holderCount}</strong></Text>

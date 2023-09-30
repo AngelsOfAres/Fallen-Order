@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useWallet } from '@txnlab/use-wallet'
 import { useEffect, useState } from 'react'
 import algodClient from 'lib/algodClient'
-import { formatPrice } from 'utils'
+import { formatAssetBalance, formatPrice } from 'utils'
 
 export default function useWalletBalance() {
   const [walletBalance, setWalletBalance] = useState<string | null>(null)
@@ -26,34 +26,19 @@ export default function useWalletBalance() {
 
   useEffect(() => {
     if (accountInfo && accountInfo.amount !== undefined && accountInfo['min-balance'] !== undefined) {
-      const balance = formatPrice(accountInfo.amount, false, { minimumFractionDigits: 6 })
-      const availableBalance = formatPrice(accountInfo.amount - accountInfo['min-balance'], false, {
-        minimumFractionDigits: 6
-      })
+      const balance = formatAssetBalance(accountInfo.amount, 6, true, true, 8)
+      const availableBalance = formatAssetBalance(accountInfo.amount - accountInfo['min-balance'], 6, true, true, 8)
       const assets = accountInfo.assets
       const created = accountInfo['created-assets']
       setAssetList(assets)
       setCreatedAssets(created)
-
-      if (balance !== walletBalance) {
-        setWalletBalance(balance)
-        return
-      }
-
-      if (parseFloat(availableBalance) < 0) {
-        setWalletAvailableBalance('0.000000')
-        return
-      }
-
-      if (availableBalance !== walletAvailableBalance) {
-        setWalletAvailableBalance(availableBalance)
-        return
-      }
+      setWalletBalance(balance)
+      setWalletAvailableBalance(availableBalance)
     } else {
       setAssetList([])
       setCreatedAssets([])
-      setWalletBalance('0.000000')
-      setWalletAvailableBalance('0.000000')
+      setWalletBalance('0.000')
+      setWalletAvailableBalance('0.000')
     }
   }, [accountInfo, assetList, createdAssets, walletBalance, walletAvailableBalance])
 

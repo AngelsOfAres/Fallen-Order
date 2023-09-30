@@ -5,7 +5,7 @@ export const copyToClipboard = (e: React.MouseEvent<HTMLButtonElement>) => {
   const text = e.currentTarget.getAttribute('data-clipboard-text')
   navigator.clipboard.writeText(text as string)
 
-  const message = e.currentTarget.getAttribute('data-clipboard-message') || 'Copied to clipboard!'
+  const message = e.currentTarget.getAttribute('data-clipboard-message') || 'Copied To Clipboard!'
 
   toast(message, {
     duration: 5000
