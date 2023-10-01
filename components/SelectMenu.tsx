@@ -1,7 +1,7 @@
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { Fragment, ReactNode } from 'react'
-import { Box, useColorMode } from '@chakra-ui/react'
+import { Box, HStack, useColorMode } from '@chakra-ui/react'
 
 interface SelectMenuOption {
   value: string
@@ -42,9 +42,6 @@ export default function SelectMenu<T extends SelectMenuOption>({
     if (children) {
       return children
     }
-    return options.map((option) => (
-      <Listbox.Option key={option.value} value={option} />
-    ))
   }
 
   return (
@@ -53,7 +50,12 @@ export default function SelectMenu<T extends SelectMenuOption>({
         <>
           <Box borderColor={borderColor} borderWidth='1.5px' className={`rounded-lg relative text-black mt-4`}>
             <Listbox.Button className={`relative w-full cursor-pointer rounded-md ${borderBaseColor} ${bgColor} py-2 pl-3 pr-10 text-left shadow-sm focus:${borderBaseColor} focus:outline-none focus:ring-1 focus:${ringBaseColor} sm:text-sm`}>
+              <HStack>
               <span className={`block truncate`}>{selected.label}</span>
+              <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
+                {parseInt(selected.value) === 0 ? 'Algorand' :  selected.value}
+              </span>
+              </HStack>
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                 <ChevronUpDownIcon fill={'black'} className="h-5 w-5" aria-hidden="true" />
               </span>

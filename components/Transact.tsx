@@ -14,73 +14,73 @@ import SelectMenu from 'components/SelectMenu'
 import { FullGlowButton } from './Buttons'
 
 export default function Transact() {
-  const { activeAddress, signTransactions, sendTransactions } = useWallet();
-  const [algoAmount, setAlgoAmount] = useState<string>('');
-  const [assetID, setAssetID] = useState<number>(0);
-  const [tokenBal, setTokenBal] = useState<number>(0);
-  const [decimals, setDecimals] = useState<number>(0);
-  const [customNote, setCusstomNote] = useState<string>('');
-  const { colorMode } = useColorMode();
-  const [receiver, setReceiver] = useState<string>('U2NCG2KFXHBYGOD5ZTJWPAR7Z4QV7WUHYE3RG3SL2T7OMMWGPLFBIKIBQY');
-  const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD);
-  const xLightColor = useColorModeValue('orange.100', 'cyan.100');
-  const lightColor = useColorModeValue('orange.300', 'cyan.300');
-  const medColor = useColorModeValue('orange.500', 'cyan.500');
-  const bgColor = colorMode === "light" ? "bg-orange-400" : "bg-cyan-500";
-  const hoverBgColor = colorMode === "light" ? "hover:bg-orange-400" : "hover:bg-cyan-500";
-  const textColor = colorMode === "light" ? "text-orange-900" : "text-cyan-900";
+  const { activeAddress, signTransactions, sendTransactions } = useWallet()
+  const [algoAmount, setAlgoAmount] = useState<string>('')
+  const [assetID, setAssetID] = useState<number>(0)
+  const [tokenBal, setTokenBal] = useState<number>(0)
+  const [decimals, setDecimals] = useState<number>(0)
+  const [customNote, setCusstomNote] = useState<string>('')
+  const { colorMode } = useColorMode()
+  const [receiver, setReceiver] = useState<string>('U2NCG2KFXHBYGOD5ZTJWPAR7Z4QV7WUHYE3RG3SL2T7OMMWGPLFBIKIBQY')
+  const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
+  const xLightColor = useColorModeValue('orange.100', 'cyan.100')
+  const lightColor = useColorModeValue('orange.300', 'cyan.300')
+  const medColor = useColorModeValue('orange.500', 'cyan.500')
+  const bgColor = colorMode === "light" ? "bg-orange-400" : "bg-cyan-500"
+  const hoverBgColor = colorMode === "light" ? "hover:bg-orange-400" : "hover:bg-cyan-500"
+  const textColor = colorMode === "light" ? "text-orange-900" : "text-cyan-900"
 
-  const { accountInfo, assetList, walletAvailableBalance } = useWalletBalance();
+  const { accountInfo, assetList, walletAvailableBalance } = useWalletBalance()
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const amount = e.target.value;
-    const regExp = /^\d+(?:\.\d{0,6})?$/gm;
+    const amount = e.target.value
+    const regExp = /^\d+(?:\.\d{0,6})?$/gm
     if (amount !== '' && amount.match(regExp) === null) {
-      return;
+      return
     }
-    setAlgoAmount(amount);
-  };
+    setAlgoAmount(amount)
+  }
 
   const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const note = e.target.value;
-    const regExp = /^[a-zA-Z0-9_!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\s]+$/;
+    const note = e.target.value
+    const regExp = /^[a-zA-Z0-9_!"#$%&'()*+,-./:<=>?@[\]^_`{|}~\s]+$/
 
     if (note !== '' && note.match(regExp) === null) {
-      return;
+      return
     }
-    setCusstomNote(note);
-  };
+    setCusstomNote(note)
+  }
 
   const hasSufficientBalance = useMemo(() => {
-    const sendAmount = algoAmount === '' ? 0 : convertAlgosToMicroalgos(parseFloat(algoAmount));
-    const availableBalance = convertAlgosToMicroalgos(parseFloat(walletAvailableBalance || '0'));
-    const txnCost = sendAmount + 1000;
-    return availableBalance >= txnCost;
-  }, [algoAmount, walletAvailableBalance]);
+    const sendAmount = algoAmount === '' ? 0 : convertAlgosToMicroalgos(parseFloat(algoAmount))
+    const availableBalance = convertAlgosToMicroalgos(parseFloat(walletAvailableBalance || '0'))
+    const txnCost = sendAmount + 1000
+    return availableBalance >= txnCost
+  }, [algoAmount, walletAvailableBalance])
 
   const isValidRecipient = useMemo(() => {
     if (receiver === '') {
-      return true;
+      return true
     }
 
-    return algosdk.isValidAddress(receiver);
-  }, [receiver]);
+    return algosdk.isValidAddress(receiver)
+  }, [receiver])
 
   const renderValidationMessage = () => {
     if (assetID === 0 && hasSufficientBalance && isValidRecipient) {
-      return null;
+      return null
     }
 
     if (assetID !== 0 && tokenBal >= parseFloat(algoAmount) && isValidRecipient) {
-      return null;
+      return null
     }
-    let message;
+    let message
 
     if (assetID !== 0) {
-      message = tokenBal < parseFloat(algoAmount) ? 'Insufficient balance' : null;
+      message = tokenBal < parseFloat(algoAmount) ? 'Insufficient balance' : null
     }
     else {
-      message = !hasSufficientBalance ? 'Insufficient Balance!' : null;
+      message = !hasSufficientBalance ? 'Insufficient Balance!' : null
     }
 
     return (
@@ -92,68 +92,68 @@ export default function Transact() {
           </>
         ) : null}
       </>
-    );
-  };
+    )
+  }
 
   const sendTransaction = async () => {
     try {
       if (!activeAddress) {
-        throw new Error('Wallet Not Connected!');
+        throw new Error('Wallet Not Connected!')
       }
 
-      const from = activeAddress;
-      const to = receiver === '' ? activeAddress : receiver;
-      const amount = algoAmount === '' ? 0 : convertAlgosToMicroalgos(parseFloat(algoAmount));
-      const note = Uint8Array.from(customNote.split("").map(x => x.charCodeAt(0)));
-      const suggestedParams = await algodClient.getTransactionParams().do();
-      suggestedParams.fee = 1000;
-      suggestedParams.flatFee = true;
+      const from = activeAddress
+      const to = receiver === '' ? activeAddress : receiver
+      const amount = algoAmount === '' ? 0 : convertAlgosToMicroalgos(parseFloat(algoAmount))
+      const note = Uint8Array.from(customNote.split("").map(x => x.charCodeAt(0)))
+      const suggestedParams = await algodClient.getTransactionParams().do()
+      suggestedParams.fee = 1000
+      suggestedParams.flatFee = true
       const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
         from,
         to,
         amount,
         suggestedParams,
         note
-      });
+      })
 
-      const encodedTransaction = algosdk.encodeUnsignedTransaction(transaction);
+      const encodedTransaction = algosdk.encodeUnsignedTransaction(transaction)
 
-      toast.loading('Awaiting Signature...', { id: 'txn', duration: Infinity });
+      toast.loading('Awaiting Signature...', { id: 'txn', duration: Infinity })
 
-      const signedTransactions = await signTransactions([encodedTransaction]);
+      const signedTransactions = await signTransactions([encodedTransaction])
 
-      toast.loading('Sending transaction...', { id: 'txn', duration: Infinity });
+      toast.loading('Sending transaction...', { id: 'txn', duration: Infinity })
 
-      const waitRoundsToConfirm = 4;
+      const waitRoundsToConfirm = 4
 
-      const { id } = await sendTransactions(signedTransactions, waitRoundsToConfirm);
+      const { id } = await sendTransactions(signedTransactions, waitRoundsToConfirm)
 
-      console.log(`Successfully sent transaction. Transaction ID: ${id}`);
+      console.log(`Successfully sent transaction. Transaction ID: ${id}`)
 
       toast.success('Transaction successful!', {
         id: 'txn',
         duration: 5000
-      });
+      })
     } catch (error) {
-      console.error(error);
-      toast.error('Oops! $ALGO Donation Failed!', { id: 'txn' });
+      console.error(error)
+      toast.error('Oops! $ALGO Donation Failed!', { id: 'txn' })
     }
-  };
+  }
 
   const sendASATransaction = async () => {
     try {
       if (!activeAddress) {
-        throw new Error('Wallet Not Connected!');
+        throw new Error('Wallet Not Connected!')
       }
 
-      const from = activeAddress;
-      const to = receiver === '' ? activeAddress : receiver;
-      const assetIndex = assetID;
-      const amount = parseFloat(algoAmount) * (10 ** decimals);
-      const note = Uint8Array.from(customNote.split("").map(x => x.charCodeAt(0)));
-      const suggestedParams = await algodClient.getTransactionParams().do();
-      suggestedParams.fee = 1000;
-      suggestedParams.flatFee = true;
+      const from = activeAddress
+      const to = receiver === '' ? activeAddress : receiver
+      const assetIndex = assetID
+      const amount = parseFloat(algoAmount) * (10 ** decimals)
+      const note = Uint8Array.from(customNote.split("").map(x => x.charCodeAt(0)))
+      const suggestedParams = await algodClient.getTransactionParams().do()
+      suggestedParams.fee = 1000
+      suggestedParams.flatFee = true
       const transaction = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
         from,
         to,
@@ -161,41 +161,41 @@ export default function Transact() {
         note,
         amount,
         assetIndex
-      });
+      })
 
-      const encodedTransaction = algosdk.encodeUnsignedTransaction(transaction);
+      const encodedTransaction = algosdk.encodeUnsignedTransaction(transaction)
 
-      toast.loading('Awaiting Signature...', { id: 'txn', duration: Infinity });
+      toast.loading('Awaiting Signature...', { id: 'txn', duration: Infinity })
 
-      const signedTransactions = await signTransactions([encodedTransaction]);
+      const signedTransactions = await signTransactions([encodedTransaction])
 
-      toast.loading('Sending transaction...', { id: 'txn', duration: Infinity });
+      toast.loading('Sending transaction...', { id: 'txn', duration: Infinity })
 
-      const waitRoundsToConfirm = 4;
+      const waitRoundsToConfirm = 4
 
-      const { id } = await sendTransactions(signedTransactions, waitRoundsToConfirm);
+      const { id } = await sendTransactions(signedTransactions, waitRoundsToConfirm)
 
-      console.log(`Successfully sent transaction. Transaction ID: ${id}`);
+      console.log(`Successfully sent transaction. Transaction ID: ${id}`)
 
       toast.success(`Transaction Successful! Txn ID: ${id}`, {
         id: 'txn',
         duration: 5000
-      });
+      })
     } catch (error) {
-      console.error(error);
-      toast.error('Oops! Token Donation Failed!', { id: 'txn' });
+      console.error(error)
+      toast.error('Oops! Token Donation Failed!', { id: 'txn' })
     }
-  };
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault()
     if (assetID !== 0) {
-      sendASATransaction();
+      sendASATransaction()
     }
     else {
-      sendTransaction();
+      sendTransaction()
     }
-  };
+  }
 
   const options = [
     {
@@ -220,64 +220,115 @@ export default function Transact() {
       ),
       asset
     })) : [])
-  ];
+  ]
 
-  const optionsPerPage = 200;
-  const [visibleOptions, setVisibleOptions] = useState<any[]>([]);
-  const [canLoadMore, setCanLoadMore] = useState(false);
-  const [loadedOptionsCount, setLoadedOptionsCount] = useState(0);
+  const optionsPerPage = 120
+  const [visibleOptions, setVisibleOptions] = useState<any[]>([])
+  const [canLoadMore, setCanLoadMore] = useState(false)
+  const [loadedOptionsCount, setLoadedOptionsCount] = useState(0)
 
 
   useEffect(() => {
-    if (options.length > loadedOptionsCount) {
-      const nextOptionsStartIndex = loadedOptionsCount;
-      const nextOptionsEndIndex = nextOptionsStartIndex + optionsPerPage;
-      let nextOptions = options.slice(nextOptionsStartIndex, nextOptionsEndIndex);
-  
-      setVisibleOptions(nextOptions)
-      setCanLoadMore(options.length > nextOptionsEndIndex)
-    } else {
-      setVisibleOptions(options);
-      setCanLoadMore(false);
+    if (visibleOptions.length === 0 && options.length > 1 && loadedOptionsCount === 0) {
+      loadMoreOptions()
     }
-  }, [options, loadedOptionsCount, optionsPerPage]);
+  }, [visibleOptions, options, loadedOptionsCount]);
   
-  const loadMoreOptions = () => {
-    setLoadedOptionsCount((prevCount) => prevCount + optionsPerPage);
-  }
+  useEffect(() => {
+    setVisibleOptions([])
+    setLoadedOptionsCount(0)
+    console.log(visibleOptions, loadedOptionsCount)
+  }, [activeAddress])
 
-  const [selected, setSelected] = useState(options[0]);
+const loadMoreOptions = async () => {
+  setLoadedOptionsCount((prevCount) => prevCount + optionsPerPage)
+  
+  if (options.length > loadedOptionsCount) {
+    const nextOptionsStartIndex = loadedOptionsCount;
+    const nextOptionsEndIndex = nextOptionsStartIndex + optionsPerPage;
+    let nextOptions = options.slice(nextOptionsStartIndex, nextOptionsEndIndex);
+    
+    const finalNextOptions: typeof nextOptions = [];
+    const assetInfoPromises = nextOptions.map(async (option: any) => {
+      try {
+        const assetInfo = await algodClient.getAssetByID(option.value).do();
+        finalNextOptions.push({
+          value: assetInfo.params.name,
+          label: (
+            <>
+              <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
+                {option.value}
+              </span>
+            </>
+          ),
+          asset: option.value,
+        });
+      } catch (error: any) {
+        if (error.response && error.response.data && error.response.data.message !== 'asset does not exist') {
+        finalNextOptions.push({
+          value: 'N/A',
+          label: (
+            <>
+              <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
+                {option.value}
+              </span>
+            </>
+          ),
+          asset: option.value,
+        })
+      }
+      }
+    })
+    const batchedPromises = async () => {
+      for (let i = 0; i < assetInfoPromises.length; i += 40) {
+        const batch = assetInfoPromises.slice(i, i + 40);
+        await Promise.all(batch);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+    };
+    
+    await batchedPromises();
+    
+    setVisibleOptions(finalNextOptions);
+    setCanLoadMore(options.length > nextOptionsEndIndex);
+  } else {
+    setVisibleOptions(options);
+    setCanLoadMore(false);
+  }
+};
+  
+  const [selected, setSelected] = useState(options[0])
 
   async function handleSelectChange(value: any) {
-    setSelected(value);
-    setAssetID(value.value);
-    if (value.value !== 0) {
-      const assetInfo = await algodClient.getAssetByID(value.value).do();
-      const decimals = assetInfo.params.decimals;
-      setDecimals(decimals);
+    setSelected(value)
+    setAssetID(value.asset)
+    if (value.asset !== 0) {
+      const assetInfo = await algodClient.getAssetByID(value.asset).do()
+      const decimals = assetInfo.params.decimals
+      setDecimals(decimals)
       try {
-        const assets = accountInfo?.assets || [];
-        let assetAmount = 0;
+        const assets = accountInfo?.assets || []
+        let assetAmount = 0
 
         for (const asset of assets) {
-          if (asset['asset-id'] === value.value) {
-            assetAmount = asset.amount / (10 ** decimals);
-            break;
+          if (asset['asset-id'] === value.asset) {
+            assetAmount = asset.amount / (10 ** decimals)
+            break
           }
         }
-        setTokenBal(assetAmount);
+        setTokenBal(assetAmount)
       } catch (error) {
-        console.error('Error fetching asset balance:', error);
+        console.error('Error fetching asset balance:', error)
       }
     }
   }
 
   if (!activeAddress) {
-    return null;
+    return null
   }
 
   return (
-    <Box className={boxGlow} m='20px' minW='275px' maxW='420px' bg="black" borderRadius="20px">
+    <Box className={boxGlow} m='20px' minW='300px' maxW='450px' bg="black" borderRadius="20px">
       <div className="p-5 sm:px-6 flex justify-center items-center">
         <Text className='hFont' textColor={medColor}>Donate</Text>
       </div>
@@ -367,5 +418,5 @@ export default function Transact() {
         </form>
       </div>
     </Box>
-  );
+  )
 }

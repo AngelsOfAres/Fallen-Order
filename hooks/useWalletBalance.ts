@@ -29,7 +29,9 @@ export default function useWalletBalance() {
       const balance = formatAssetBalance(accountInfo.amount, 6, true, true, 8)
       const availableBalance = formatAssetBalance(accountInfo.amount - accountInfo['min-balance'], 6, true, true, 8)
       const assets = accountInfo.assets
+      assets.reverse()
       const created = accountInfo['created-assets']
+      created.reverse()
       setAssetList(assets)
       setCreatedAssets(created)
       setWalletBalance(balance)

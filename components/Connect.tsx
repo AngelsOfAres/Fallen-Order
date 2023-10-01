@@ -1,11 +1,10 @@
 import { Provider, PROVIDER_ID, useWallet } from '@txnlab/use-wallet'
-import { Box, Button, useColorModeValue, Text, VStack, Image, useColorMode } from '@chakra-ui/react'
-import { CheckIcon } from '@heroicons/react/20/solid'
-import { Listbox } from '@headlessui/react'
+import { Box, Button, useColorModeValue, Text, VStack, Image, useColorMode, HStack } from '@chakra-ui/react'
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { Listbox,Transition } from '@headlessui/react'
 import { MdNotInterested } from "react-icons/md"
-import SelectMenu from 'components/SelectMenu'
+import { Fragment } from 'react'
 import { classNames } from 'utils'
-import styles from "../styles/text.module.css"
 import styles2 from '../styles/glow.module.css'
 
 export default function Connect() {
@@ -18,6 +17,10 @@ export default function Connect() {
 
   const menuBG = colorMode === "light" ? "bg-orange-400" : "bg-cyan-500"
   const textColor = colorMode === "light" ? "text-orange-400" : "text-cyan-500"
+  const borderBaseColor = colorMode === 'light' ? 'border-orange-300' : 'border-cyan-300'
+  const ringBaseColor = colorMode === 'light' ? 'ring-orange-300' : 'ring-cyan-300'
+  const bgColor = colorMode === 'light' ? 'bg-orange-100' : 'bg-cyan-50'
+  const borderColor = colorMode === 'light' ? 'orange.500' : 'cyan.500'
 
   const renderActiveAccount = (provider: Provider) => {
     if (
@@ -41,7 +44,18 @@ export default function Connect() {
 
       const selected = options.find((option) => option.value === activeAccount.address) || options[0]
         return (
-          <SelectMenu selected={selected} setSelected={(selected) => provider.setActiveAccount(selected.value)}>
+          <Listbox value={selected} onChange={(selected) => provider.setActiveAccount(selected.value)}>
+            {({ open }) => (
+              <>
+                <Box borderColor={borderColor} borderWidth='1.5px' className={`rounded-lg relative text-black mt-4`}>
+                  <Listbox.Button className={`relative w-full cursor-pointer rounded-md ${borderBaseColor} ${bgColor} py-2 pl-3 pr-10 text-left shadow-sm focus:${borderBaseColor} focus:outline-none focus:ring-1 focus:${ringBaseColor} sm:text-sm`}>
+                    <span className={`block truncate`}>{selected.label}</span>
+                    <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                      <ChevronUpDownIcon fill={'black'} className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                  </Listbox.Button>
+                  <Transition show={open} as={Fragment} enter="transition ease-in duration-125" enterTo="opacity-100" enterFrom="opacity-0" leave="transition ease-in duration-125" leaveFrom="opacity-100" leaveTo="opacity-0">
+                    <Listbox.Options className={`absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md ${bgColor} py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm`}>
             {options.map((option) => (
               <Listbox.Option key={option.value} className={({ active }) => classNames(
                     active ? `text-white ${menuBG}` : 'text-black',
@@ -69,7 +83,12 @@ export default function Connect() {
                 )}
               </Listbox.Option>
             ))}
-          </SelectMenu>
+            </Listbox.Options>
+          </Transition>
+        </Box>
+      </>
+    )}
+  </Listbox>
         )
       }
   }

@@ -4,7 +4,6 @@ import algosdk from 'algosdk'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import useWalletBalance from 'hooks/useWalletBalance'
-import { convertAlgosToMicroalgos } from 'utils'
 import algodClient from 'lib/algodClient'
 import { Box, useColorMode, useColorModeValue, Text, Input, Button, Center } from '@chakra-ui/react'
 import styles from '../styles/glow.module.css'
@@ -93,47 +92,92 @@ export default function AssetDestroy() {
       asset
     })) : [])
   ]
-  
-  const optionsPerPage = 200
-  const [visibleOptions, setVisibleOptions] = useState(options.slice(0, optionsPerPage));
-  const [canLoadMore, setCanLoadMore] = useState(options.length > optionsPerPage);
-  const [loadedOptionsCount, setLoadedOptionsCount] = useState(0)
+  const optionsPerPage = 120;
+  const [visibleOptions, setVisibleOptions] = useState<any[]>([])
+  const [canLoadMore, setCanLoadMore] = useState(false);
+  const [loadedOptionsCount, setLoadedOptionsCount] = useState(0);
   const [filterText, setFilterText] = useState('')
 
   const handleFilterChange = (e: any) => {
-    setFilterText(e.target.value);
-  };
+    setFilterText(e.target.value)
+  }
+  
+  useEffect(() => {
+    if (visibleOptions.length === 0 && options.length > 1 && loadedOptionsCount === 0) {
+      loadMoreOptions();
+    }
+  }, [visibleOptions, options, loadedOptionsCount])
 
   useEffect(() => {
+    setVisibleOptions([])
+    setLoadedOptionsCount(0)
+  }, [activeAddress])
+  
+  const loadMoreOptions = async () => {
+    setLoadedOptionsCount((prevCount) => prevCount + optionsPerPage);
+  
     if (options.length > loadedOptionsCount) {
       const nextOptionsStartIndex = loadedOptionsCount;
       const nextOptionsEndIndex = nextOptionsStartIndex + optionsPerPage;
       let nextOptions = options.slice(nextOptionsStartIndex, nextOptionsEndIndex);
+      
+      let finalNextOptions: any[] = []
+      const assetInfoPromises = nextOptions.map(async (option: any) => {
+        try {
+          const assetInfo = await algodClient.getAssetByID(option.value).do();
+          finalNextOptions.push({
+            value: assetInfo.params.name,
+            label: (
+              <>
+                <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
+                  {option.value}
+                </span>
+              </>
+            ),
+            asset: option.value,
+          });
+        } catch (error: any) {
+          if (error.response && error.response.data && error.response.data.message !== 'asset does not exist') {
+          finalNextOptions.push({
+            value: 'N/A',
+            label: (
+              <>
+                <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
+                  {option.value}
+                </span>
+              </>
+            ),
+            asset: option.value,
+          })
+        }
+        }
+      })
+      const batchedPromises = async () => {
+        for (let i = 0; i < assetInfoPromises.length; i += 40) {
+          const batch = assetInfoPromises.slice(i, i + 40);
+          await Promise.all(batch);
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      };
+  
+      await batchedPromises()
   
       if (filterText.trim() !== '') {
-        nextOptions = nextOptions.filter((option) =>
-          option.value.toString().includes(filterText)
+        finalNextOptions = finalNextOptions.filter((option) =>
+          option.asset.toString().includes(filterText)
         );
       }
   
-      setVisibleOptions(nextOptions)
+      setVisibleOptions(finalNextOptions)
+      console.log(visibleOptions)
       setCanLoadMore(options.length > nextOptionsEndIndex)
-    } else if (filterText.trim() !== '') {
-      const nextOptions = options.filter((option) =>
-        option.value.toString().includes(filterText)
-      );
-  
-      setVisibleOptions(nextOptions);
-      setCanLoadMore(false);
     } else {
       setVisibleOptions(options);
+      console.log(visibleOptions)
       setCanLoadMore(false);
     }
-  }, [options, loadedOptionsCount, filterText, optionsPerPage]);
+  };
   
-  const loadMoreOptions = () => {
-    setLoadedOptionsCount((prevCount) => prevCount + optionsPerPage);
-  }
 
   const [selected, setSelected] = useState(options[0])
 
@@ -152,7 +196,7 @@ export default function AssetDestroy() {
   }
   
   return (
-    <Box className={boxGlow} m='20px' minW='275px' maxW='420px' bg="black" borderRadius="20px">
+    <Box className={boxGlow} m='20px' minW='300px' maxW='450px' bg="black" borderRadius="20px">
       <div className="pt-5 sm:px-6 flex justify-center items-center">
         <Text className='hFont' textColor={medColor}>Destroy Asset</Text>
       </div>
@@ -171,30 +215,28 @@ export default function AssetDestroy() {
         onChange={handleFilterChange}
         placeholder="Filter by Asset ID"
         />
+        {visibleOptions.length > 0 ? (
       <SelectMenu selected={selected} setSelected={(selected) => handleSelectChange(selected)}>
-        {options.length > 0 ?
-        <>
-        {visibleOptions.map((option) => (
-          <Listbox.Option key={option.value} className={({ active }) => classNames(
-            active ? `text-white ${bgColor}` : 'text-black',
-            `relative cursor-pointer select-none py-2 pl-3 pr-10`
-          )
-        }
-        value={option}>
+            {visibleOptions.map((option: any) => (
+              <Listbox.Option key={option.value} className={({ active }) => classNames(
+                active ? `text-white ${bgColor}` : 'text-black',
+                `relative cursor-pointer select-none py-2 pl-3 pr-10`
+              )
+              }
+                value={option}>
                 <span className="text-sm">{option.label}</span>
-                  <span className='text-sm pl-2'>
-                    {option.value}
-                  </span>
-          </Listbox.Option>
-        ))}
-        </>
-        : null}
-        {canLoadMore && (
-        <button onClick={loadMoreOptions} className={`${textColor} ${hoverBgColor} text-center w-full cursor-pointer select-none relative px-4 py-2`}>
-            Load More...
-        </button>
-        )}
-      </SelectMenu>
+                <span className='text-sm pl-2'>
+                  {option.value}
+                </span>
+              </Listbox.Option>
+            ))}
+            {canLoadMore && (
+              <button onClick={loadMoreOptions} className={`${textColor} ${hoverBgColor} text-center w-full cursor-pointer select-none relative px-4 py-2`}>
+                Load More...
+              </button>
+            )}
+          </SelectMenu>
+        ) : null}
       </div>
       </>
       <div className="pt-5 pb-8 sm:p-0 lg:flex lg:flex-col lg:flex-1">

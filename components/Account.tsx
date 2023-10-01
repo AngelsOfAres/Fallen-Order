@@ -46,8 +46,8 @@ export default function Account() {
       <Box
         className={boxGlow}
         m='20px'
-        minW='275px'
-        maxW='420px'
+        minW='300px'
+        maxW='450px'
         bg="black"
         borderRadius="20px"
       >
