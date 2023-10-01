@@ -196,7 +196,7 @@ export default function AssetDestroy() {
   }
   
   return (
-    <Box className={boxGlow} m='20px' minW='300px' maxW='450px' bg="black" borderRadius="20px">
+    <Box className={boxGlow} m='20px' minW='300px' maxW='480px' bg="black" borderRadius="20px">
       <div className="pt-5 sm:px-6 flex justify-center items-center">
         <Text className='hFont' textColor={medColor}>Destroy Asset</Text>
       </div>

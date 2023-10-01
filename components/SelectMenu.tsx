@@ -48,7 +48,7 @@ export default function SelectMenu<T extends SelectMenuOption>({
     <Listbox value={selected} onChange={setSelected}>
       {({ open }) => (
         <>
-          <Box borderColor={borderColor} borderWidth='1.5px' className={`rounded-lg relative text-black mt-4`}>
+          <Box borderColor={borderColor} borderWidth='1.5px' className={`rounded-lg relative text-black`}>
             <Listbox.Button className={`relative w-full cursor-pointer rounded-md ${borderBaseColor} ${bgColor} py-2 pl-3 pr-10 text-left shadow-sm focus:${borderBaseColor} focus:outline-none focus:ring-1 focus:${ringBaseColor} sm:text-sm`}>
               <HStack>
               <span className={`block truncate`}>{selected.label}</span>

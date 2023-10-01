@@ -33,7 +33,6 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <Box h='100%'>
       <Text mt='20px' className={`${gradientText} responsive-font`}>Abyssal Portal</Text>
       <Text mb='24px' className='hText pt-2' textAlign='center' textColor={xLightColor}>Any donations sent to degenerate.algo are appreciated.<br />Thank you!</Text>
       <Center><FullGlowButton fontsize='16px' text={isActive? 'Wallet' : 'Connect!'} onClick={handleToggleMenu} /></Center>
@@ -42,24 +41,23 @@ export default function Home() {
           <Connect />
         </Center>
       )}
-    <Center  my='20px'><Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link></Center>
-    <Center my='24px'>
-      <SimpleGrid w='90%' minChildWidth='450px' spacing='48px' justifyItems='center'>
-        {isActive ? (
-          <>
-            <Account />
-            <Transact />
-            <Holders />
-            <AssetCreate />
-            <AssetDestroy />
-          </>
-        ) : 
-        <Holders />
-        }
-      </SimpleGrid>
-    </Center>
-    <Footer />
-    </Box>
+      <Center  my='20px'><Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link></Center>
+      <Center my='24px'>
+        <SimpleGrid minChildWidth='480px' spacing='24px' justifyItems='center'>
+          {isActive ? (
+            <>
+              <Account />
+              <Transact />
+              <Holders />
+              <AssetCreate />
+              <AssetDestroy />
+            </>
+          ) : 
+          <Holders />
+          }
+        </SimpleGrid>
+      </Center>
+      <Footer />
     </>
   )
 }

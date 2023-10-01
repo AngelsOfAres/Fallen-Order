@@ -22,7 +22,7 @@ export default function Transact() {
   const [decimals, setDecimals] = useState<number>(0)
   const [customNote, setCusstomNote] = useState<string>('')
   const { colorMode } = useColorMode()
-  const [receiver, setReceiver] = useState<string>('U2NCG2KFXHBYGOD5ZTJWPAR7Z4QV7WUHYE3RG3SL2T7OMMWGPLFBIKIBQY')
+  const [receiver, setReceiver] = useState<string>('ANGEL3CMT7TEXSBJR3DCTJTZCQFOF6FJB6PDKU4IOAMTNPXGR7XUYKOU5Y')
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
   const xLightColor = useColorModeValue('orange.100', 'cyan.100')
   const lightColor = useColorModeValue('orange.300', 'cyan.300')
@@ -332,12 +332,21 @@ const loadMoreOptions = async () => {
   }
 
   return (
-    <Box className={boxGlow} m='20px' minW='300px' maxW='450px' bg="black" borderRadius="20px">
-      <div className="p-5 sm:px-6 flex justify-center items-center">
-        <Text className='hFont' textColor={medColor}>Simple Send</Text>
-      </div>
-      <>
-        <Center className='mx-5'>
+    <Box className={boxGlow} p='6px' m='20px' minW='300px' maxW='480px' bg="black" borderRadius="20px">
+    <div className="p-5 sm:px-6 flex justify-center items-center">
+      <Text className="hFont" textColor={medColor}>
+        Simple Send
+      </Text>
+    </div>
+  
+    <div className="px-5 flex flex-col flex-1">
+      <label
+        htmlFor="amount"
+        className="block text-sm pr-2 pt-4 whitespace-nowrap font-medium"
+      >
+        <Text textColor={lightColor}>Receiver</Text>
+      </label>
+      <div className="mt-1 sm:col-span-4 pl-4 sm:mt-0">
           <NfdLookup
             className={`text-black w-full relative my-2 cursor-default rounded-md border ${borderColor} ${bgColorLight} text-center shadow-sm ${focusBorderColor} focus:outline-none focus:ring-1 sm:text-sm`}
             value={receiver}
@@ -345,88 +354,138 @@ const loadMoreOptions = async () => {
             placeholder={"Enter Address/NFD"}
             ariaDescribedby="receiver"
           />
-        </Center>
-        <div className="mx-5 py-1">
-          <SelectMenu selected={selected} setSelected={(selected) => handleSelectChange(selected)}>
-            {visibleOptions.map((option: any) => (
-              <Listbox.Option key={option.value} className={({ active }) => classNames(
-                active ? `text-white ${bgColor}` : 'text-black',
-                `relative cursor-pointer select-none py-2 pl-3 pr-10`
-              )
-              }
-                value={option}>
-                <span className="text-sm">{option.label}</span>
-                <span className='text-sm pl-2'>
-                  {option.value}
-                </span>
-              </Listbox.Option>
-            ))}
-            {canLoadMore && (
-              <button onClick={loadMoreOptions} className={`${textColor} ${hoverBgColor} text-center w-full cursor-pointer select-none relative px-4 py-2`}>
-                Load More...
-              </button>
-            )}
-          </SelectMenu>
-        </div>
-      </>
-      <div className="p-5 sm:p-0 lg:flex lg:flex-col lg:flex-1">
-        <form onSubmit={handleSubmit} className="lg:flex lg:flex-col lg:flex-1">
-          <div className="space-y-2 sm:space-y-0 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
-            <label htmlFor="amount" className="block text-sm whitespace-nowrap font-medium sm:mt-px sm:pt-2"><Text textColor={lightColor}>Amount</Text></label>
-            <div className="mt-1 sm:col-span-4 pl-4 sm:mt-0">
-              <div className="flex rounded-md shadow-sm max-w-md">
-                <div className="relative flex max-w-1 flex-grow items-stretch focus-within:z-10">
-                  <Input
-                    type="text"
-                    name="amount"
-                    id="amount"
-                    borderRightRadius={'0px'}
-                    _hover={{ bgColor: 'black' }}
-                    _focus={{ borderColor: medColor }}
-                    textColor={xLightColor}
-                    borderColor={medColor}
-                    className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`}
-                    value={algoAmount}
-                    onChange={handleAmountChange}
-                    placeholder="0.000"
-                  />
-                </div>
-                <Button _hover={{ bgColor: 'black', textColor: medColor }} bgColor='black' textColor={xLightColor} borderWidth={1} borderLeftRadius={'0px'} borderColor={medColor} type="button" className="relative -ml-px inline-flex items-center space-x-2 rounded-r-md px-4 py-2" onClick={() => setAlgoAmount('')}>
-                  Clear
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="space-y-2 sm:space-y-0 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5 sm:px-6">
-            <label htmlFor="amount" className="block text-sm pt-4 whitespace-nowrap font-medium sm:mt-px sm:pt-2"><Text textColor={lightColor}>Note</Text></label>
-            <div className="mt-1 sm:col-span-4 pl-4 sm:mt-0">
-              <div className="flex rounded-md shadow-sm max-w-md">
-                <div className="relative flex max-w-1 flex-grow items-stretch focus-within:z-10">
-                  <Input
-                    type="text"
-                    name="note"
-                    id="note"
-                    _hover={{ bgColor: 'black' }}
-                    _focus={{ borderColor: medColor }}
-                    textColor={xLightColor}
-                    borderColor={medColor}
-                    className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`}
-                    value={customNote}
-                    onChange={handleNoteChange}
-                    placeholder="Custom Note Here"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="pt-5 sm:py-5 sm:px-6 lg:flex lg:flex-col lg:flex-1">
-            <div className="flex items-center justify-between">
-              <p className="flex items-center text-sm text-red-600">{renderValidationMessage()}</p>
-              <FullGlowButton text='Donate!' onClick={handleSubmit} disabled={!activeAddress || !isValidRecipient || assetID !== 0 ? parseFloat(algoAmount) <= 0 || tokenBal < parseFloat(algoAmount) : algoAmount === '' || parseFloat(algoAmount) <= 0 || !hasSufficientBalance} />
-            </div>
-          </div>
-        </form>
       </div>
-    </Box>
+    </div>
+  
+    <div className="py-2 px-5 lg:flex lg:flex-col lg:flex-1">
+      <label
+        htmlFor="amount"
+        className="block text-sm whitespace-nowrap font-medium sm:mt-px sm:pt-2"
+      >
+        <Text textColor={lightColor}>Asset</Text>
+      </label>
+      <div className="mt-1 sm:col-span-4 pl-4">
+        <SelectMenu
+          selected={selected}
+          setSelected={(selected) => handleSelectChange(selected)}
+        >
+          {visibleOptions.map((option: any) => (
+            <Listbox.Option
+              key={option.value}
+              className={({ active }) =>
+                classNames(
+                  active ? `text-white ${bgColor}` : 'text-black',
+                  `relative cursor-pointer select-none py-2 pl-3 pr-10`
+                )
+              }
+              value={option}
+            >
+              <span className="text-sm">{option.label}</span>
+              <span className="text-sm pl-2">{option.value}</span>
+            </Listbox.Option>
+          ))}
+          {canLoadMore && (
+            <button
+              onClick={loadMoreOptions}
+              className={`${textColor} ${hoverBgColor} text-center w-full cursor-pointer select-none relative px-4 py-2`}
+            >
+              Load More...
+            </button>
+          )}
+        </SelectMenu>
+      </div>
+    </div>
+  
+    <div className="py-2 px-5 lg:flex lg:flex-col lg:flex-1">
+      <form
+        onSubmit={handleSubmit}
+        className="lg:flex lg:flex-col lg:flex-1"
+      >
+        <label
+          htmlFor="amount"
+          className="block text-sm whitespace-nowrap font-medium pt-1 pb-2"
+        >
+          <Text textColor={lightColor}>Amount</Text>
+        </label>
+        <div className="mt-1 sm:col-span-4 pl-4 sm:mt-0">
+          <div className="flex rounded-md shadow-sm max-w-md">
+            <Input
+              type="text"
+              name="amount"
+              id="amount"
+              borderRightRadius={'0px'}
+              _hover={{ bgColor: 'black' }}
+              _focus={{ borderColor: medColor }}
+              textColor={xLightColor}
+              borderColor={medColor}
+              className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`}
+              value={algoAmount}
+              onChange={handleAmountChange}
+              placeholder="0.000"
+            />
+            <Button
+              _hover={{ bgColor: 'black', textColor: medColor }}
+              bgColor="black"
+              textColor={xLightColor}
+              borderWidth={1}
+              borderLeftRadius={'0px'}
+              borderColor={medColor}
+              type="button"
+              className="relative -ml-px inline-flex items-center space-x-2 rounded-r-md px-4 py-2"
+              onClick={() => setAlgoAmount('')}
+            >
+              Clear
+            </Button>
+          </div>
+        </div>
+  
+        <label
+          htmlFor="amount"
+          className="block text-sm whitespace-nowrap font-medium pt-3 pb-2"
+        >
+          <Text textColor={lightColor}>Note</Text>
+        </label>
+        <div className="mt-1 sm:col-span-4 pl-4 sm:mt-0">
+          <div className="flex rounded-md shadow-sm max-w-md">
+            <div className="relative flex max-w-1 flex-grow items-stretch focus-within:z-10">
+              <Input
+                type="text"
+                name="note"
+                id="note"
+                _hover={{ bgColor: 'black' }}
+                _focus={{ borderColor: medColor }}
+                textColor={xLightColor}
+                borderColor={medColor}
+                className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`}
+                value={customNote}
+                onChange={handleNoteChange}
+                placeholder="Custom Note Here"
+              />
+            </div>
+          </div>
+        </div>
+  
+        <div className="p-5 sm:py-5 lg:flex lg:flex-col lg:flex-1">
+          <div className="flex items-center justify-between">
+            <p className="flex items-center text-sm text-red-600">
+              {renderValidationMessage()}
+            </p>
+            <FullGlowButton
+              text="Donate!"
+              onClick={handleSubmit}
+              disabled={
+                !activeAddress ||
+                !isValidRecipient ||
+                (assetID !== 0
+                  ? parseFloat(algoAmount) <= 0 || tokenBal < parseFloat(algoAmount)
+                  : algoAmount === '' || parseFloat(algoAmount) <= 0 || !hasSufficientBalance)
+              }
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+  </Box>
+  
   )
 }

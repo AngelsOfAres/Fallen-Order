@@ -115,7 +115,7 @@ export default function AssetCreate() {
   }
 
   return (
-    <Box className={boxGlow} m='20px' minW='300px' maxW='450px' bg="black" borderRadius="20px">
+    <Box className={boxGlow} m='20px' minW='300px' maxW='480px' bg="black" borderRadius="20px">
       <div className="pt-5 sm:px-6 relative">
         <Text className='hFont' textColor={medColor} textAlign="center">Create Asset</Text>
       </div>
