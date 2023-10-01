@@ -471,7 +471,7 @@ const loadMoreOptions = async () => {
               {renderValidationMessage()}
             </p>
             <FullGlowButton
-              text="Donate!"
+              text="Send!"
               onClick={handleSubmit}
               disabled={
                 !activeAddress ||
