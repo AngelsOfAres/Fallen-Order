@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import algodClient from 'lib/algodClient'
-import { Box, useColorMode, useColorModeValue, Text, Switch, Button, Center, Progress, HStack, VStack, Input } from '@chakra-ui/react'
+import { Box, useColorMode, useColorModeValue, Text, Switch, Button, Center, Progress, HStack, VStack, Input, Tooltip } from '@chakra-ui/react'
 import styles from '../styles/glow.module.css'
 import { FullGlowButton } from './Buttons'
 import NfdLookup from './NfdLookup'
@@ -35,7 +35,12 @@ export default function Holders() {
   const bgColorLight = colorMode === "light" ? 'bg-orange-100' : 'bg-cyan-50'
   const focusBorderColor = colorMode === "light" ? 'focus:border-orange-500' : 'focus:border-cyan-400'
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
-  const baseColor = colorMode === "light" ? "orange" : "cyan";
+  const baseColor = colorMode === "light" ? "orange" : "cyan"
+
+  
+  const buttonText3 = useColorModeValue('orange.500','cyan.500')
+  const buttonText4 = useColorModeValue('orange.100','cyan.100')
+  const iconColor1 = useColorModeValue('orange','cyan')
   
   const holders = new Set()
 
@@ -68,7 +73,7 @@ export default function Holders() {
 
 async function getAssetHolders(assetId: number, retryCount = 0): Promise<any[]> {
   try {
-    const apiEndpoint = `https://mainnet-idx.algonode.cloud/v2/assets/${assetId}/balances${!opted ? `?currency-greater-than=${minBal}` : ''}`;
+    const apiEndpoint = `https://mainnet-idx.algonode.cloud/v2/assets/${assetId}/balances${!opted ? `?currency-greater-than=${minBal}` : ''}`
     const response = await axios.get(apiEndpoint);
 
     if (response.status === 429) {
@@ -194,18 +199,24 @@ async function getHoldersForMultipleAssets(assetIds: any) {
         </div>
         <Center mx={4}>
           <HStack spacing='24px'>
-            <VStack mb={6} spacing='12px' w='fit-content'>
-                <Text textColor={lightColor} className='whitespace-nowrap'>Opt Ins</Text>
-                <Switch defaultChecked={false} size='lg' colorScheme={baseColor} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} onChange={handleOpted} />
-            </VStack>
-            <VStack mb={6} spacing='12px' w='fit-content'>
-                <Text textColor={lightColor} className='whitespace-nowrap'>Paperhands</Text>
-                <Switch defaultChecked={false} size='lg' colorScheme={baseColor} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} onChange={handlePaperhands} />
-            </VStack>
-            <VStack mb={6} spacing='12px' w='fit-content'>
-                <Text textColor={lightColor} className='whitespace-nowrap'>Escrows</Text>
-                <Switch defaultChecked={false} size='lg' colorScheme={baseColor} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} onChange={handleMinBal} />
-            </VStack>
+            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='10px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Include 0 balance wallets'} aria-label='Tooltip'>
+              <VStack mb={6} spacing='12px' w='fit-content'>
+                  <Text textColor={lightColor} className='whitespace-nowrap'>Opt Ins</Text>
+                  <Switch defaultChecked={false} size='lg' colorScheme={baseColor} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} onChange={handleOpted} />
+              </VStack>
+            </Tooltip>
+            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='10px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Include wallets that ever interacted with an asset historically'} aria-label='Tooltip'>
+              <VStack mb={6} spacing='12px' w='fit-content'>
+                  <Text textColor={lightColor} className='whitespace-nowrap'>Paperhands</Text>
+                  <Switch defaultChecked={false} size='lg' colorScheme={baseColor} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} onChange={handlePaperhands} />
+              </VStack>
+            </Tooltip>
+            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='10px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Include wallets with less 1 $ALGO balance'} aria-label='Tooltip'>
+              <VStack mb={6} spacing='12px' w='fit-content'>
+                  <Text textColor={lightColor} className='whitespace-nowrap'>Escrows</Text>
+                  <Switch defaultChecked={false} size='lg' colorScheme={baseColor} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} onChange={handleMinBal} />
+              </VStack>
+            </Tooltip>
           </HStack>
       </Center>
       {searchComplete ?
