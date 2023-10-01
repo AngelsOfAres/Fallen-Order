@@ -210,7 +210,7 @@ export default function AssetDestroy() {
         _focus={{borderColor: medColor}}
         textColor={xLightColor}
         borderColor={medColor}
-        className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`}
+        className={`block w-full mb-4 rounded-none rounded-l-md bg-black sm:text-sm`}
         value={filterText}
         onChange={handleFilterChange}
         placeholder="Filter by Asset ID"

@@ -3,7 +3,7 @@ import algosdk from 'algosdk'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import algodClient from 'lib/algodClient'
-import { Box, useColorMode, useColorModeValue, Text, Input, Switch, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, HStack, Center } from '@chakra-ui/react'
+import { Box, useColorMode, useColorModeValue, Text, Input, Switch, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, HStack, Center, Tooltip } from '@chakra-ui/react'
 import styles from '../styles/glow.module.css'
 import { FullGlowButton } from './Buttons'
 
@@ -27,11 +27,12 @@ export default function AssetCreate() {
   const xLightColor = useColorModeValue('orange.100','cyan.100')
   const lightColor = useColorModeValue('orange.300','cyan.300')
   const medColor = useColorModeValue('orange.500','cyan.500')
-  const baseColor = colorMode === "light" ? "orange" : "cyan";
-  const thumbColor = colorMode === "light" ? "thumb:bg-orange-500" : "thumb:bg-cyan-500";
-  const bgColor = colorMode === "light" ? "bg-orange-400" : "bg-cyan-500";
-  const hoverBgColor = colorMode === "light" ? "hover:bg-orange-400" : "hover:bg-cyan-500";
-  const textColor = colorMode === "light" ? "text-orange-900" : "text-cyan-900";
+  const baseColor = colorMode === "light" ? "orange" : "cyan"
+  
+  const buttonText3 = useColorModeValue('orange.500','cyan.500')
+  const buttonText4 = useColorModeValue('orange.100','cyan.100')
+  const iconColor1 = useColorModeValue('orange','cyan')
+
   const from = activeAddress ? activeAddress : ""
   const note = Uint8Array.from(rawNote.split("").map(x => x.charCodeAt(0)))
 
@@ -166,18 +167,22 @@ export default function AssetCreate() {
         </HStack>
 
         
-        <HStack my={5} spacing='20px'>
-            <Text textColor={lightColor}>Freeze</Text>
-            <Input _hover={{bgColor: 'black'}} _focus={{borderColor: medColor}} textColor={xLightColor} borderColor={medColor}
-                className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`} type="text" defaultValue={from} onChange={(e) => setFreeze(e.target.value)} placeholder='Freeze Address' />
-        </HStack>
+        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Insert address here to enable FREEZE'} aria-label='Tooltip'>
+          <HStack my={5} spacing='20px'>
+              <Text textColor={lightColor}>Freeze</Text>
+              <Input _hover={{bgColor: 'black'}} _focus={{borderColor: medColor}} textColor={xLightColor} borderColor={medColor}
+                  className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`} type="text" defaultValue={from} onChange={(e) => setFreeze(e.target.value)} placeholder='Freeze Address' />
+          </HStack>
+        </Tooltip>
 
         
-        <HStack my={5} spacing='20px'>
-            <Text textColor={lightColor}>Clawback</Text>
-            <Input _hover={{bgColor: 'black'}} _focus={{borderColor: medColor}} textColor={xLightColor} borderColor={medColor}
-                className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`} type="text" defaultValue={from} onChange={(e) => setClawback(e.target.value)} placeholder='Clawback Address' />
-        </HStack>
+        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Insert address here to enable CLAWBACK'} aria-label='Tooltip'>
+          <HStack my={5} spacing='20px'>
+              <Text textColor={lightColor}>Clawback</Text>
+              <Input _hover={{bgColor: 'black'}} _focus={{borderColor: medColor}} textColor={xLightColor} borderColor={medColor}
+                  className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`} type="text" defaultValue={from} onChange={(e) => setClawback(e.target.value)} placeholder='Clawback Address' />
+          </HStack>
+        </Tooltip>
 
         <HStack my={5} spacing='20px'>
             <Text textColor={lightColor}>URL</Text>
@@ -193,10 +198,12 @@ export default function AssetCreate() {
         </HStack>
 
         <Center>
+          <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={'If this is ENABLED, the asset will DEFAULT to FROZEN and may only be transferred using the CLAWBACK address!'} aria-label='Tooltip'>
             <HStack my={5} spacing='20px' w='fit-content'>
                 <Text textColor={lightColor} className='whitespace-nowrap'>Default Frozen</Text>
                 <Switch defaultChecked={false} size='lg' colorScheme={baseColor} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} onChange={handleDefaultFrozenToggle} />
             </HStack>
+          </Tooltip>
         </Center>
         </> : null}
         <Center my={6}><FullGlowButton text='Create!' onClick={handleSubmit} disabled={unitName === '' || assetName === '' || supply === 0}/></Center>

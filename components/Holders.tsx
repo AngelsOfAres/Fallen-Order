@@ -199,19 +199,19 @@ async function getHoldersForMultipleAssets(assetIds: any) {
         </div>
         <Center mx={4}>
           <HStack spacing='24px'>
-            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='10px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Include 0 balance wallets'} aria-label='Tooltip'>
+            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Include 0 balance wallets'} aria-label='Tooltip'>
               <VStack mb={6} spacing='12px' w='fit-content'>
                   <Text textColor={lightColor} className='whitespace-nowrap'>Opt Ins</Text>
                   <Switch defaultChecked={false} size='lg' colorScheme={baseColor} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} onChange={handleOpted} />
               </VStack>
             </Tooltip>
-            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='10px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Include wallets that ever interacted with an asset historically'} aria-label='Tooltip'>
+            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Include wallets that ever interacted with an asset historically'} aria-label='Tooltip'>
               <VStack mb={6} spacing='12px' w='fit-content'>
                   <Text textColor={lightColor} className='whitespace-nowrap'>Paperhands</Text>
                   <Switch defaultChecked={false} size='lg' colorScheme={baseColor} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} onChange={handlePaperhands} />
               </VStack>
             </Tooltip>
-            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='10px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Include wallets with less than 1 $ALGO balance'} aria-label='Tooltip'>
+            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Include wallets with less than 1 $ALGO balance'} aria-label='Tooltip'>
               <VStack mb={6} spacing='12px' w='fit-content'>
                   <Text textColor={lightColor} className='whitespace-nowrap'>Escrows</Text>
                   <Switch defaultChecked={false} size='lg' colorScheme={baseColor} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} onChange={handleMinBal} />
