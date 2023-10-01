@@ -43,7 +43,7 @@ export default function Home() {
       )}
       <Center  my='20px'><Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link></Center>
       <Center my='24px'>
-        <SimpleGrid minChildWidth='480px' spacing='24px' justifyItems='center'>
+        <SimpleGrid w='95%' minChildWidth='360px' spacing='24px' justifyItems='center'>
           {isActive ? (
             <>
               <Account />
