@@ -211,7 +211,7 @@ async function getHoldersForMultipleAssets(assetIds: any) {
                   <Switch defaultChecked={false} size='lg' colorScheme={baseColor} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} onChange={handlePaperhands} />
               </VStack>
             </Tooltip>
-            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='10px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Include wallets with less 1 $ALGO balance'} aria-label='Tooltip'>
+            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='10px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Include wallets with less than 1 $ALGO balance'} aria-label='Tooltip'>
               <VStack mb={6} spacing='12px' w='fit-content'>
                   <Text textColor={lightColor} className='whitespace-nowrap'>Escrows</Text>
                   <Switch defaultChecked={false} size='lg' colorScheme={baseColor} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} onChange={handleMinBal} />
