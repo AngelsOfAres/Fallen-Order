@@ -191,7 +191,7 @@ export default function NfdLookup({
 
   return (
     <Combobox value={value} onChange={handleComboBoxChange}>
-      <div className="relative">
+    <div className="relative">
           <Combobox.Input
             className={classNames(nfdMatch ? 'pr-12' : '', className)}
             onChange={handleInputChange}

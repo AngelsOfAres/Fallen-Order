@@ -183,15 +183,15 @@ async function getHoldersForMultipleAssets(assetIds: any) {
       <div className="pt-5 sm:px-6 flex justify-center items-center">
         <Text className='hFont' textColor={medColor}>Holders</Text>
       </div>
-      <div className="pb-5 pt-3 text-center">
+      <Center>
           <NfdLookup
-            className={`text-black relative my-2 cursor-default rounded-md border ${borderColor} ${bgColorLight} text-center shadow-sm ${focusBorderColor} focus:outline-none focus:ring-1 sm:text-sm`}
+            className={`text-black mx-auto my-2 cursor-default rounded-md border ${borderColor} ${bgColorLight} text-center shadow-sm ${focusBorderColor} focus:outline-none focus:ring-1 sm:text-sm`}
             value={addressToSearch}
             onChange={handleAddressChange}
             placeholder={"Enter Address/NFD"}
             ariaDescribedby="lookup-description"
           />
-      </div>
+      </Center>
         <Center mx={4}>
           <HStack spacing='24px'>
             <VStack mb={6} spacing='12px' w='fit-content'>

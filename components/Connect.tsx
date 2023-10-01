@@ -96,7 +96,7 @@ export default function Connect() {
   const renderCard = (provider: Provider) => {
     return (
         <Box w='100%' key={provider.metadata.id} p={8}>
-            <Button type="button" bgColor='black' _hover={{bgColor: 'black'}} onClick={provider.isConnected ? provider.disconnect : provider.connect}>
+            <Button mb={4} type="button" bgColor='black' _hover={{bgColor: 'black'}} onClick={provider.isConnected ? provider.disconnect : provider.connect}>
                 <Image width='50px' height='50px' borderRadius='10px' src={provider.metadata.icon} alt={provider.metadata.name} />
                 <Text mx={8} fontSize="20px" textColor={text100} _hover={{textColor: text400}}>
                   {provider.metadata.name}

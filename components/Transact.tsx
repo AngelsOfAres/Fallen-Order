@@ -6,12 +6,13 @@ import toast from 'react-hot-toast'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { convertAlgosToMicroalgos } from 'utils'
 import algodClient from 'lib/algodClient'
-import { Box, useColorMode, useColorModeValue, Text, Input, Button } from '@chakra-ui/react'
+import { Box, useColorMode, useColorModeValue, Text, Input, Button, Center } from '@chakra-ui/react'
 import styles from '../styles/glow.module.css'
 import { classNames } from 'utils'
 import { Listbox } from '@headlessui/react'
 import SelectMenu from 'components/SelectMenu'
 import { FullGlowButton } from './Buttons'
+import NfdLookup from './NfdLookup'
 
 export default function Transact() {
   const { activeAddress, signTransactions, sendTransactions } = useWallet()
@@ -29,6 +30,9 @@ export default function Transact() {
   const bgColor = colorMode === "light" ? "bg-orange-400" : "bg-cyan-500"
   const hoverBgColor = colorMode === "light" ? "hover:bg-orange-400" : "hover:bg-cyan-500"
   const textColor = colorMode === "light" ? "text-orange-900" : "text-cyan-900"
+  const borderColor = colorMode === "light" ? 'border-orange-500' : 'border-cyan-400'
+  const bgColorLight = colorMode === "light" ? 'bg-orange-100' : 'bg-cyan-50'
+  const focusBorderColor = colorMode === "light" ? 'focus:border-orange-500' : 'focus:border-cyan-400'
 
   const { accountInfo, assetList, walletAvailableBalance } = useWalletBalance()
 
@@ -281,19 +285,19 @@ const loadMoreOptions = async () => {
     })
     const batchedPromises = async () => {
       for (let i = 0; i < assetInfoPromises.length; i += 40) {
-        const batch = assetInfoPromises.slice(i, i + 40);
-        await Promise.all(batch);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const batch = assetInfoPromises.slice(i, i + 40)
+        await Promise.all(batch)
+        await new Promise((resolve) => setTimeout(resolve, 1000))
       }
-    };
+    }
     
     await batchedPromises();
     
     setVisibleOptions(finalNextOptions);
     setCanLoadMore(options.length > nextOptionsEndIndex);
   } else {
-    setVisibleOptions(options);
-    setCanLoadMore(false);
+    setVisibleOptions(options)
+    setCanLoadMore(false)
   }
 };
   
@@ -330,12 +334,18 @@ const loadMoreOptions = async () => {
   return (
     <Box className={boxGlow} m='20px' minW='300px' maxW='450px' bg="black" borderRadius="20px">
       <div className="p-5 sm:px-6 flex justify-center items-center">
-        <Text className='hFont' textColor={medColor}>Donate</Text>
-      </div>
-      <div className="pl-5 sm:col-span-4 sm:mt-0">
-        <Text textColor={lightColor}>Receiver: support.irl.algo</Text>
+        <Text className='hFont' textColor={medColor}>Simple Send</Text>
       </div>
       <>
+        <Center className='mx-5'>
+          <NfdLookup
+            className={`text-black w-full relative my-2 cursor-default rounded-md border ${borderColor} ${bgColorLight} text-center shadow-sm ${focusBorderColor} focus:outline-none focus:ring-1 sm:text-sm`}
+            value={receiver}
+            onChange={setReceiver}
+            placeholder={"Enter Address/NFD"}
+            ariaDescribedby="receiver"
+          />
+        </Center>
         <div className="mx-5 py-1">
           <SelectMenu selected={selected} setSelected={(selected) => handleSelectChange(selected)}>
             {visibleOptions.map((option: any) => (

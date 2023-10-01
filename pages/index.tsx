@@ -34,8 +34,8 @@ export default function Home() {
       </Head>
       <Navbar />
       <Box h='100%'>
-      <Text mt='20px' className={`${gradientText} responsive-font`}>Welcome to Algo Hour!</Text>
-      <Text mb='24px' className='hText pt-2' textAlign='center' textColor={xLightColor}>Any donations sent to support.irl.algo are used to support the show.<br />Thank you!</Text>
+      <Text mt='20px' className={`${gradientText} responsive-font`}>Abyssal Portal</Text>
+      <Text mb='24px' className='hText pt-2' textAlign='center' textColor={xLightColor}>Any donations sent to degenerate.algo are appreciated.<br />Thank you!</Text>
       <Center><FullGlowButton fontsize='16px' text={isActive? 'Wallet' : 'Connect!'} onClick={handleToggleMenu} /></Center>
       {isMenuOpen && (
         <Center my='24px'>
