@@ -169,11 +169,9 @@ export default function AssetDestroy() {
       }
   
       setVisibleOptions(finalNextOptions)
-      console.log(visibleOptions)
       setCanLoadMore(options.length > nextOptionsEndIndex)
     } else {
-      setVisibleOptions(options);
-      console.log(visibleOptions)
+      setVisibleOptions(options)
       setCanLoadMore(false);
     }
   };
