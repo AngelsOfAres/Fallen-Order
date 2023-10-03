@@ -14,6 +14,7 @@ import AssetDestroy from 'components/AssetDestroy'
 import AssetCreate from 'components/AssetCreate'
 import Holders from 'components/Holders'
 import MassOpt from 'components/MassOpt'
+import MassSend from 'components/MassSend'
 
 export default function Home() {
   const { isActive } = useWallet()
@@ -56,6 +57,7 @@ export default function Home() {
             <>
               <Account />
               <Transact />
+              <MassSend />
               <MassOpt />
               <Holders />
               <AssetCreate />

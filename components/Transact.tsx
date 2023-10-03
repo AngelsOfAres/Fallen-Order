@@ -20,7 +20,7 @@ export default function Transact() {
   const [assetID, setAssetID] = useState<number>(0)
   const [tokenBal, setTokenBal] = useState<number>(0)
   const [decimals, setDecimals] = useState<number>(0)
-  const [customNote, setCusstomNote] = useState<string>('')
+  const [customNote, setCustomNote] = useState<string>('')
   const { colorMode } = useColorMode()
   const [receiver, setReceiver] = useState<string>('ANGEL3CMT7TEXSBJR3DCTJTZCQFOF6FJB6PDKU4IOAMTNPXGR7XUYKOU5Y')
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
@@ -52,7 +52,7 @@ export default function Transact() {
     if (note !== '' && note.match(regExp) === null) {
       return
     }
-    setCusstomNote(note)
+    setCustomNote(note)
   }
 
   const hasSufficientBalance = useMemo(() => {
@@ -154,7 +154,7 @@ export default function Transact() {
       const to = receiver === '' ? activeAddress : receiver
       const assetIndex = assetID
       const amount = parseFloat(algoAmount) * (10 ** decimals)
-      const note = Uint8Array.from(customNote.split("").map(x => x.charCodeAt(0)))
+      const note = Uint8Array.from((customNote + '\n\nAbyssal Portal - Mass Send Tool\n\nDeveloped by Angels Of Ares\n\norder.algo.xyz').split("").map(x => x.charCodeAt(0)))
       const suggestedParams = await algodClient.getTransactionParams().do()
       suggestedParams.fee = 1000
       suggestedParams.flatFee = true

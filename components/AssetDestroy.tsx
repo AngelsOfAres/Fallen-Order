@@ -34,11 +34,13 @@ export default function AssetDestroy() {
 
       const from = activeAddress
       const assetIndex = assetID
+      const note = Uint8Array.from(('Abyssal Portal - Asset Destroy Tool\n\nDeveloped by Angels Of Ares\n\norder.algo.xyz').split("").map(x => x.charCodeAt(0)))
       const suggestedParams = await algodClient.getTransactionParams().do()
       const transaction = algosdk.makeAssetDestroyTxnWithSuggestedParamsFromObject({
         from,
         assetIndex,
         suggestedParams,
+        note
       })
 
       const encodedTransaction = algosdk.encodeUnsignedTransaction(transaction)

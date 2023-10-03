@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useWallet } from '@txnlab/use-wallet'
 import { useEffect, useState } from 'react'
 import algodClient from 'lib/algodClient'
-import { formatAssetBalance, formatPrice } from 'utils'
+import { formatAssetBalance } from 'utils'
 
 export default function useWalletBalance() {
   const [walletBalance, setWalletBalance] = useState<string | null>(null)

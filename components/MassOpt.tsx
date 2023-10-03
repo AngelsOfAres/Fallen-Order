@@ -124,7 +124,7 @@ export default function MassOpt() {
         
         for (let j = 0; j < signedBatch.length; j += 16) {
           const groupToSend = signedBatch.slice(j, j + 16)
-          await algodClient.sendRawTransaction(groupToSend)
+          algodClient.sendRawTransaction(groupToSend).do()
         }
       }   
 
@@ -160,12 +160,12 @@ export default function MassOpt() {
           </VStack>
         </Center>
         <form onSubmit={handleSubmit}>
-          <Text textColor={lightColor} mb="4" fontWeight="semibold">
+          <Text textColor={lightColor} mb="1" fontWeight="semibold">
             Asset IDs
           </Text>
           <Textarea
             minH='85px'
-            mb={4}
+            mb={6}
             value={assetIDs.join('\n')}
             onChange={(e) => setAssetIDs(e.target.value.split('\n'))}
             placeholder={`Enter IDs Here\nAsset ID 1\nAsset ID 2\nAsset ID 3`}
