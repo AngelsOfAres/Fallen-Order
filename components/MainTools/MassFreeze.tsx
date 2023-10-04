@@ -228,7 +228,7 @@ export default function MassFreeze() {
               borderColor={medColor}
               type="button"
               className="relative -ml-px inline-flex items-center space-x-2 rounded-r-md px-4 py-2"
-              onClick={() => setAssetID(0)}
+              onClick={() => setSeedphrase('')}
             >
               Clear
             </Button>

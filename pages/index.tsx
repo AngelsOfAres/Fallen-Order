@@ -17,6 +17,7 @@ import MassOpt from 'components/MainTools/MassOpt'
 import MassSend from 'components/MainTools/MassSend'
 import WalletHoldings from 'components/MainTools/WalletHoldings'
 import MassFreeze from 'components/MainTools/MassFreeze'
+import UploadCollection from 'components/MainTools/UploadCollection'
 
 export default function Home() {
   const { isActive } = useWallet()
@@ -66,11 +67,14 @@ export default function Home() {
               <Holders />
               <AssetCreate />
               <AssetDestroy />
+              <UploadCollection />
             </>
           ) : 
           <>
             <WalletHoldings />
             <Holders />
+            <MassFreeze />
+            <UploadCollection />
           </>
           }
         </SimpleGrid>
