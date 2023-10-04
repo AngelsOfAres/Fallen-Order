@@ -6,11 +6,11 @@ import toast from 'react-hot-toast'
 import useWalletBalance from 'hooks/useWalletBalance'
 import algodClient from 'lib/algodClient'
 import { Box, useColorMode, useColorModeValue, Text, Input, Button, Center } from '@chakra-ui/react'
-import styles from '../styles/glow.module.css'
+import styles from '../../styles/glow.module.css'
 import { classNames } from 'utils'
 import { Listbox } from '@headlessui/react'
 import SelectMenu from 'components/SelectMenu'
-import { FullGlowButton } from './Buttons'
+import { FullGlowButton } from '../Buttons'
 
 export default function AssetDestroy() {
   const { activeAddress, signTransactions, sendTransactions } = useWallet()

@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import algodClient from 'lib/algodClient'
 import { Box, useColorMode, useColorModeValue, Text, Input, Switch, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, HStack, Center, Tooltip, Textarea, VStack, Progress, filter } from '@chakra-ui/react'
-import styles from '../styles/glow.module.css'
-import { FullGlowButton } from './Buttons'
+import styles from '../../styles/glow.module.css'
+import { FullGlowButton } from '../Buttons'
 import axios from 'axios'
 
 export default function MassSend() {

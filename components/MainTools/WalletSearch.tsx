@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import { FullGlowButton } from './Buttons'
+import React, { useState } from 'react'
+import { FullGlowButton } from '../Buttons'
 import { Box, Center, Image, Progress, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr, useColorModeValue, useColorMode } from '@chakra-ui/react'
-import styles from "../styles/text.module.css"
-import NfdLookup from './NfdLookup';
+import NfdLookup from '../NfdLookup'
 import algodClient from 'lib/algodClient'
-import styles2 from '../styles/glow.module.css'
-import Footer from './Footer';
+import styles2 from '../../styles/glow.module.css'
+import Footer from '../Footer';
 
 interface Transaction {
     id: string;

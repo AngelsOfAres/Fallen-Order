@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import React, { useState } from 'react'
 import Navbar from 'components/Navbar'
-import WalletTransactionSearch from 'components/WalletSearch'
+import WalletTransactionSearch from 'components//MainTools/WalletSearch'
 
 export default function w2w() {
   return (

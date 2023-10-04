@@ -1,20 +1,21 @@
 import { useWallet } from '@txnlab/use-wallet'
 import Head from 'next/head'
 import Link from 'next/link'
-import Account from 'components/Account'
+import Account from 'components/MainTools/Account'
 import React, { useState } from 'react'
-import Connect from 'components/Connect'
+import Connect from 'components/MainTools/Connect'
 import Navbar from 'components/Navbar'
-import Transact from 'components/Transact'
+import Transact from 'components/MainTools/Transact'
 import { Center, useColorModeValue, SimpleGrid, Text, Box } from '@chakra-ui/react'
 import { FullGlowButton } from 'components/Buttons'
 import styles2 from '../styles/glow.module.css'
 import Footer from 'components/Footer'
-import AssetDestroy from 'components/AssetDestroy'
-import AssetCreate from 'components/AssetCreate'
-import Holders from 'components/Holders'
-import MassOpt from 'components/MassOpt'
-import MassSend from 'components/MassSend'
+import AssetDestroy from 'components/MainTools/AssetDestroy'
+import AssetCreate from 'components/MainTools/AssetCreate'
+import Holders from 'components/MainTools/Holders'
+import MassOpt from 'components/MainTools/MassOpt'
+import MassSend from 'components/MainTools/MassSend'
+import WalletHoldings from 'components/MainTools/WalletHoldings'
 
 export default function Home() {
   const { isActive } = useWallet()
@@ -59,12 +60,16 @@ export default function Home() {
               <Transact />
               <MassSend />
               <MassOpt />
+              <WalletHoldings />
               <Holders />
               <AssetCreate />
               <AssetDestroy />
             </>
           ) : 
-          <Holders />
+          <>
+            <WalletHoldings />
+            <Holders />
+          </>
           }
         </SimpleGrid>
       </Center>

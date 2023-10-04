@@ -7,12 +7,12 @@ import useWalletBalance from 'hooks/useWalletBalance'
 import { convertAlgosToMicroalgos } from 'utils'
 import algodClient from 'lib/algodClient'
 import { Box, useColorMode, useColorModeValue, Text, Input, Button, Center } from '@chakra-ui/react'
-import styles from '../styles/glow.module.css'
+import styles from '../../styles/glow.module.css'
 import { classNames } from 'utils'
 import { Listbox } from '@headlessui/react'
 import SelectMenu from 'components/SelectMenu'
-import { FullGlowButton } from './Buttons'
-import NfdLookup from './NfdLookup'
+import { FullGlowButton } from '../Buttons'
+import NfdLookup from '../NfdLookup/NfdLookup'
 
 export default function Transact() {
   const { activeAddress, signTransactions, sendTransactions } = useWallet()

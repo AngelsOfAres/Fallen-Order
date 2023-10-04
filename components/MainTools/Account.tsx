@@ -5,7 +5,7 @@ import Tooltip from 'components/Tooltip'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { copyToClipboard } from 'utils/clipboard'
 import { Box, HStack, Text, useColorModeValue, useColorMode } from '@chakra-ui/react'
-import styles from '../styles/glow.module.css'
+import styles from '../../styles/glow.module.css'
 
 export default function Account() {
   const { colorMode } = useColorMode()

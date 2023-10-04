@@ -16,7 +16,7 @@ import {
   } from '@chakra-ui/react';
   import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon, InfoIcon, UpDownIcon } from '@chakra-ui/icons'
   import styles from '../styles/glow.module.css'
-import Connect from './Connect';
+import Connect from './MainTools/Connect'
 
   export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode()

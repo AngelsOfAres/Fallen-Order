@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import algodClient from 'lib/algodClient'
 import { Box, useColorMode, useColorModeValue, Text, Switch, Button, Center, Progress, HStack, VStack, Input, Tooltip } from '@chakra-ui/react'
-import styles from '../styles/glow.module.css'
-import { FullGlowButton } from './Buttons'
-import NfdLookup from './NfdLookup'
+import styles from '../../styles/glow.module.css'
+import { FullGlowButton } from '../Buttons'
+import NfdLookup from '../NfdLookup'
 import axios from 'axios'
 import { copyToClipboard } from 'utils/clipboard'
 import { ClipboardIcon } from '@heroicons/react/20/solid'
@@ -197,7 +197,7 @@ async function getHoldersForMultipleAssets(assetIds: any) {
             ariaDescribedby="lookup-description"
           />
         </div>
-        <Center mx={4}>
+        <Center mt={4} mx={6}>
           <HStack spacing='24px'>
             <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Include 0 balance wallets'} aria-label='Tooltip'>
               <VStack mb={6} spacing='12px' w='fit-content'>
