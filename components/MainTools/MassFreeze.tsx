@@ -7,7 +7,7 @@ import { Box, useColorMode, useColorModeValue, Text, Input, Switch, NumberInput,
 import styles from '../../styles/glow.module.css'
 import { FullGlowButton } from '../Buttons'
 
-export default function MassFreezeClawback() {
+export default function MassFreeze() {
   const { activeAddress, signTransactions } = useWallet()
   const [assetID, setAssetID] = useState<number>(0)
   const [addressList, setAddressList] = useState<any>([])
@@ -26,7 +26,7 @@ export default function MassFreezeClawback() {
 
   const from = activeAddress ? activeAddress : ""
 
-  const massFC = async () => {
+  const massFreeze = async () => {
     setLoading(true)
     const extractedAddresses = addressList.flatMap((line: any) => {
         const strings = line.split(/[, ]+/);
@@ -139,7 +139,7 @@ export default function MassFreezeClawback() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    massFC()
+    massFreeze()
   }
 
   return (

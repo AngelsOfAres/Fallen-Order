@@ -16,7 +16,7 @@ import Holders from 'components/MainTools/Holders'
 import MassOpt from 'components/MainTools/MassOpt'
 import MassSend from 'components/MainTools/MassSend'
 import WalletHoldings from 'components/MainTools/WalletHoldings'
-import MassFreezeClawback from 'components/MainTools/MassFreezeClawback'
+import MassFreeze from 'components/MainTools/MassFreeze'
 
 export default function Home() {
   const { isActive } = useWallet()
@@ -61,7 +61,7 @@ export default function Home() {
               <Transact />
               <MassSend />
               <MassOpt />
-              <MassFreezeClawback />
+              <MassFreeze />
               <WalletHoldings />
               <Holders />
               <AssetCreate />
