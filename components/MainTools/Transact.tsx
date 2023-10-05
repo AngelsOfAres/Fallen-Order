@@ -299,7 +299,7 @@ const loadMoreOptions = async () => {
     setVisibleOptions(options)
     setCanLoadMore(false)
   }
-};
+}
   
   const [selected, setSelected] = useState(options[0])
 

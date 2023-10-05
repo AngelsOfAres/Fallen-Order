@@ -43,7 +43,7 @@ export default function AssetCreate() {
       setFreeze(activeAddress)
       setClawback(activeAddress)
     }
-  }, [activeAddress, unitName]);
+  }, [activeAddress, unitName])
 
   const handleDefaultFrozenToggle = () => {
     setDefaultFrozen(!defaultFrozen);

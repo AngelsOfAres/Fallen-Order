@@ -6,7 +6,7 @@ import React, { useState } from 'react'
 import Connect from 'components/MainTools/Connect'
 import Navbar from 'components/Navbar'
 import Transact from 'components/MainTools/Transact'
-import { Center, useColorModeValue, SimpleGrid, Text, Box } from '@chakra-ui/react'
+import { Center, useColorModeValue, SimpleGrid, Text, Box, HStack } from '@chakra-ui/react'
 import { FullGlowButton } from 'components/Buttons'
 import styles2 from '../styles/glow.module.css'
 import Footer from 'components/Footer'
@@ -18,6 +18,7 @@ import MassSend from 'components/MainTools/MassSend'
 import WalletHoldings from 'components/MainTools/WalletHoldings'
 import MassFreeze from 'components/MainTools/MassFreeze'
 import UploadCollection from 'components/MainTools/UploadCollection'
+import MintCollection from 'components/MainTools/MintCollection'
 
 export default function Home() {
   const { isActive } = useWallet()
@@ -53,8 +54,13 @@ export default function Home() {
           <Connect />
         </Center>
       )}
-      <Center  my='20px'><Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link></Center>
-      <Center my='24px'>
+      <Center my={4}>
+        <HStack>
+        <Link href='/onboard'><FullGlowButton fontsize='16px' text='Onboard Center' /></Link>
+          <Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link>
+        </HStack>
+      </Center>
+      <Center my='48px'>
         <SimpleGrid w='95%' minChildWidth='360px' spacing='24px' justifyItems='center'>
           {isActive ? (
             <>
@@ -68,6 +74,7 @@ export default function Home() {
               <AssetCreate />
               <AssetDestroy />
               <UploadCollection />
+              <MintCollection />
             </>
           ) : 
           <>
@@ -75,6 +82,7 @@ export default function Home() {
             <Holders />
             <MassFreeze />
             <UploadCollection />
+            <MintCollection />
           </>
           }
         </SimpleGrid>

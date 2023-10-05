@@ -11,7 +11,6 @@ import {
   VStack,
   Input,
   Tooltip,
-  Spacer,
   HStack,
 } from '@chakra-ui/react'
 import styles from '../../styles/glow.module.css'
@@ -187,7 +186,7 @@ export default function UploadCollection() {
         </> :
         <Center>
           <HStack mb="26px" spacing='24px'>
-            <FullGlowButton text="Upload!" onClick={handleSubmit} />
+            <FullGlowButton text="Upload!" onClick={handleSubmit} disabled={publicOn ? false : apiKey === ''} />
             <FullGlowButton text="X" onClick={toggleNewSearch} />
           </HStack>
         </Center>
