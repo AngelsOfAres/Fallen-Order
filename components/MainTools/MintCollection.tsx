@@ -27,8 +27,8 @@ export default function MintCollection() {
   const [seedphrase, setSeedphrase] = useState<string>('')
   const [rawAssetName, setrawAssetName] = useState<string>('')
   const [rawUnitName, setrawUnitName] = useState<string>('')
-  const [freeze, setFreeze] = useState<string>('')
-  const [clawback, setClawback] = useState<string>('')
+  const [freeze, setFreeze] = useState<any>(undefined)
+  const [clawback, setClawback] = useState<any>(undefined)
   const [status, setStatus] = useState<string>('Generating')
   const [cidRaw, setCidRaw] = useState<any>('')
   const [cidList, setCidList] = useState<any>([])
@@ -47,7 +47,6 @@ export default function MintCollection() {
   const buttonText4 = useColorModeValue('orange.100', 'cyan.100')
   const iconColor1 = useColorModeValue('orange', 'cyan')
   
-  let assetCounter = 0
   
   const getCIDs = async () => {
     const gatewayUrl = `https://${cidRaw}.ipfs.nftstorage.link`
@@ -62,8 +61,9 @@ export default function MintCollection() {
     
         fileRows.each((index: any, row: any) => {
           const cidLink = $(row).find('.ipfs-hash')
+          const href = cidLink.attr('href')
           const regex = /\/ipfs\/([a-zA-Z0-9]+)/
-          const match = regex.exec(cidLink)
+          const match = regex.exec(href)
           if (match && match[1]) {
             const extractedCID = match[1]
             cidList.push(extractedCID)
@@ -82,10 +82,10 @@ export default function MintCollection() {
     setMinting(true)
     if (defaultFrozen && (freeze === '' || clawback === '')) {
       if (freeze === '') {
-        setFreeze(activeAddress ? activeAddress : '')
+        setFreeze(activeAddress ? activeAddress : undefined)
       }
       if (clawback === '') {
-        setClawback(activeAddress ? activeAddress : '')
+        setClawback(activeAddress ? activeAddress : undefined)
       }
     }
     const CIDs = await getCIDs()
@@ -104,63 +104,40 @@ export default function MintCollection() {
       suggestedParams.flatFee = true
       const from = activeAddress
       const manager = activeAddress
-      const reserve= activeAddress
+      const reserve = activeAddress
       const total = 1
       const decimals = 0
+      console.log(freeze, clawback)
       const note = Uint8Array.from('Abyssal Portal - Collection Minting Tool\n\nDeveloped by Angels Of Ares'.split("").map(x => x.charCodeAt(0)))
   
       const batchSize = 16
-      const maxRetries = 5
-      const delayBetweenRetries = 150
       
       const batchTransactions = []
-      
-        let retries = 0
-        let success = false
-        let batchResult = []
-      
-        while (retries < maxRetries && !success) {
-          try {
-            batchResult = await Promise.all(
-              cidList.map(async (asset: any) => {
-                const assetName = `${rawAssetName}${assetCounter++}`
-                const unitName = `${rawUnitName}${assetCounter}`
-                const assetURL = "ipfs://" + asset
-      
-                return algosdk.makeAssetCreateTxnWithSuggestedParamsFromObject({
-                  from,
-                  assetURL,
-                  assetName,
-                  unitName,
-                  total,
-                  decimals,
-                  manager,
-                  reserve,
-                  freeze,
-                  clawback,
-                  defaultFrozen,
-                  suggestedParams,
-                  note
-                })
-              })
-            );
-      
-            success = true;
-          } catch (error: any) {
-            if (error.response && error.response.status === 429) {
-              retries++;
-              console.log(`Rate limited (429). Retrying attempt ${retries} in ${delayBetweenRetries} ms...`);
-              await new Promise((resolve) => setTimeout(resolve, delayBetweenRetries));
-            } else {
-            }
-          }
+
+        console.log(cidList.length)
+
+        for (let i = 1; i <= cidList.length; i++) {
+          const assetName = `${rawAssetName}${i}`
+          const unitName = `${rawUnitName}${i}`
+          const assetURL = "ipfs://" + cidList[i-1]
+
+          const tx = algosdk.makeAssetCreateTxnWithSuggestedParamsFromObject({
+            from,
+            assetURL,
+            assetName,
+            unitName,
+            total,
+            decimals,
+            manager,
+            reserve,
+            freeze,
+            clawback,
+            defaultFrozen,
+            suggestedParams,
+            note
+          })
+          batchTransactions.push(tx)
         }
-      
-        if (!success) {
-          throw new Error(`Failed to fetch asset data after ${maxRetries} retries.`);
-        }
-      
-        batchTransactions.push(...batchResult)
       
       let groupcount = 1
       const encodedBatches = []
@@ -205,8 +182,8 @@ export default function MintCollection() {
       console.error(error)
       setMinting(false)
       setCidList([])
-      assetCounter = 0
       setStatus((status) => status = 'Generating')
+      setSearchComplete(true)
       toast.error(`Oops! Minting failed. Please verify input and try again...`, { id: 'txn' })
     }
   }
@@ -278,7 +255,7 @@ export default function MintCollection() {
             <HStack my={5} spacing='20px'>
                 <Text textColor={lightColor}>Freeze</Text>
                 <Input _hover={{bgColor: 'black'}} _focus={{borderColor: medColor}} textColor={xLightColor} borderColor={medColor}
-                    className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`} type="text" defaultValue={''} onChange={(e) => setFreeze(e.target.value)} placeholder='Freeze Address' />
+                    className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`} type="text" onChange={(e) => setFreeze(e.target.value)} placeholder='Freeze Address' />
             </HStack>
           </Tooltip>
 
@@ -287,7 +264,7 @@ export default function MintCollection() {
             <HStack my={5} spacing='20px'>
                 <Text textColor={lightColor}>Clawback</Text>
                 <Input _hover={{bgColor: 'black'}} _focus={{borderColor: medColor}} textColor={xLightColor} borderColor={medColor}
-                    className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`} type="text" defaultValue={''} onChange={(e) => setClawback(e.target.value)} placeholder='Clawback Address' />
+                    className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`} type="text" onChange={(e) => setClawback(e.target.value)} placeholder='Clawback Address' />
             </HStack>
           </Tooltip>
 
