@@ -209,6 +209,8 @@ export default function MintCollection() {
             IPFS CID
           </Text>
       <div className="flex p-4 rounded-md shadow-sm max-w-md">
+          <Tooltip py={3} px={5} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={'You may use our collection upload tool to upload your files, and retreive the CID from it, or insert your own collection folder CID.'} aria-label='Tooltip'>
+            <>
           <Input
             type="text"
             name="cid"
@@ -236,6 +238,8 @@ export default function MintCollection() {
           >
             Clear
           </Button>
+          </>
+          </Tooltip>
         </div>
 
         <div className="mx-5 pb-1">
