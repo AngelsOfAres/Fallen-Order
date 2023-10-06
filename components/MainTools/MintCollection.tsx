@@ -208,39 +208,37 @@ export default function MintCollection() {
           <Text px='4' textColor={lightColor} mt={4} mb={-2} fontWeight="semibold">
             IPFS CID
           </Text>
-      <div className="flex p-4 rounded-md shadow-sm max-w-md">
-          <Tooltip py={3} px={5} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={'You may use our collection upload tool to upload your files, and retreive the CID from it, or insert your own collection folder CID.'} aria-label='Tooltip'>
-            <>
-          <Input
-            type="text"
-            name="cid"
-            id="cid"
-            borderRightRadius={'0px'}
-            _hover={{ bgColor: 'black' }}
-            _focus={{ borderColor: medColor }}
-            textColor={xLightColor}
-            borderColor={medColor}
-            className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`}
-            value={cidRaw}
-            onChange={(e) => setCidRaw(e.target.value)}
-            placeholder="Collection CID"
-          />
-          <Button
-            _hover={{ bgColor: 'black', textColor: medColor }}
-            bgColor="black"
-            textColor={xLightColor}
-            borderWidth={1}
-            borderLeftRadius={'0px'}
-            borderColor={medColor}
-            type="button"
-            className="relative -ml-px inline-flex items-center space-x-2 rounded-r-md px-4 py-2"
-            onClick={() => setCidRaw('')}
-          >
-            Clear
-          </Button>
-          </>
-          </Tooltip>
-        </div>
+      <Tooltip py={3} px={5} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={'You may use our collection upload tool to upload your files, and retreive the CID from it, or insert your own collection folder CID.'} aria-label='Tooltip'>
+        <div className="flex p-4 rounded-md shadow-sm max-w-md">
+            <Input
+              type="text"
+              name="cid"
+              id="cid"
+              borderRightRadius={'0px'}
+              _hover={{ bgColor: 'black' }}
+              _focus={{ borderColor: medColor }}
+              textColor={xLightColor}
+              borderColor={medColor}
+              className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`}
+              value={cidRaw}
+              onChange={(e) => setCidRaw(e.target.value)}
+              placeholder="Collection CID"
+            />
+            <Button
+              _hover={{ bgColor: 'black', textColor: medColor }}
+              bgColor="black"
+              textColor={xLightColor}
+              borderWidth={1}
+              borderLeftRadius={'0px'}
+              borderColor={medColor}
+              type="button"
+              className="relative -ml-px inline-flex items-center space-x-2 rounded-r-md px-4 py-2"
+              onClick={() => setCidRaw('')}
+            >
+              Clear
+            </Button>
+          </div>
+        </Tooltip>
 
         <div className="mx-5 pb-1">
           <HStack my={5} spacing='20px'>
