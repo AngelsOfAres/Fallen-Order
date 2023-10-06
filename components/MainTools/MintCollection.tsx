@@ -9,7 +9,9 @@ import {
   Switch,
   Button,
   useColorMode,
-  useColorModeValue
+  useColorModeValue,
+  VStack,
+  Progress
 } from '@chakra-ui/react'
 import styles from '../../styles/glow.module.css'
 import toast from 'react-hot-toast'
@@ -27,10 +29,8 @@ export default function MintCollection() {
   const [rawUnitName, setrawUnitName] = useState<string>('')
   const [freeze, setFreeze] = useState<string>('')
   const [clawback, setClawback] = useState<string>('')
-  const [assetURL, setAssetURL] = useState<string>('')
   const [status, setStatus] = useState<string>('Generating')
   const [cidRaw, setCidRaw] = useState<any>('')
-  const [assetList, setAssetList] = useState<any>([])
   const [cidList, setCidList] = useState<any>([])
   const [searchComplete, setSearchComplete] = useState<boolean>(true)
   const { colorMode } = useColorMode()
@@ -46,6 +46,8 @@ export default function MintCollection() {
   const buttonText3 = useColorModeValue('orange.500', 'cyan.500')
   const buttonText4 = useColorModeValue('orange.100', 'cyan.100')
   const iconColor1 = useColorModeValue('orange', 'cyan')
+  
+  let assetCounter = 0
   
   const getCIDs = async () => {
     const gatewayUrl = `https://${cidRaw}.ipfs.nftstorage.link`
@@ -87,7 +89,6 @@ export default function MintCollection() {
       }
     }
     const CIDs = await getCIDs()
-    console.log(CIDs)
     if (CIDs === undefined){
       toast.error(`Input seems incorrect! Please review...`, { id: 'txn', duration: Infinity })
       setMinting(false)
@@ -102,6 +103,8 @@ export default function MintCollection() {
       suggestedParams.fee = 1000
       suggestedParams.flatFee = true
       const from = activeAddress
+      const manager = activeAddress
+      const reserve= activeAddress
       const total = 1
       const decimals = 0
       const note = Uint8Array.from('Abyssal Portal - Collection Minting Tool\n\nDeveloped by Angels Of Ares'.split("").map(x => x.charCodeAt(0)))
@@ -115,15 +118,14 @@ export default function MintCollection() {
         let retries = 0
         let success = false
         let batchResult = []
-        let assetCounter = 0
       
         while (retries < maxRetries && !success) {
           try {
             batchResult = await Promise.all(
               cidList.map(async (asset: any) => {
-                const assetName = `${rawAssetName} #${assetCounter++}`
-                const unitName = `${rawUnitName} #${assetCounter++}`
-                const assetURL = asset
+                const assetName = `${rawAssetName}${assetCounter++}`
+                const unitName = `${rawUnitName}${assetCounter}`
+                const assetURL = "ipfs://" + asset
       
                 return algosdk.makeAssetCreateTxnWithSuggestedParamsFromObject({
                   from,
@@ -132,6 +134,10 @@ export default function MintCollection() {
                   unitName,
                   total,
                   decimals,
+                  manager,
+                  reserve,
+                  freeze,
+                  clawback,
                   defaultFrozen,
                   suggestedParams,
                   note
@@ -190,7 +196,7 @@ export default function MintCollection() {
           await algodClient.sendRawTransaction(groupToSend).do()
         }
     }
-      toast.success(`Collection Minted Successfully! Total Minted: ${assetList.length}`, {
+      toast.success(`Collection Minted Successfully! Total Minted: ${cidList.length}`, {
         id: 'txn',
         duration: 5000
       })
@@ -198,6 +204,8 @@ export default function MintCollection() {
     } catch (error) {
       console.error(error)
       setMinting(false)
+      setCidList([])
+      assetCounter = 0
       setStatus((status) => status = 'Generating')
       toast.error(`Oops! Minting failed. Please verify input and try again...`, { id: 'txn' })
     }
@@ -207,6 +215,10 @@ export default function MintCollection() {
     e.preventDefault()
     setSearchComplete(false)
     mintCollection()
+  }
+
+  const toggleNewSearch = () => {
+    setSearchComplete(true)
   }
 
   return (
@@ -260,12 +272,6 @@ export default function MintCollection() {
               <Text textColor={lightColor} className='whitespace-nowrap'>Unit Name</Text>
               <Input maxLength={8} _hover={{bgColor: 'black'}} _focus={{borderColor: medColor}} textColor={xLightColor} borderColor={medColor}
                   className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`} type="text" value={rawUnitName} onChange={(e) => setrawUnitName(e.target.value)} placeholder="FO" />
-          </HStack>
-          
-          <HStack my={5} spacing='20px'>
-            <Text textColor={lightColor}>URL</Text>
-            <Input _hover={{bgColor: 'black'}} _focus={{borderColor: medColor}} textColor={xLightColor} borderColor={medColor}
-                className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`} type="text" value={assetURL} onChange={(e) => setAssetURL(e.target.value)} placeholder="https://fallenorder.xyz" />
           </HStack>
 
           <Tooltip py={3} px={5} borderWidth='1px' borderRadius='lg' arrowShadowColor={iconColor1} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Insert address here to enable FREEZE'} aria-label='Tooltip'>
@@ -326,9 +332,34 @@ export default function MintCollection() {
               Clear
             </Button>
           </div>
-
-          <Center my={4}><FullGlowButton text='MINT!' onClick={handleSubmit} disabled={rawUnitName === '' || rawAssetName === '' || cidRaw === ''}/></Center>
-
+          
+          {searchComplete ?
+            <Center my={4}><FullGlowButton text='MINT!' onClick={handleSubmit} disabled={rawUnitName === '' || rawAssetName === '' || cidRaw === ''}/></Center>
+          :
+          <>
+          {minting ?
+            <Center mt={2}>
+              <VStack>
+                <Text textAlign='center' textColor={xLightColor} className='pt-4 text-lg'>{status} Txns...</Text>
+                <Box w='150px'>
+                    <Progress size='xs' bgGradient={progress} colorScheme={buttonText5} isIndeterminate borderRadius='xl'/>
+                </Box>
+                <Text mb={4} textAlign='center' textColor={xLightColor} className='pt-4' fontSize='12px'>Total NFTs: <strong>{cidList.length}</strong></Text>
+              </VStack>
+            </Center>
+          : 
+            <Center my="24px">
+              <VStack>
+              <Text textAlign='center' textColor={xLightColor} fontSize='16px'>Mint Successful!</Text>
+              <Text mb={2} textAlign='center' textColor={xLightColor} fontSize='14px'>Total NFTs: <strong>{cidList.length}</strong></Text>
+                  <FullGlowButton text="Mint More!" onClick={toggleNewSearch} />
+                  <a className='pt-2' href={`https://www.nftexplorer.app/collection?creator=${activeAddress}`} target='_blank' rel='noreferrer'>
+                      <FullGlowButton text="View Collection!" />
+                  </a>
+              </VStack>
+            </Center>}
+          </>
+          }
         </div>
     </Box>
   )

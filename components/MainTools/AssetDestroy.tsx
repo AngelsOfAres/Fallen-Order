@@ -27,6 +27,7 @@ export default function AssetDestroy() {
   const { accountInfo, createdAssets } = useWalletBalance()
 
   const sendAssetDestroy = async () => {
+    console.log(assetID)
     try {
       if (!activeAddress) {
         throw new Error('Wallet Not Connected!')
@@ -184,7 +185,7 @@ export default function AssetDestroy() {
   async function handleSelectChange(value: any) {
     setSelected(value)
     if (value.value !== ''){
-        setAssetID(value.value)
+        setAssetID(value.asset)
     }
     else {
         setAssetID(0)
