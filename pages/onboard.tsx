@@ -156,6 +156,10 @@ export default function Onboard() {
                       <Link href="https://algoxnft.com/" passHref><Image src="/ALGOxNFT Logo.png" alt="ALGOxNFT" borderRadius='2xl'></Image></Link>
                     </Box>
                     <Box as={motion.div} animation={animation2} boxSize='24'>
+                      <Text mb={6} textAlign='center' fontFamily="Orbitron" fontSize='14px' textColor={buttonText5}>Shufl</Text>
+                      <Link href="https://shufl.app/" passHref><Image src="/Shufl Logo.png" alt="Shufl by AlGoanna"></Image></Link>
+                    </Box>
+                    <Box as={motion.div} animation={animation2} boxSize='24'>
                       <Text mb={1} textAlign='center' fontFamily="Orbitron" fontSize='14px' textColor={buttonText5}>AlgoGems</Text>
                       <Link href="https://www.algogems.io/" passHref><Image src="/AlgoGems Logo.png" alt="AlgoGems" borderRadius='2xl'></Image></Link>
                     </Box>
