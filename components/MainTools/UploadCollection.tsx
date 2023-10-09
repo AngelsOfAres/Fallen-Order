@@ -16,6 +16,8 @@ import {
 import styles from '../../styles/glow.module.css'
 import { FullGlowButton } from '../Buttons'
 import { Web3Storage } from 'web3.storage'
+import { ClipboardIcon } from '@heroicons/react/20/solid'
+import { copyToClipboard } from 'utils/clipboard'
 
 export default function UploadCollection() {
   const [uploading, setUploading] = useState<boolean>(false)
@@ -37,6 +39,10 @@ export default function UploadCollection() {
   const buttonText3 = useColorModeValue('orange.500', 'cyan.500')
   const buttonText4 = useColorModeValue('orange.100', 'cyan.100')
   const iconColor1 = useColorModeValue('orange', 'cyan')
+
+  const hoverBgColor = colorMode === "light" ? "hover:bg-orange-400" : "hover:bg-cyan-500"
+  const textColor = colorMode === "light" ? "text-orange-200" : "text-cyan-200"
+  const borderColor = colorMode === "light" ? 'border-orange-500' : 'border-cyan-400'
 
   const uploadCollection = async () => {
     setUploading(true)
@@ -210,10 +216,25 @@ export default function UploadCollection() {
               <Center mb="16px">
                 <VStack>
                 <Text mb={2} textAlign='center' textColor={xLightColor} fontSize='16px'>Upload Successful!</Text>
-                    <FullGlowButton text="Upload More!" onClick={toggleNewSearch} />
-                    <a href={`https://ipfs.algonft.tools/ipfs/${CID}`} target='_blank' rel='noreferrer'>
-                        <FullGlowButton text="View Files" />
-                    </a>
+                    <HStack my='12px'>
+                      <FullGlowButton text="Upload More!" onClick={toggleNewSearch} />
+                      <a href={`https://ipfs.algonft.tools/ipfs/${CID}`} target='_blank' rel='noreferrer'>
+                          <FullGlowButton text="View Files" />
+                      </a>
+                      <div className="rounded-md shadow-sm ml-3 sm:ml-4">
+                        <button
+                          type="button"
+                          className={`relative inline-flex items-center first:rounded-l-md last:rounded-r-md border ${borderColor} bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium ${textColor} hover:text-black ${hoverBgColor} focus:z-20`}
+                          data-clipboard-text={CID}
+                          data-clipboard-message="Collection CID Copied!"
+                          onClick={copyToClipboard}
+                          id="copy-cid"
+                          data-tooltip-content="Copy Collection CID"
+                        >
+                        <ClipboardIcon className="h-5 w-5" aria-hidden="true" />
+                      </button>
+                    </div>
+                  </HStack>
                 </VStack>
               </Center>
             </>

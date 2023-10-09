@@ -52,9 +52,7 @@ export default function MintCollection() {
   const medColor = useColorModeValue('orange.500', 'cyan.500')
   const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
   const buttonText5 = useColorModeValue('yellow', 'cyan')
-
   const baseColor = colorMode === 'light' ? 'orange' : 'cyan'
-
   const buttonText3 = useColorModeValue('orange.500', 'cyan.500')
   const buttonText4 = useColorModeValue('orange.100', 'cyan.100')
   const iconColor1 = useColorModeValue('orange', 'cyan')
@@ -67,46 +65,43 @@ export default function MintCollection() {
   
   async function readAndSaveCsvData(): Promise<string[][]> {
   return new Promise<string[][]>((resolve, reject) => {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.csv';
+    const fileInput = document.createElement('input')
+    fileInput.type = 'file'
+    fileInput.accept = '.csv'
 
     fileInput.addEventListener('change', (event) => {
-      const file = (event.target as HTMLInputElement).files?.[0];
+      const file = (event.target as HTMLInputElement).files?.[0]
 
       if (!file) {
-        reject(new Error('No file selected.'));
-        return;
+        reject(new Error('No file selected.'))
+        return
       }
 
-      const reader = new FileReader();
+      const reader = new FileReader()
 
       reader.onload = (e) => {
-        const contents = e.target?.result as string;
-        const rows = contents.split('\n');
-        const data: string[][] = [];
+        const contents = e.target?.result as string
+        const rows = contents.split('\n')
+        const data: string[][] = []
 
         rows.forEach((row) => {
           row = row.replace(/^"|"$/g, '').replace(/\r/g, '')
           const fields = row.split(',')
           for (let i = 0; i < fields.length; i++) {
-            fields[i] = fields[i].replace(/"/g, '');
+            fields[i] = fields[i].replace(/"/g, '')
           }
-          data.push(fields);
-        });
-
-        resolve(data);
-      };
-
+          data.push(fields)
+        })
+        resolve(data)
+      }
       reader.onerror = (error) => {
-        reject(error);
-      };
+        reject(error)
+      }
+      reader.readAsText(file)
+    })
 
-      reader.readAsText(file);
-    });
-
-    fileInput.click();
-  });
+    fileInput.click()
+  })
 }
 
   async function handleCSV() {
