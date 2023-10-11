@@ -56,3 +56,20 @@
 *:focus {
     box-shadow: none !important;
   }
+
+.hover-scale {
+transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+transform: scale(1.025); 
+}
+
+.hover-scale2 {
+transition: transform 0.2s ease;
+}
+
+.hover-scale2:hover {
+transform: scale(1.2); 
+}
+  

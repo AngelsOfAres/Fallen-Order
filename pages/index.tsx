@@ -19,6 +19,7 @@ import WalletHoldings from 'components/MainTools/WalletHoldings'
 import MassFreeze from 'components/MainTools/MassFreeze'
 import UploadCollection from 'components/MainTools/UploadCollection'
 import MintCollection from 'components/MainTools/MintCollection'
+import MassNFDSearch from 'components/MainTools/MassNFDSearch'
 
 export default function Home() {
   const { isActive } = useWallet()
@@ -55,7 +56,7 @@ export default function Home() {
         </Center>
       )}
       <Center my={4}>
-        <HStack>
+        <HStack spacing='20px'>
         <Link href='/onboard'><FullGlowButton fontsize='16px' text='Onboard Center' /></Link>
           <Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link>
         </HStack>
@@ -68,9 +69,10 @@ export default function Home() {
               <Transact />
               <MassSend />
               <MassOpt />
-              <MassFreeze />
+              <MassNFDSearch />
               <WalletHoldings />
               <Holders />
+              <MassFreeze />
               <AssetCreate />
               <AssetDestroy />
               <UploadCollection />
@@ -78,6 +80,7 @@ export default function Home() {
             </>
           ) : 
           <>
+            <MassNFDSearch />
             <WalletHoldings />
             <Holders />
             <MassFreeze />
