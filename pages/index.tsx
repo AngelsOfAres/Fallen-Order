@@ -20,6 +20,7 @@ import MassFreeze from 'components/MainTools/MassFreeze'
 import UploadCollection from 'components/MainTools/UploadCollection'
 import MintCollection from 'components/MainTools/MintCollection'
 import MassNFDSearch from 'components/MainTools/MassNFDSearch'
+import MassClawback from 'components/MainTools/MassClawback'
 
 export default function Home() {
   const { isActive } = useWallet()
@@ -73,6 +74,7 @@ export default function Home() {
               <WalletHoldings />
               <Holders />
               <MassFreeze />
+              <MassClawback />
               <AssetCreate />
               <AssetDestroy />
               <UploadCollection />
@@ -84,6 +86,7 @@ export default function Home() {
             <WalletHoldings />
             <Holders />
             <MassFreeze />
+            <MassClawback />
             <UploadCollection />
             <MintCollection />
           </>
