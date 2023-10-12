@@ -13,7 +13,6 @@ export default function MassClawback() {
   const [amount, setAmount] = useState<any>(0)
   const [addressList, setAddressList] = useState<any>([])
   const [seedphrase, setSeedphrase] = useState<string>('')
-  const [revocationTarget, setRevocationTarget] = useState<string>('')
   const [to, setTo] = useState<string>('')
   const [status, setStatus] = useState<string>('Generating')
   const [loading, setLoading] = useState<boolean>(false)
@@ -60,14 +59,14 @@ export default function MassClawback() {
         while (retries < maxRetries && !success) {
           try {
             batchResult = await Promise.all(
-              addressList.map(async () => {
+              addressList.map(async (address: any) => {
       
                 return algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
                 from,
                 to,
                 suggestedParams,
                 note,
-                revocationTarget,
+                revocationTarget: address,
                 amount: microAmount,
                 assetIndex
                 })
