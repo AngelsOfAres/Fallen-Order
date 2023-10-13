@@ -21,6 +21,7 @@ import UploadCollection from 'components/MainTools/UploadCollection'
 import MintCollection from 'components/MainTools/MintCollection'
 import MassNFDSearch from 'components/MainTools/MassNFDSearch'
 import MassClawback from 'components/MainTools/MassClawback'
+import Notify from 'components/MainTools/Notify'
 
 export default function Home() {
   const { isActive } = useWallet()
@@ -70,6 +71,7 @@ export default function Home() {
               <Transact />
               <MassSend />
               <MassOpt />
+              <Notify />
               <MassNFDSearch />
               <WalletHoldings />
               <Holders />
@@ -82,6 +84,7 @@ export default function Home() {
             </>
           ) : 
           <>
+            <Notify />
             <MassNFDSearch />
             <WalletHoldings />
             <Holders />
