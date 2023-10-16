@@ -19,12 +19,13 @@ async function fetchDataFromBackend(endpoint: string, data: Record<string, any>)
   }
 }
 
-export async function equipBG(char_id: any, bg_id: any, wallet: any) {
+export async function equipBG(char_id: any, bg_id: any, wallet: any, type: any) {
   try {
     const requestBody = {
       char_id: char_id,
       bg_id: bg_id,
-      wallet: wallet
+      wallet: wallet,
+      type: type
     }
 
     const response = await fetchDataFromBackend('manage/equip', requestBody)

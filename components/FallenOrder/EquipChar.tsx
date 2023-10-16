@@ -16,6 +16,7 @@ import { equipBG } from 'api/backend'
 const EquipCharacter: React.FC = () => {
   const { activeAddress } = useWallet()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure()
   const allFO = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5]
   const allBGs = [...BGRank1, ...BGRank2, ...BGRank3]
   const xLightColor = useColorModeValue('orange.100','cyan.100')
@@ -50,10 +51,10 @@ const EquipCharacter: React.FC = () => {
   let assetIds: any = []
   let assetData: any = []
 
-  async function handleEquip() {
+  async function handleEquip(type: any) {
     setEquipping(true)
     onClose()
-    await equipBG(selectedFO.asset_id, selectedBG.asset_id, activeAddress)
+    await equipBG(selectedFO.asset_id, selectedBG.asset_id, activeAddress, type)
     .then((data: any) => {
       if (data && data.includes("Error")) {
         console.log(data)
@@ -348,6 +349,23 @@ const EquipCharacter: React.FC = () => {
 
   return (<>
     <VStack w="90%">
+      <FullGlowButton text={equipping ? 'Dequipping...' : 'Dequip!'} onClick={onOpen2} disabled={equipping || selectedFO.asset_id === 0 || selectedBG.asset_id === 0} />
+      <Modal scrollBehavior={'outside'} size='xs' isCentered isOpen={isOpen2} onClose={onClose2}>
+        <ModalOverlay backdropFilter='blur(10px)'/>
+        <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
+            <ModalHeader textAlign='center' className={gradientText} fontFamily='Orbitron' fontSize='20px' fontWeight='bold'>Confirm!</ModalHeader>
+            <ModalBody>
+            <VStack m={1} alignItems='center' justifyContent='center' fontFamily='Orbitron' spacing='24px'>
+                <Text textAlign='center' textColor={buttonText4}><strong>{selectedFO.value}</strong> will be fully dequipped...</Text>
+                <Text textAlign='center' textColor={buttonText4}>Cost: <strong>25 $EXP</strong><br />(Clawback)</Text>
+                <HStack pb={3}>
+                    <FullGlowButton text='Confirm!' onClick={() => handleEquip(2)} disabled={equipping || selectedFO.asset_id === 0 || selectedBG.asset_id === 0} />
+                    <FullGlowButton text='X' onClick={onClose2} />
+                </HStack>
+            </VStack>
+            </ModalBody>
+        </ModalContent>
+      </Modal>
       <Center>
         <VStack>
           {!loading ?
@@ -479,7 +497,7 @@ const EquipCharacter: React.FC = () => {
                         <Text textAlign='center' textColor={buttonText4}><strong>{selectedBG.value}</strong> will be equipped onto <strong>{selectedFO.value}</strong></Text>
                         <Text textAlign='center' textColor={buttonText4}>Cost: <strong>25 $EXP</strong><br />(Clawback)</Text>
                         <HStack pb={3}>
-                            <FullGlowButton text='Confirm!' onClick={handleEquip} disabled={equipping || selectedFO.asset_id === 0 || selectedBG.asset_id === 0} />
+                            <FullGlowButton text='Confirm!' onClick={() => handleEquip(1)} disabled={equipping || selectedFO.asset_id === 0 || selectedBG.asset_id === 0} />
                             <FullGlowButton text='X' ref={null} isLoading={null} onClick={onClose} />
                         </HStack>
                     </VStack>

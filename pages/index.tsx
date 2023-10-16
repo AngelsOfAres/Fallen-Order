@@ -58,6 +58,9 @@ export default function Home() {
         </Center>
       )}
       <Center my={4}>
+        <Link href='/equip'><FullGlowButton fontsize='16px' text='Fallen Order' /></Link>
+      </Center>
+      <Center my={4}>
         <HStack spacing='20px'>
         <Link href='/onboard'><FullGlowButton fontsize='16px' text='Onboard Center' /></Link>
           <Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link>
