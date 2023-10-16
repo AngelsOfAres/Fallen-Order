@@ -1,18 +1,15 @@
-import { useWallet } from '@txnlab/use-wallet'
 import Head from 'next/head'
-import Link from 'next/link'
-import Account from 'components/MainTools/Account'
-import React, { useState } from 'react'
-import Connect from 'components/MainTools/Connect'
+import React from 'react'
 import Navbar from 'components/Navbar'
-import Transact from 'components/MainTools/Transact'
 import { Center, useColorModeValue, Text } from '@chakra-ui/react'
 import styles2 from '../styles/glow.module.css'
 import Footer from 'components/Footer'
 import EquipCharacter from 'components/FallenOrder/EquipChar'
+import useWalletBalance from 'hooks/useWalletBalance'
 
 export default function Equip() {
   const gradientText = useColorModeValue(styles2.textAnimatedGlowL, styles2.textAnimatedGlowD)
+  const { expBal } = useWalletBalance()
 
   return (
     <>
@@ -23,7 +20,10 @@ export default function Equip() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <Text my='48px' className={`${gradientText} responsive-font`}>Character Equip</Text>
+      {expBal !== -1 ?
+        <Text mt='24px' textAlign='center' className={gradientText} fontFamily='Orbitron' fontSize='20px'>Balance: {expBal} $EXP</Text>
+      : null}
+      <Text my='24px' className={`${gradientText} responsive-font`}>Character Equip</Text>
       <Center>
         <EquipCharacter />
       </Center>

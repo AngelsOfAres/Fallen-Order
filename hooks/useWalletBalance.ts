@@ -9,12 +9,19 @@ export default function useWalletBalance() {
   const [walletAvailableBalance, setWalletAvailableBalance] = useState<string | null>(null)
   const [assetList, setAssetList] = useState<any | null>(null)
   const [createdAssets, setCreatedAssets] = useState<any | null>(null)
+  const [expBal, setExpBal] = useState<any>(-1)
 
   const { activeAccount } = useWallet()
 
   const getAccountInfo = async () => {
     if (!activeAccount) throw new Error('No selected account.')
     const accountInfo = await algodClient.accountInformation(activeAccount.address).do()
+    try {
+    const exp_balance = await algodClient.accountAssetInformation(activeAccount.address, 811721471).do()
+    setExpBal(formatAssetBalance(exp_balance['asset-holding']['amount'], 0, true, true, 6))
+    } catch (error) {
+      console.error('Error:', error)
+    }
 
     return accountInfo
   }
@@ -42,13 +49,14 @@ export default function useWalletBalance() {
       setWalletBalance('0.000')
       setWalletAvailableBalance('0.000')
     }
-  }, [accountInfo, assetList, createdAssets, walletBalance, walletAvailableBalance])
+  }, [accountInfo, assetList, createdAssets, walletBalance, walletAvailableBalance, expBal])
 
   return {
     accountInfo,
     assetList,
     createdAssets,
     walletBalance,
-    walletAvailableBalance
+    walletAvailableBalance,
+    expBal
   }
 }

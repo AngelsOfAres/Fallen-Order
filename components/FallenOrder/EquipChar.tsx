@@ -372,7 +372,7 @@ const EquipCharacter: React.FC = () => {
             {options
               .filter((option) => allFO.includes(option.asset_id))
               .length > 0 ?
-              <div className="w-full pb-4 px-5 lg:flex lg:flex-col lg:flex-1">
+              <div className="w-full py-4 px-5 lg:flex lg:flex-col lg:flex-1">
                 <label
                   htmlFor="amount"
                   className="block text-sm whitespace-nowrap font-medium"
