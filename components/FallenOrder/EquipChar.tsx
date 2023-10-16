@@ -52,6 +52,10 @@ const EquipCharacter: React.FC = () => {
     setEquipping(true)
     await equipBG(selectedFO.asset_id, selectedBG.asset_id, activeAddress)
     .then((data: any) => {
+      if (data.includes("Error")) {
+        console.log(data)
+        return
+      }
       setTxnID(encodeURIComponent(data))
     })
     .catch((error: any) => {
