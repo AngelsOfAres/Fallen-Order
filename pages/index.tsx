@@ -31,8 +31,8 @@ export default function Home() {
   const lightColor = useColorModeValue('orange.200','cyan.200')
 
   const handleToggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+    setIsMenuOpen(!isMenuOpen)
+  }
 
   return (
     <>
