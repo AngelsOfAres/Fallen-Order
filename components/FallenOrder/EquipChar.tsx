@@ -52,7 +52,7 @@ const EquipCharacter: React.FC = () => {
     setEquipping(true)
     await equipBG(selectedFO.asset_id, selectedBG.asset_id, activeAddress)
     .then((data: any) => {
-      setTxnID(data)
+      setTxnID(encodeURIComponent(data))
     })
     .catch((error: any) => {
       console.error(error)
@@ -482,7 +482,7 @@ const EquipCharacter: React.FC = () => {
           </>
           }
           {txnID !== '' ?
-            <a href={`https://algoexplorer.io/group/${txnID}`} target='_blank' rel='noreferrer'><Text textColor={xLightColor} align={'center'} className='pt-6 text-sm'>View Txn</Text></a>
+            <a href={`https://algoexplorer.io/tx/group/${txnID}`} target='_blank' rel='noreferrer'><Text textColor={xLightColor} align={'center'} className='pt-6 text-sm'>View Txn</Text></a>
           : null}
         </VStack>
       </Center>
