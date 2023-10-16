@@ -1,5 +1,5 @@
 async function fetchDataFromBackend(endpoint: string, data: Record<string, any>): Promise<any> {
-    const apiUrl = `http://10.0.0.50:5000/${endpoint}`
+    const apiUrl = `https://10.0.0.50:5000/${endpoint}`
   try {
     const response = await fetch(apiUrl, {
       method: 'POST',
