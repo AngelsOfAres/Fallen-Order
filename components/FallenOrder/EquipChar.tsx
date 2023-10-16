@@ -1,4 +1,4 @@
-import { HStack, Text, useColorModeValue, Box, Center, VStack, Image as CImage, Progress, Tooltip } from '@chakra-ui/react'
+import { HStack, Text, useColorModeValue, Box, Center, VStack, Image as CImage, Progress, Tooltip, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, useDisclosure } from '@chakra-ui/react'
 import { FullGlowButton } from 'components/Buttons'
 import React, { useState, useEffect } from 'react'
 import styles from '../../styles/glow.module.css'
@@ -15,6 +15,7 @@ import { equipBG } from 'api/backend'
 
 const EquipCharacter: React.FC = () => {
   const { activeAddress } = useWallet()
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const allFO = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5]
   const allBGs = [...BGRank1, ...BGRank2, ...BGRank3]
   const xLightColor = useColorModeValue('orange.100','cyan.100')
@@ -28,7 +29,8 @@ const EquipCharacter: React.FC = () => {
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
   const bgColor = useColorModeValue("bg-orange-400", "bg-cyan-500")
   const { assetList } = useWalletBalance()
-  const [options, setOptions] = useState<any[]>([]);
+  const [options, setOptions] = useState<any[]>([])
+  const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
   const [selectedFO, setSelectedFO] = useState({value: 'No Characters Found!', label: (
     <>
     </>
@@ -50,9 +52,10 @@ const EquipCharacter: React.FC = () => {
 
   async function handleEquip() {
     setEquipping(true)
+    onClose()
     await equipBG(selectedFO.asset_id, selectedBG.asset_id, activeAddress)
     .then((data: any) => {
-      if (data.includes("Error")) {
+      if (data && data.includes("Error")) {
         console.log(data)
         return
       }
@@ -281,60 +284,56 @@ const EquipCharacter: React.FC = () => {
 
 
   const generateImage = () => {
-    const img1 = new Image();
-    const img2 = new Image();
-    img1.crossOrigin = "Anonymous";
-    img2.crossOrigin = "Anonymous";
-    img1.src = selectedFO.image;
+    const img1 = new Image()
+    const img2 = new Image()
+    img1.crossOrigin = "Anonymous"
+    img2.crossOrigin = "Anonymous"
+    img1.src = selectedFO.image
     img2.src = selectedBG.image
   
     img1.onload = () => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-  
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
       if (!ctx) {
-        console.error('Canvas is not supported in this browser.');
-        return;
+        console.error('Canvas is not supported in this browser.')
+        return
       }
+      canvas.width = 2000
+      canvas.height = 2000
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.drawImage(img2, 0, 0, canvas.width, canvas.height)
+      ctx.drawImage(img1, 0, 0, canvas.width, canvas.height)
   
-      canvas.width = 2000;
-      canvas.height = 2000;
-  
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-      ctx.drawImage(img2, 0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img1, 0, 0, canvas.width, canvas.height);
-  
-      const finalImageDataURL = canvas.toDataURL('image/png');
+      const finalImageDataURL = canvas.toDataURL('image/png')
       setEquippedChar(finalImageDataURL)
-    };
-  };  
+    }
+  }
 
   function dataURLtoBlob(dataURL: any) {
-    const byteString = atob(dataURL.split(',')[1]);
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
+    const byteString = atob(dataURL.split(',')[1])
+    const ab = new ArrayBuffer(byteString.length)
+    const ia = new Uint8Array(ab)
   
     for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
+      ia[i] = byteString.charCodeAt(i)
     }
   
-    return new Blob([ab], { type: 'image/png' }); 
+    return new Blob([ab], { type: 'image/png' });
   }
 
   function createObjectURL(blob: any) {
-    return URL.createObjectURL(blob);
+    return URL.createObjectURL(blob)
   }
 
   function downloadBlob(blob: any, fileName: any) {
-    const a = document.createElement('a');
-    a.href = createObjectURL(blob);
+    const a = document.createElement('a')
+    a.href = createObjectURL(blob)
     console.log(a.href)
-    a.download = fileName;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    a.download = fileName
+    a.style.display = 'none'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
   }
 
   async function handleSelectChangeFO(value: any) {
@@ -468,7 +467,32 @@ const EquipCharacter: React.FC = () => {
               }}
             />
             </Tooltip>
-            <FullGlowButton text={equipping ? 'Equipping...' : 'Equip!'} onClick={handleEquip} disabled={equipping || selectedFO.asset_id === 0 || selectedBG.asset_id === 0} />
+            {txnID !== undefined || txnID !== '' ?
+            <>
+              <FullGlowButton text={equipping ? 'Equipping...' : 'Equip!'} onClick={onOpen} disabled={equipping || selectedFO.asset_id === 0 || selectedBG.asset_id === 0} />
+              <Modal scrollBehavior={'outside'} size='xs' isCentered isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay backdropFilter='blur(10px)'/>
+                <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
+                    <ModalHeader textAlign='center' className={gradientText} fontFamily='Orbitron' fontSize='20px' fontWeight='bold'>Confirm!</ModalHeader>
+                    <ModalBody>
+                    <VStack m={1} alignItems='center' justifyContent='center' fontFamily='Orbitron' spacing='24px'>
+                        <Text textAlign='center' textColor={buttonText4}><strong>{selectedBG.value}</strong> will be equipped onto <strong>{selectedFO.value}</strong></Text>
+                        <Text textAlign='center' textColor={buttonText4}>Cost: <strong>25 $EXP</strong><br />(Clawback)</Text>
+                        <HStack pb={3}>
+                            <FullGlowButton text='Confirm!' onClick={handleEquip} disabled={equipping || selectedFO.asset_id === 0 || selectedBG.asset_id === 0} />
+                            <FullGlowButton text='X' ref={null} isLoading={null} onClick={onClose} />
+                        </HStack>
+                    </VStack>
+                    </ModalBody>
+                </ModalContent>
+              </Modal>
+            </>
+            :
+            <>
+              <a href={`https://algoexplorer.io/tx/group/${txnID}`} target='_blank' rel='noreferrer'><Text textColor={xLightColor} align={'center'} className='pb-4 text-md'>View Txn</Text></a>
+              <FullGlowButton text='Re-Equip!' onClick={() => setTxnID('')} />
+            </>
+            }
           </>
           : 
           <VStack my={4}>
@@ -485,9 +509,6 @@ const EquipCharacter: React.FC = () => {
             </Box>
           </>
           }
-          {txnID !== '' ?
-            <a href={`https://algoexplorer.io/tx/group/${txnID}`} target='_blank' rel='noreferrer'><Text textColor={xLightColor} align={'center'} className='pt-6 text-sm'>View Txn</Text></a>
-          : null}
         </VStack>
       </Center>
     </VStack>
