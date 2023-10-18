@@ -30,8 +30,6 @@ const ManageCharacter: React.FC = () => {
       return process_asset(batch)
     })  
     const results = await Promise.all(promises)
-    setCharList(results.flat().reverse())
-    setLoading(false)
     return results.flat().reverse()
   }
   
@@ -60,14 +58,17 @@ const ManageCharacter: React.FC = () => {
   }
 
   useEffect(() => {
-    if (assetList) {
-      if (assetList.length > 0) {
-        processAssetsInBatches()
-      } else {
+    const processAssetList = async () => {
+      if (assetList && assetList.length > 0) {
+        const results = await processAssetsInBatches()
+        console.log(results)
+        setCharList(results)
         setLoading(false)
       }
-    }
-    }, [assetList])
+    };
+  
+    processAssetList();
+  }, [assetList]);
 
   return (
     <>
