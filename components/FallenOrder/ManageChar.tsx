@@ -93,9 +93,10 @@ const ManageCharacter: React.FC = () => {
             {charList
             .length > 0 ?
               <Flex flexDirection="row" flexWrap="wrap" justifyContent='center'>
-                {charList
-                .map((option: any) => (
+                {charList.map((option: any, index: any) => (
+                  <div key={index}>
                     <CharCard metadata={option[0]} asset_id={option[1]} name={option[2]} unitName={option[3]} image={option[4]} />
+                  </div>
                 ))}
               </Flex>
             : 

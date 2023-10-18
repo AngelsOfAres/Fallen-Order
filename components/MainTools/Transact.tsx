@@ -236,12 +236,11 @@ export default function Transact() {
     if (visibleOptions.length === 0 && options.length > 1 && loadedOptionsCount === 0) {
       loadMoreOptions()
     }
-  }, [visibleOptions, options, loadedOptionsCount]);
+  }, [visibleOptions, options, loadedOptionsCount])
   
   useEffect(() => {
     setVisibleOptions([])
     setLoadedOptionsCount(0)
-    console.log(visibleOptions, loadedOptionsCount)
   }, [activeAddress])
 
 const loadMoreOptions = async () => {
