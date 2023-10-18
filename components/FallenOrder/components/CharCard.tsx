@@ -11,6 +11,7 @@ import { useWallet } from '@txnlab/use-wallet'
 import { levelChar } from 'api/backend'
 import { SuccessPopup } from './Popups/Success'
 import { wisdom_required, expCost, materialCost } from './Constants/levelup'
+import { formatAssetBalance } from 'utils'
 
 export function CharCard(props: any) {
     const { activeAddress } = useWallet()
@@ -23,6 +24,7 @@ export function CharCard(props: any) {
     if (wisdom >= wisdom_required[level+1]) {
         setLVLUp(true)
     }
+    const levelTooltip = LVLUp ? `Ready for LVL ${level + 1}, Master!` : `Wisdom to LVL ${(level+1)} = ${formatAssetBalance(wisdom, 0, true, true, 3)}/${formatAssetBalance(wisdom_required[level+1], 0 , true, true, 3)}`
 
     const { isOpen: isLevelOpen, onOpen: onLevelOpen, onClose: onLevelClose } = useDisclosure()
     const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
@@ -30,7 +32,6 @@ export function CharCard(props: any) {
     const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
     const buttonText = useColorModeValue('linear(to-tr, red, yellow)', 'linear(to-tr, purple.600, cyan)')
-    const colorText3 = useColorModeValue('orange.200','cyan.100')
     const buttonText3 = useColorModeValue('orange.500','cyan.500')
     const buttonText4 = useColorModeValue('orange.200','cyan.100')
     const colorText = useColorModeValue('linear(to-tr, red, yellow)', 'linear(to-tr, purple.600, cyan)')
@@ -172,24 +173,25 @@ export function CharCard(props: any) {
                 <Modal scrollBehavior={'outside'} size='xs' isCentered isOpen={isLevelOpen} onClose={onLevelClose}>
                   <ModalOverlay backdropFilter='blur(10px)'/>
                   <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
-                    <ModalHeader bgGradient={colorText} bgClip='text' textAlign='center' fontSize='18px' fontWeight='bold'>Edit Character</ModalHeader>
+                    <ModalHeader className={gradientText} textAlign='center' fontSize='20px'>Edit Character</ModalHeader>
                     <ModalBody>
                       <Flex pb={4} alignSelf='center' justifyContent="center" flexDirection="row" flexWrap="wrap" gap='12px'>
                         <FullGlowButton text='Rename' onClick={() => setComponentToRender('rename')} disabled={componentToRender === 'rename'}/>
                         <FullGlowButton text='Stats'  onClick={() => setComponentToRender('stats')} disabled={componentToRender === 'stats'}/>
                         <FullGlowButton text='Abilities'  onClick={() => setComponentToRender('abilities')} disabled={componentToRender === 'abilities'}/>
-                        <FullGlowButton text='Boost'  onClick={() => setComponentToRender('rename')} disabled={componentToRender === 'rename'}/>
-                        
+                        <FullGlowButton text='Boost'  onClick={() => setComponentToRender('rename')} disabled={componentToRender === 'boost'}/>  
+                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={levelTooltip} aria-label='Tooltip'>                      
                         <motion.div
                             animate={{ scale: LVLUp ? [1, 1.1, 1] : 1 }}
                             transition={{
                               repeat: Infinity,
-                              duration: 2,
+                              duration: 0.75,
                               ease: "linear",
                             }}
                         >
-                        <FullGlowButton text={loading ? 'Leveling Up...' : 'Level Up'} onClick={onConfirmOpen} disabled={!LVLUp} />
+                            <FullGlowButton text={loading ? 'Leveling Up...' : 'Level Up'} onClick={onConfirmOpen} disabled={!LVLUp} />
                         </motion.div>
+                        </Tooltip>
                       </Flex>
                       {componentToRender === 'rename' && <RenameManage asset_id={asset_id} name={metadata.Name ? metadata.Name : name} unitName={unitName} />}
                       {componentToRender === 'stats' && <StatsManage asset_id={asset_id} name={metadata.Name ? metadata.Name : name} unitName={unitName} stats={[metadata.ATK, metadata.DEF, metadata.AP]} points={metadata.Points}/>}
