@@ -1,39 +1,21 @@
-import { HStack, Text, useColorModeValue, Box, Center, VStack, Image as CImage, Progress, Tooltip, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, useDisclosure, Flex, SimpleGrid } from '@chakra-ui/react'
+import { Text, useColorModeValue, Box, VStack, Progress, Flex } from '@chakra-ui/react'
 import { FullGlowButton } from 'components/Buttons'
 import React, { useState, useEffect } from 'react'
-import styles from '../../styles/glow.module.css'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { Rank1, Rank2, Rank3, Rank4, Rank5 } from '../Whitelists/FOChars'
 import algodClient from 'lib/algodClient'
-import { useWallet } from '@txnlab/use-wallet'
 import { CharCard } from './components/CharCard'
 import axios from 'axios'
 
 const ManageCharacter: React.FC = () => {
-  const { activeAddress } = useWallet()
-  const { isOpen, onOpen, onClose } = useDisclosure()
   const allFO = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5]
   const xLightColor = useColorModeValue('orange.100','cyan.100')
   const lightColor = useColorModeValue('orange.300','cyan.300')
-  const medColor = useColorModeValue('orange.500','cyan.500')
-  const [txnID, setTxnID] = useState<any>('')
-  const [equipping, setEquipping] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
-  const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
-  const bgColor = useColorModeValue("bg-orange-400", "bg-cyan-500")
   const { assetList } = useWalletBalance()
-  const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
-  const [selectedFO, setSelectedFO] = useState({value: 'No Characters Found!', label: (
-    <>
-    </>
-  ), image: '', asset_id: 0})
   
   const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
   const buttonText5 = useColorModeValue('yellow','cyan')
-  const buttonText3 = useColorModeValue('orange.500', 'cyan.500')
-  const buttonText4 = useColorModeValue('orange.100', 'cyan.100')
-  const iconColor1 = useColorModeValue('orange', 'cyan')
-  const bgCardOff = useColorModeValue('linear(60deg, whiteAlpha.300 10%, black 35%, black 65%, whiteAlpha.300 90%)','linear(60deg, whiteAlpha.300 10%, black 35%, black 65%, whiteAlpha.300 90%)')
 
   const [charList, setCharList] = useState<any>([])
   
@@ -88,30 +70,22 @@ const ManageCharacter: React.FC = () => {
         <VStack w='90%'>
           {!loading ?
           <>
-          {charList.length > 0 ?
-          <>
-            {charList
-            .length > 0 ?
-              <Flex flexDirection="row" flexWrap="wrap" justifyContent='center'>
-                {charList.map((option: any, index: any) => (
-                  <div key={index}>
-                    <CharCard metadata={option[0]} asset_id={option[1]} name={option[2]} unitName={option[3]} image={option[4]} />
-                  </div>
-                ))}
-              </Flex>
+            {charList.length > 0 ?
+              <>
+                <Flex flexDirection="row" flexWrap="wrap" justifyContent='center'>
+                  {charList.map((option: any, index: any) => (
+                    <div key={index}>
+                      <CharCard metadata={option[0]} asset_id={option[1]} name={option[2]} unitName={option[3]} image={option[4]} />
+                    </div>
+                  ))}
+                </Flex>
+              </>
             : 
               <VStack my={4}>
-                <Text textColor={lightColor}>No Characters Found!</Text>
+                <Text textColor={lightColor}>Seems you do not own any characters...</Text>
                 <a href='https://www.nftexplorer.app/sellers/fallen-order' target='_blank' rel='noreferrer'><FullGlowButton text='Join The Order!' /></a>
               </VStack>
             }
-          </>
-          : 
-          <VStack my={4}>
-            <Text textColor={lightColor}>Seems you do not own any characters...</Text>
-            <a href='https://www.nftexplorer.app/sellers/fallen-order' target='_blank' rel='noreferrer'><FullGlowButton text='Join The Order!' /></a>
-          </VStack>
-          }
           </>
           :
           <>

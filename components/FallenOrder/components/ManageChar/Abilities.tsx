@@ -3,11 +3,11 @@ import { Modal, ModalBody, ModalHeader, ModalOverlay, ModalContent, Text, HStack
 import styles from '../../../../styles/glow.module.css'
 import { FullGlowButton } from 'components/Buttons'
 import { useState } from 'react'
-import { statsChar } from 'api/backend'
+import { abilitiesChar, statsChar } from 'api/backend'
 import { useWallet } from '@txnlab/use-wallet'
 import { SuccessPopup } from '../Popups/Success'
 
-export function AbilitiesChar(props: any) {
+export function AbilitiesManage(props: any) {
     const { asset_id, name, unitName, abilities } = props
     const { activeAddress } = useWallet()
     const [newAbilities, setNewAbilities] = useState<any>(abilities)
@@ -60,7 +60,7 @@ export function AbilitiesChar(props: any) {
     async function handleAbilities() {
         setLoading(true)
         onConfirmClose()
-        await statsChar(asset_id, activeAddress, newAbilities)
+        await abilitiesChar(asset_id, activeAddress, newAbilities)
         .then((data: any) => {
         if (data && data.includes("Error")) {
             console.log(data)

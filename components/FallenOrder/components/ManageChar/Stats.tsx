@@ -7,7 +7,7 @@ import { statsChar } from 'api/backend'
 import { useWallet } from '@txnlab/use-wallet'
 import { SuccessPopup } from '../Popups/Success'
 
-export function StatsChar(props: any) {
+export function StatsManage(props: any) {
     const { asset_id, name, unitName, stats, points } = props
     const { activeAddress } = useWallet()
     const [newStats, setNewStats] = useState<any>(stats)

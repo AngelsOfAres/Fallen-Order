@@ -7,7 +7,7 @@ import { renameChar } from 'api/backend'
 import { useWallet } from '@txnlab/use-wallet'
 import { SuccessPopup } from '../Popups/Success'
 
-export function Rename(props: any) {
+export function RenameManage(props: any) {
     const { asset_id, name, unitName } = props
     const { activeAddress } = useWallet()
     const [newName, setNewName] = useState<any>(name)

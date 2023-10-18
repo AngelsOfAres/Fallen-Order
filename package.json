@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@blockshake/defly-connect": "^1.1.5",
-    "@chakra-ui/core": "^0.8.0",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.1",
     "@daffiwallet/connect": "^1.0.3",

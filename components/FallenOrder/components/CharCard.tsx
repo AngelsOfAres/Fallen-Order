@@ -2,9 +2,9 @@ import * as React from 'react'
 import { Box, Container, Modal, ModalBody, ModalHeader, ModalFooter, ModalOverlay, ModalContent, Tooltip, Text, Link, Image, Button, Divider, Flex, HStack, VStack, Center, useDisclosure, useColorModeValue, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from '@chakra-ui/react'
 import styles from '../../../styles/glow.module.css'
 import { FullGlowButton } from 'components/Buttons'
-import { Rename } from './ManageChar/Rename'
-import { StatsChar } from './ManageChar/Stats'
-import { AbilitiesChar } from './ManageChar/Abilities'
+import { RenameManage } from './ManageChar/Rename'
+import { StatsManage } from './ManageChar/Stats'
+import { AbilitiesManage } from './ManageChar/Abilities'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useWallet } from '@txnlab/use-wallet'
@@ -19,22 +19,17 @@ export function CharCard(props: any) {
     const wisdom = parseInt(levelFull[1])
     const [LVLUp, setLVLUp] = useState<boolean>(false)
 
-    const scaleVariants = {
-        initial: { scale: 1 },
-        scaled: { scale: 1.2 },
-      }
-
-    const materialCost = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150]
-    const expCost = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000, 24000, 25000]
-    const wisdom_required = [0, 20750, 64250, 133250, 230250, 358250, 520750,
-        721000, 963250, 1251750, 1591250, 1986750, 2443750,
-        2968000, 3565500, 4244750, 5011750, 5874250, 6841250,
-        7923750, 9134000, 10486250, 11993250, 13671000, 15537500,
-        17616500, 19918000, 22482000, 25333250, 28592500, 32089250,
-        35948250, 40199000, 44864750, 49971750, 55547250, 61619750,
-        68218750, 75374500, 83117750, 91480000, 100486500, 110318250,
-        120970250, 132474250, 144862750, 158169500, 172429250, 187678500,
-        203954500, 221294500]
+    const materialCost = [
+        5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150
+    ]
+    const expCost = [
+        1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000, 24000, 25000
+    ]
+    const wisdom_required = [
+        0, 20750, 64250, 133250, 230250, 358250, 520750, 721000, 963250, 1251750, 1591250, 1986750, 2443750, 2968000, 3565500, 4244750, 5011750, 5874250, 6841250,
+        7923750, 9134000, 10486250, 11993250, 13671000, 15537500, 17616500, 19918000, 22482000, 25333250, 28592500, 32089250, 35948250, 40199000, 44864750, 49971750, 55547250, 61619750,
+        68218750, 75374500, 83117750, 91480000, 100486500, 110318250, 120970250, 132474250, 144862750, 158169500, 172429250, 187678500, 203954500, 221294500
+    ]
     
         
     if (wisdom >= wisdom_required[level+1]) {
@@ -74,6 +69,7 @@ export function CharCard(props: any) {
         console.error(error)
         })
         setLoading(false)
+        onSuccessOpen()
     }
 
     return (
@@ -204,12 +200,12 @@ export function CharCard(props: any) {
                               ease: "linear",
                             }}
                         >
-                        <FullGlowButton text='Level Up'  onClick={onConfirmOpen} disabled={!LVLUp} />
+                        <FullGlowButton text={loading ? 'Leveling Up...' : 'Level Up'} onClick={onConfirmOpen} disabled={!LVLUp} />
                         </motion.div>
                       </Flex>
-                      {componentToRender === 'rename' && <Rename asset_id={asset_id} name={metadata.Name ? metadata.Name : name} unitName={unitName} />}
-                      {componentToRender === 'stats' && <StatsChar asset_id={asset_id} name={metadata.Name ? metadata.Name : name} unitName={unitName} stats={[metadata.ATK, metadata.DEF, metadata.AP]} points={metadata.Points}/>}
-                      {componentToRender === 'abilities' && <AbilitiesChar asset_id={asset_id} name={metadata.Name ? metadata.Name : name} unitName={unitName} abilities={[metadata['Ability 1'] ? metadata['Ability 1'] : '-', metadata['Ability 2'] ? metadata['Ability 2'] : '-', metadata['Ability 3'] ? metadata['Ability 3'] : '-', metadata['Ultimate'] ? metadata['Ultimate'] : '-']}/>}
+                      {componentToRender === 'rename' && <RenameManage asset_id={asset_id} name={metadata.Name ? metadata.Name : name} unitName={unitName} />}
+                      {componentToRender === 'stats' && <StatsManage asset_id={asset_id} name={metadata.Name ? metadata.Name : name} unitName={unitName} stats={[metadata.ATK, metadata.DEF, metadata.AP]} points={metadata.Points}/>}
+                      {componentToRender === 'abilities' && <AbilitiesManage asset_id={asset_id} name={metadata.Name ? metadata.Name : name} unitName={unitName} abilities={[metadata['Ability 1'] ? metadata['Ability 1'] : '-', metadata['Ability 2'] ? metadata['Ability 2'] : '-', metadata['Ability 3'] ? metadata['Ability 3'] : '-', metadata['Ultimate'] ? metadata['Ultimate'] : '-']}/>}
                       <Box mt={6}>
                         <Modal scrollBehavior={'outside'} size='xs' isCentered isOpen={isConfirmOpen} onClose={onConfirmClose}>
                         <ModalOverlay backdropFilter='blur(10px)'/>

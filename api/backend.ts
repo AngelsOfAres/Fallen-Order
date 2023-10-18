@@ -65,6 +65,21 @@ export async function statsChar(char_id: any, wallet: any, stats: any) {
   }
 }
 
+export async function abilitiesChar(char_id: any, wallet: any, abilities: any) {
+  try {
+    const requestBody = {
+      char_id: char_id,
+      wallet: wallet,
+      abilities: abilities
+    }
+
+    const response = await fetchDataFromBackend('manage/abilities', requestBody)
+    return response
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export async function levelChar(char_id: any, wallet: any) {
   try {
     const requestBody = {
