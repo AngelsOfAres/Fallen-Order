@@ -30,7 +30,6 @@ const ManageCharacter: React.FC = () => {
       return process_asset(batch)
     })  
     const results = await Promise.all(promises)
-    console.log(results)
     setCharList(results.flat().reverse())
     setLoading(false)
     return results.flat().reverse()
@@ -45,7 +44,7 @@ const ManageCharacter: React.FC = () => {
       try {
         const assetInfo = await algodClient.getAssetByID(singleAsset['asset-id']).do()
         const assetImage = 'https://cloudflare-ipfs.com/ipfs/' + assetInfo.params.url.substring(7)
-        const response = await axios.get(metadata_api)  
+        const response = await axios.get(metadata_api)
         if (response.status === 200) {
           const data = response.data
           const note = data.transactions[0].note
@@ -56,7 +55,7 @@ const ManageCharacter: React.FC = () => {
         }
       } catch (error) {
         console.error('Error:', error)
-      }}  
+      }}
     return processedAssets
   }
 

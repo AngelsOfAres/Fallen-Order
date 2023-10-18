@@ -12,6 +12,7 @@ import { levelChar } from 'api/backend'
 import { SuccessPopup } from './Popups/Success'
 import { wisdom_required, expCost, materialCost } from './Constants/levelup'
 import { formatAssetBalance } from 'utils'
+import { useEffect } from 'react'
 
 export function CharCard(props: any) {
     const { activeAddress } = useWallet()
@@ -19,11 +20,16 @@ export function CharCard(props: any) {
     const levelFull = metadata.Level.split('/')
     const level = parseInt(levelFull[0])
     const wisdom = parseInt(levelFull[1])
-    const [LVLUp, setLVLUp] = useState<boolean>(false)    
+    const [LVLUp, setLVLUp] = useState<boolean>(false)
         
-    if (wisdom >= wisdom_required[level+1]) {
-        setLVLUp(true)
-    }
+    useEffect(() => {
+        if (wisdom >= wisdom_required[level + 1]) {
+            setLVLUp(true)
+        } else {
+            setLVLUp(false)
+        }
+    }, [wisdom, level])
+
     const levelTooltip = LVLUp ? `Ready for LVL ${level + 1}, Master!` : `Wisdom to LVL ${(level+1)} = ${formatAssetBalance(wisdom, 0, true, true, 3)}/${formatAssetBalance(wisdom_required[level+1], 0 , true, true, 3)}`
 
     const { isOpen: isLevelOpen, onOpen: onLevelOpen, onClose: onLevelClose } = useDisclosure()
