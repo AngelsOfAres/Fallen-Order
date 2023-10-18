@@ -176,7 +176,7 @@ export function CharCard(props: any) {
                 <VStack>
                 <FullGlowButton text='Edit' onClick={onLevelOpen}/>
                 <Link href={'/equip'} isExternal><FullGlowButton text='Equip' /></Link>
-                <Modal scrollBehavior={'outside'} size='xs' isCentered isOpen={isLevelOpen} onClose={onLevelClose}>
+                <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isLevelOpen} onClose={onLevelClose}>
                   <ModalOverlay backdropFilter='blur(10px)'/>
                   <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
                     <ModalHeader className={gradientText} textAlign='center' fontSize='20px'>Edit Character</ModalHeader>

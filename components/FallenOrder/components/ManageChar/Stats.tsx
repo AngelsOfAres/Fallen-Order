@@ -20,6 +20,7 @@ export function StatsManage(props: any) {
     const medColor = useColorModeValue('orange.500','cyan.500')
     const buttonText5 = useColorModeValue('yellow','cyan')
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
+    const availablePoints = points - newStats[0] - newStats[1] - newStats[2]
 
     async function handleStats() {
         setLoading(true)
@@ -40,23 +41,24 @@ export function StatsManage(props: any) {
 
     return (
         <VStack m={4}>
-            <Text mb='12px' textColor={buttonText3} fontSize='20px'>Total Points: {points}</Text>
+            <Text textColor={buttonText3} fontSize='18px'>Available Points</Text>
+            <Text mb='12px' textColor={buttonText3} fontSize='18px'>{isNaN(availablePoints) ? 0 : availablePoints}</Text>
 
-            <HStack w='200px' justifyContent='space-between'>
+            <HStack w='95%' justifyContent='space-between'>
                 <Text textColor={buttonText4}>ATK</Text>
                 <Input w='100px' type="number" name="attack" id="attack" max={36} textAlign='center' _hover={{ bgColor: 'black' }} _focus={{ borderColor: medColor }}
                     textColor={xLightColor} borderColor={medColor} borderRadius='lg' className={`block w-full bg-black sm:text-sm`} value={newStats[0]}
                     onChange={(e) => setNewStats([Math.min(parseInt(e.target.value), points - newStats[1] - newStats[2]), newStats[1], newStats[2]])} placeholder='0' />
             </HStack>
                 
-            <HStack w='200px' justifyContent='space-between'>
+            <HStack w='95%' justifyContent='space-between'>
                 <Text textColor={buttonText4}>DEF</Text>
                 <Input w='100px' type="number" name="defense" id="defense" max={36} textAlign='center' _hover={{ bgColor: 'black' }} _focus={{ borderColor: medColor }}
                     textColor={xLightColor} borderColor={medColor} borderRadius='lg' className={`block w-full bg-black sm:text-sm`} value={newStats[1]}
                     onChange={(e) => setNewStats([newStats[0], Math.min(parseInt(e.target.value), points - newStats[0] - newStats[2]), newStats[2]])} placeholder='0' />
             </HStack>
                 
-            <HStack w='200px' justifyContent='space-between'>
+            <HStack w='95%' justifyContent='space-between'>
                 <Text textColor={buttonText4}>AP</Text>
                 <Input w='100px' type="number" name="abilitypower" id="abilitypower" max={36} textAlign='center' _hover={{ bgColor: 'black' }} _focus={{ borderColor: medColor }}
                     textColor={xLightColor} borderColor={medColor} borderRadius='lg' className={`block w-full bg-black sm:text-sm`} value={newStats[2]}
@@ -64,14 +66,14 @@ export function StatsManage(props: any) {
             </HStack>
 
             <Center mt='20px'><FullGlowButton text={loading? 'Editing Stats...' : 'Edit Stats'} onClick={onConfirmOpen} disabled={!stats || stats.length === 0 || loading} /></Center>
-            <Modal scrollBehavior={'outside'} size='xs' isCentered isOpen={isConfirmOpen} onClose={onConfirmClose}>
+            <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isConfirmOpen} onClose={onConfirmClose}>
             <ModalOverlay backdropFilter='blur(10px)'/>
             <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
                 <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Confirm Stats Change</ModalHeader>
                 <ModalBody>
                 <VStack m={1} alignItems='center' justifyContent='center' spacing='10px'>
                     <Text fontSize='14px' textAlign='center' textColor={buttonText4}>{unitName}&apos;s New Stats:</Text>
-                    <Text fontSize='18px' textAlign='center' textColor={buttonText5}>ATK: {newStats[0]} | DEF: {newStats[1]} | AP: {newStats[2]}</Text>
+                    <Text fontSize='16px' textAlign='center' textColor={buttonText5}>ATK: {newStats[0]} | DEF: {newStats[1]} | AP: {newStats[2]}</Text>
                     <Text fontSize='14px' textAlign='center' textColor={buttonText4}>25 $EXP will be clawed back from your account</Text>
                     <HStack py={4}>
                         <FullGlowButton text='Confirm!' onClick={handleStats} />

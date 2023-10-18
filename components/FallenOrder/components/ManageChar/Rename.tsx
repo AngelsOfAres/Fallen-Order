@@ -44,7 +44,7 @@ export function RenameManage(props: any) {
                 textColor={xLightColor} borderColor={medColor} borderRadius='lg' className={`block w-full bg-black sm:text-sm`} value={newName}
                 onChange={(e) => setNewName(e.target.value)} placeholder="Insert Name!" />
             <Center><FullGlowButton text={loading? 'Renaming' : 'Rename'} onClick={onConfirmOpen} disabled={!newName || newName === null || newName.length === 0 || loading} /></Center>
-            <Modal scrollBehavior={'outside'} size='xs' isCentered isOpen={isConfirmOpen} onClose={onConfirmClose}>
+            <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isConfirmOpen} onClose={onConfirmClose}>
             <ModalOverlay backdropFilter='blur(10px)'/>
             <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
                 <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Confirm Rename</ModalHeader>

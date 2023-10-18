@@ -114,7 +114,7 @@ export function AbilitiesManage(props: any) {
             </VStack>
 
             <Center mt='20px'><FullGlowButton text={loading? 'Editing Abilities...' : 'Edit Abilities'} onClick={onConfirmOpen} disabled={newAbilities[0] === '-' || newAbilities[1] === '-' || newAbilities[2] === '-' || newAbilities[3] === '-' || loading} /></Center>
-            <Modal scrollBehavior={'outside'} size='xs' isCentered isOpen={isConfirmOpen} onClose={onConfirmClose}>
+            <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isConfirmOpen} onClose={onConfirmClose}>
             <ModalOverlay backdropFilter='blur(10px)'/>
             <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
                 <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Confirm Stats Change</ModalHeader>

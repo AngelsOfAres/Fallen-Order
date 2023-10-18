@@ -10,7 +10,7 @@ export function SuccessPopup(props: any) {
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
 
     return (
-            <Modal scrollBehavior={'outside'} size='xs' isCentered isOpen={isOpen} onClose={onClose}>
+            <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay backdropFilter='blur(10px)'/>
                 <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
                     <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Success!</ModalHeader>
