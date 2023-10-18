@@ -20,7 +20,6 @@ export default function useWalletBalance() {
   const getAccountInfo = async () => {
     if (!activeAccount) throw new Error('No selected account.')
     const accountInfo = await algodClient.accountInformation(activeAccount.address).do()
-    console.log(accountInfo)
     return accountInfo
   }
 

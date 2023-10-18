@@ -3,7 +3,7 @@ import { Modal, ModalBody, ModalHeader, ModalOverlay, ModalContent, Text, HStack
 import styles from '../../../../styles/glow.module.css'
 import { FullGlowButton } from 'components/Buttons'
 import { useState } from 'react'
-import { abilitiesChar, statsChar } from 'api/backend'
+import { abilitiesChar } from 'api/backend'
 import { useWallet } from '@txnlab/use-wallet'
 import { SuccessPopup } from '../Popups/Success'
 
@@ -11,6 +11,8 @@ export function AbilitiesManage(props: any) {
     const { asset_id, name, unitName, abilities } = props
     const { activeAddress } = useWallet()
     const [newAbilities, setNewAbilities] = useState<any>(abilities)
+    const [popTitle, setPopTitle] = useState<any>('')
+    const [popMessage, setPopMessage] = useState<any>('')
     const [loading, setLoading] = useState<boolean>(false)
     const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
     const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
@@ -21,6 +23,8 @@ export function AbilitiesManage(props: any) {
     const medColor = useColorModeValue('orange.500','cyan.500')
     const buttonText5 = useColorModeValue('yellow','cyan')
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
+    const success_msg = `${name && name.length > 0 ? name : unitName}'s Abilities Updated!`
+    const fail_msg = `Abilities Update Failed!`
 
     const basic_options: any = {
         1: 'Fury',
@@ -60,18 +64,29 @@ export function AbilitiesManage(props: any) {
     async function handleAbilities() {
         setLoading(true)
         onConfirmClose()
-        await abilitiesChar(asset_id, activeAddress, newAbilities)
-        .then((data: any) => {
-        if (data && data.includes("Error")) {
+        try{
+            const data = await abilitiesChar(asset_id, activeAddress, newAbilities)
+
+            if (data && data.includes("Error")) {
             console.log(data)
-            return
+            } else {
+            console.log(data)
+            if (data) {
+                setPopTitle('Success!')
+                setPopMessage(success_msg)
+            }
+            else {
+                setPopTitle('Woops!')
+                setPopMessage(fail_msg)
+            }
+            }
+        } catch (error) {
+            setPopTitle('Woops!')
+            setPopMessage(error)
+        } finally {
+            setLoading(false)
+            onSuccessOpen()
         }
-        })
-        .catch((error: any) => {
-        console.error(error)
-        })
-        setLoading(false)
-        onSuccessOpen()
     }
 
     return (
@@ -116,14 +131,18 @@ export function AbilitiesManage(props: any) {
             <Center mt='20px'><FullGlowButton text={loading? 'Editing Abilities...' : 'Edit Abilities'} onClick={onConfirmOpen} disabled={newAbilities[0] === '-' || newAbilities[1] === '-' || newAbilities[2] === '-' || newAbilities[3] === '-' || loading} /></Center>
             <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isConfirmOpen} onClose={onConfirmClose}>
             <ModalOverlay backdropFilter='blur(10px)'/>
-            <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
-                <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Confirm Stats Change</ModalHeader>
+            <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
+                <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Confirm Abilities Change</ModalHeader>
                 <ModalBody>
-                <VStack m={1} alignItems='center' justifyContent='center' spacing='10px'>
-                    <Text fontSize='14px' textAlign='center' textColor={buttonText4}>{unitName}&apos;s New Abilities:</Text>
-                    <Text fontSize='18px' textAlign='center' textColor={buttonText5}>Basic: {newAbilities[0]} | {newAbilities[1]} | {newAbilities[2]}</Text>
-                    <Text fontSize='18px' textAlign='center' textColor={buttonText5}>Ultimate: {newAbilities[3]}</Text>
-                    <Text fontSize='14px' textAlign='center' textColor={buttonText4}>25 $EXP will be clawed back from your account</Text>
+                <VStack m={1} alignItems='center' justifyContent='center' spacing='0px'>
+                    <Text mb={8} fontSize='14px' textAlign='center' textColor={buttonText4}>{unitName}&apos;s New Abilities:</Text>
+                    <Text fontSize='16px' textAlign='center' textColor={buttonText4}>Basic</Text>
+                    <Text fontSize='18px' textAlign='center' textColor={buttonText5}>{newAbilities[0]}</Text>
+                    <Text fontSize='18px' textAlign='center' textColor={buttonText5}>{newAbilities[1]}</Text>
+                    <Text fontSize='18px' textAlign='center' textColor={buttonText5}>{newAbilities[2]}</Text>
+                    <Text mt={4} fontSize='16px' textAlign='center' textColor={buttonText4}>Ultimate</Text>
+                    <Text fontSize='18px' textAlign='center' textColor={buttonText5}>{newAbilities[3]}</Text>
+                    <Text mt={8} fontSize='14px' textAlign='center' textColor={buttonText4}>25 $EXP will be clawed back from your account</Text>
                     <HStack py={4}>
                         <FullGlowButton text='Confirm!' onClick={handleAbilities} />
                         <FullGlowButton text='X' onClick={onConfirmClose} />
@@ -133,7 +152,7 @@ export function AbilitiesManage(props: any) {
             </ModalContent>
             </Modal>
 
-            <SuccessPopup isOpen={isSuccessOpen} onClose={onSuccessClose} message={`${name && name.length > 0 ? name : unitName}'s Abilities Updated!`} />
+            <SuccessPopup isOpen={isSuccessOpen} onClose={onSuccessClose} message={popMessage}  title={popTitle}/>
         </VStack>
     )
 

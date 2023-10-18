@@ -11,6 +11,8 @@ export function RenameManage(props: any) {
     const { asset_id, name, unitName } = props
     const { activeAddress } = useWallet()
     const [newName, setNewName] = useState<any>(name)
+    const [popTitle, setPopTitle] = useState<any>('')
+    const [popMessage, setPopMessage] = useState<any>('')
     const [loading, setLoading] = useState<boolean>(false)
     const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
     const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
@@ -20,22 +22,35 @@ export function RenameManage(props: any) {
     const medColor = useColorModeValue('orange.500','cyan.500')
     const buttonText5 = useColorModeValue('yellow','cyan')
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
+    const success_msg = `${name && name.length > 0 ? name : unitName} has been renamed to ${newName}!`
+    const fail_msg = `Character Rename Failed!`
 
     async function handleRename() {
         setLoading(true)
         onConfirmClose()
-        onSuccessOpen()
-        await renameChar(asset_id, activeAddress, newName)
-        .then((data: any) => {
-        if (data && data.includes("Error")) {
+
+        try{
+            const data = await renameChar(asset_id, activeAddress, newName)
+            if (data && data.includes("Error")) {
             console.log(data)
-            return
+            } else {
+            console.log(data)
+            if (data) {
+                setPopTitle('Success!')
+                setPopMessage(success_msg)
+            }
+            else {
+                setPopTitle('Woops!')
+                setPopMessage(fail_msg)
+            }
+            }
+        } catch (error) {
+            setPopTitle('Woops!')
+            setPopMessage(error)
+        } finally {
+            setLoading(false)
+            onSuccessOpen()
         }
-        })
-        .catch((error: any) => {
-        console.error(error)
-        })
-        setLoading(false)
     }
 
     return (
@@ -46,7 +61,7 @@ export function RenameManage(props: any) {
             <Center><FullGlowButton text={loading? 'Renaming' : 'Rename'} onClick={onConfirmOpen} disabled={!newName || newName === null || newName.length === 0 || loading} /></Center>
             <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isConfirmOpen} onClose={onConfirmClose}>
             <ModalOverlay backdropFilter='blur(10px)'/>
-            <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
+            <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
                 <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Confirm Rename</ModalHeader>
                 <ModalBody>
                 <VStack m={1} alignItems='center' justifyContent='center' spacing='10px'>
@@ -61,7 +76,7 @@ export function RenameManage(props: any) {
                 </ModalBody>
             </ModalContent>
             </Modal>
-            <SuccessPopup isOpen={isSuccessOpen} onClose={onSuccessClose} message={`${unitName} has been renamed to ${newName}!`} />
+            <SuccessPopup isOpen={isSuccessOpen} onClose={onSuccessClose} message={popMessage}  title={popTitle} />
         </Box>
     )
 

@@ -352,7 +352,7 @@ const EquipCharacter: React.FC = () => {
       <FullGlowButton text={equipping ? 'Dequipping...' : 'Dequip!'} onClick={onOpen2} disabled={equipping || selectedFO.asset_id === 0 || selectedBG.asset_id === 0} />
       <Modal scrollBehavior={'outside'} size='xs' isCentered isOpen={isOpen2} onClose={onClose2}>
         <ModalOverlay backdropFilter='blur(10px)'/>
-        <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
+        <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
             <ModalHeader textAlign='center' className={gradientText} fontFamily='Orbitron' fontSize='20px' fontWeight='bold'>Confirm!</ModalHeader>
             <ModalBody>
             <VStack m={1} alignItems='center' justifyContent='center' fontFamily='Orbitron' spacing='24px'>
@@ -490,7 +490,7 @@ const EquipCharacter: React.FC = () => {
               <FullGlowButton text={equipping ? 'Equipping...' : 'Equip!'} onClick={onOpen} disabled={equipping || selectedFO.asset_id === 0 || selectedBG.asset_id === 0} />
               <Modal scrollBehavior={'outside'} size='xs' isCentered isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay backdropFilter='blur(10px)'/>
-                <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
+                <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
                     <ModalHeader textAlign='center' className={gradientText} fontFamily='Orbitron' fontSize='20px' fontWeight='bold'>Confirm!</ModalHeader>
                     <ModalBody>
                     <VStack m={1} alignItems='center' justifyContent='center' fontFamily='Orbitron' spacing='24px'>

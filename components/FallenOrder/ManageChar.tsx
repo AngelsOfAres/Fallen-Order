@@ -12,7 +12,7 @@ const ManageCharacter: React.FC = () => {
   const xLightColor = useColorModeValue('orange.100','cyan.100')
   const lightColor = useColorModeValue('orange.300','cyan.300')
   const [loading, setLoading] = useState<boolean>(true)
-  const { assetList } = useWalletBalance()
+  const { assetList, boostBal } = useWalletBalance()
   
   const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
   const buttonText5 = useColorModeValue('yellow','cyan')
@@ -82,7 +82,7 @@ const ManageCharacter: React.FC = () => {
                 <Flex flexDirection="row" flexWrap="wrap" justifyContent='center'>
                   {charList.map((option: any, index: any) => (
                     <div key={index}>
-                      <CharCard metadata={option[0]} asset_id={option[1]} name={option[2]} unitName={option[3]} image={option[4]} />
+                      <CharCard metadata={option[0]} asset_id={option[1]} name={option[2]} unitName={option[3]} image={option[4]} boostBal={boostBal === -1 ? 'Not Opted!' : boostBal} />
                     </div>
                   ))}
                 </Flex>

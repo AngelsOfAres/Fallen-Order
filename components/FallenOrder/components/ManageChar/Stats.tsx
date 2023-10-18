@@ -11,6 +11,8 @@ export function StatsManage(props: any) {
     const { asset_id, name, unitName, stats, points } = props
     const { activeAddress } = useWallet()
     const [newStats, setNewStats] = useState<any>(stats)
+    const [popTitle, setPopTitle] = useState<any>('')
+    const [popMessage, setPopMessage] = useState<any>('')
     const [loading, setLoading] = useState<boolean>(false)
     const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
     const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
@@ -21,28 +23,43 @@ export function StatsManage(props: any) {
     const buttonText5 = useColorModeValue('yellow','cyan')
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
     const availablePoints = points - newStats[0] - newStats[1] - newStats[2]
+    const success_msg = `${name && name.length > 0 ? name : unitName}'s Stats Updated!`
+    const fail_msg = `Stats Update Failed!`
 
     async function handleStats() {
         setLoading(true)
         onConfirmClose()
-        await statsChar(asset_id, activeAddress, newStats)
-        .then((data: any) => {
-        if (data && data.includes("Error")) {
+      
+        try {
+          const data = await statsChar(asset_id, activeAddress, newStats)
+
+          if (data && data.includes("Error")) {
             console.log(data)
-            return
+          } else {
+            console.log(data)
+            if (data) {
+                setPopTitle('Success!')
+                setPopMessage(success_msg)
+            }
+            else {
+                setPopTitle('Woops!')
+                setPopMessage(fail_msg)
+            }
+          }
+        } catch (error) {
+            setPopTitle('Woops!')
+            setPopMessage(error)
+        } finally {
+          setLoading(false)
+          onSuccessOpen()
         }
-        })
-        .catch((error: any) => {
-        console.error(error)
-        })
-        setLoading(false)
-        onSuccessOpen()
-    }
+      }
+      
 
     return (
-        <VStack m={4}>
+        <VStack my={4} mx={8}>
             <Text textColor={buttonText3} fontSize='18px'>Available Points</Text>
-            <Text mb='12px' textColor={buttonText3} fontSize='18px'>{isNaN(availablePoints) ? 0 : availablePoints}</Text>
+            <Text mb='12px' textColor={buttonText5} fontSize='18px'>{isNaN(availablePoints) ? 0 : availablePoints}</Text>
 
             <HStack w='95%' justifyContent='space-between'>
                 <Text textColor={buttonText4}>ATK</Text>
@@ -68,7 +85,7 @@ export function StatsManage(props: any) {
             <Center mt='20px'><FullGlowButton text={loading? 'Editing Stats...' : 'Edit Stats'} onClick={onConfirmOpen} disabled={!stats || stats.length === 0 || loading} /></Center>
             <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isConfirmOpen} onClose={onConfirmClose}>
             <ModalOverlay backdropFilter='blur(10px)'/>
-            <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
+            <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
                 <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Confirm Stats Change</ModalHeader>
                 <ModalBody>
                 <VStack m={1} alignItems='center' justifyContent='center' spacing='10px'>
@@ -84,7 +101,7 @@ export function StatsManage(props: any) {
             </ModalContent>
             </Modal>
 
-            <SuccessPopup isOpen={isSuccessOpen} onClose={onSuccessClose} message={`${name && name.length > 0 ? name : unitName}'s Stats Updated!`} />
+            <SuccessPopup isOpen={isSuccessOpen} onClose={onSuccessClose} message={popMessage}  title={popTitle} />
         </VStack>
     )
 

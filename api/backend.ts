@@ -93,3 +93,17 @@ export async function levelChar(char_id: any, wallet: any) {
     console.error(error)
   }
 }
+
+export async function boostChar(char_id: any, wallet: any) {
+  try {
+    const requestBody = {
+      char_id: char_id,
+      wallet: wallet
+    }
+
+    const response = await fetchDataFromBackend('manage/boost', requestBody)
+    return response
+  } catch (error) {
+    console.error(error)
+  }
+}
