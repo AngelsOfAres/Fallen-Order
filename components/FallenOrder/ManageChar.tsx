@@ -60,7 +60,7 @@ const ManageCharacter: React.FC = () => {
   }
 
   useEffect(() => {
-    if (assetList !== undefined) {
+    if (assetList) {
       if (assetList.length > 0) {
         processAssetsInBatches()
       } else {
