@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useWallet } from '@txnlab/use-wallet'
 import { levelChar } from 'api/backend'
 import { SuccessPopup } from './Popups/Success'
+import { wisdom_required, expCost, materialCost } from './Constants/levelup'
 
 export function CharCard(props: any) {
     const { activeAddress } = useWallet()
@@ -17,20 +18,7 @@ export function CharCard(props: any) {
     const levelFull = metadata.Level.split('/')
     const level = parseInt(levelFull[0])
     const wisdom = parseInt(levelFull[1])
-    const [LVLUp, setLVLUp] = useState<boolean>(false)
-
-    const materialCost = [
-        5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150
-    ]
-    const expCost = [
-        1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000, 24000, 25000
-    ]
-    const wisdom_required = [
-        0, 20750, 64250, 133250, 230250, 358250, 520750, 721000, 963250, 1251750, 1591250, 1986750, 2443750, 2968000, 3565500, 4244750, 5011750, 5874250, 6841250,
-        7923750, 9134000, 10486250, 11993250, 13671000, 15537500, 17616500, 19918000, 22482000, 25333250, 28592500, 32089250, 35948250, 40199000, 44864750, 49971750, 55547250, 61619750,
-        68218750, 75374500, 83117750, 91480000, 100486500, 110318250, 120970250, 132474250, 144862750, 158169500, 172429250, 187678500, 203954500, 221294500
-    ]
-    
+    const [LVLUp, setLVLUp] = useState<boolean>(false)    
         
     if (wisdom >= wisdom_required[level+1]) {
         setLVLUp(true)
