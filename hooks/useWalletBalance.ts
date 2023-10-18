@@ -56,7 +56,7 @@ export default function useWalletBalance() {
       setWalletBalance('0.000')
       setWalletAvailableBalance('0.000')
     }
-  }, [accountInfo, walletBalance, walletAvailableBalance])
+  }, [activeAccount])
 
   return {
     accountInfo,
