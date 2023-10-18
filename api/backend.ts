@@ -34,3 +34,47 @@ export async function equipBG(char_id: any, bg_id: any, wallet: any, type: any) 
     console.error(error)
   }
 }
+
+export async function renameChar(char_id: any, wallet: any, newName: any) {
+  try {
+    const requestBody = {
+      char_id: char_id,
+      wallet: wallet,
+      name: newName
+    }
+
+    const response = await fetchDataFromBackend('manage/rename', requestBody)
+    return response
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export async function statsChar(char_id: any, wallet: any, stats: any) {
+  try {
+    const requestBody = {
+      char_id: char_id,
+      wallet: wallet,
+      stats: stats
+    }
+
+    const response = await fetchDataFromBackend('manage/stats', requestBody)
+    return response
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export async function levelChar(char_id: any, wallet: any) {
+  try {
+    const requestBody = {
+      char_id: char_id,
+      wallet: wallet
+    }
+
+    const response = await fetchDataFromBackend('manage/level', requestBody)
+    return response
+  } catch (error) {
+    console.error(error)
+  }
+}

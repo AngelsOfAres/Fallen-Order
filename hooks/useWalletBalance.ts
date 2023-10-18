@@ -16,13 +16,6 @@ export default function useWalletBalance() {
   const getAccountInfo = async () => {
     if (!activeAccount) throw new Error('No selected account.')
     const accountInfo = await algodClient.accountInformation(activeAccount.address).do()
-    try {
-    const exp_balance = await algodClient.accountAssetInformation(activeAccount.address, 811721471).do()
-    setExpBal(formatAssetBalance(exp_balance['asset-holding']['amount'], 0, true, true, 6))
-    } catch (error) {
-      console.error('Error:', error)
-    }
-
     return accountInfo
   }
 
@@ -32,11 +25,13 @@ export default function useWalletBalance() {
   })
 
   useEffect(() => {
-    if (accountInfo && accountInfo.amount !== undefined && accountInfo['min-balance'] !== undefined) {
+    if (activeAccount && accountInfo && accountInfo.amount !== undefined && accountInfo['min-balance'] !== undefined) {
       const balance = formatAssetBalance(accountInfo.amount, 6, true, true, 8)
       const availableBalance = formatAssetBalance(accountInfo.amount - accountInfo['min-balance'], 6, true, true, 8)
-      const assets = accountInfo.assets
+      const assets = accountInfo.assets.filter((item: any) => item.amount > 0)
       assets.reverse()
+      const expInfo = assets.find((asset: any) => asset['asset-id'] === 811721471)
+      setExpBal(expInfo ? formatAssetBalance(expInfo.amount, 0, true, true, 3) : -1)
       const created = accountInfo['created-assets']
       created.reverse()
       setAssetList(assets)
@@ -49,7 +44,7 @@ export default function useWalletBalance() {
       setWalletBalance('0.000')
       setWalletAvailableBalance('0.000')
     }
-  }, [accountInfo, assetList, createdAssets, walletBalance, walletAvailableBalance, expBal])
+  }, [accountInfo, walletBalance, walletAvailableBalance])
 
   return {
     accountInfo,
