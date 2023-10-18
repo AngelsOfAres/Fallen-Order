@@ -20,12 +20,14 @@ export default function useWalletBalance() {
   const getAccountInfo = async () => {
     if (!activeAccount) throw new Error('No selected account.')
     const accountInfo = await algodClient.accountInformation(activeAccount.address).do()
+    console.log(accountInfo)
     return accountInfo
   }
 
   const { data: accountInfo } = useQuery(['balance', activeAccount?.address], getAccountInfo, {
     enabled: !!activeAccount?.address,
-    refetchInterval: 30000
+    staleTime: Infinity,
+    refetchInterval: 600000
   })
 
   useEffect(() => {
@@ -56,7 +58,7 @@ export default function useWalletBalance() {
       setWalletBalance('0.000')
       setWalletAvailableBalance('0.000')
     }
-  }, [activeAccount])
+  }, [accountInfo])
 
   return {
     accountInfo,
