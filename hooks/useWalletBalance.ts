@@ -7,8 +7,8 @@ import { formatAssetBalance } from 'utils'
 export default function useWalletBalance() {
   const [walletBalance, setWalletBalance] = useState<string | null>(null)
   const [walletAvailableBalance, setWalletAvailableBalance] = useState<string | null>(null)
-  const [assetList, setAssetList] = useState<any | null>(null)
-  const [createdAssets, setCreatedAssets] = useState<any | null>(null)
+  const [assetList, setAssetList] = useState<any>(null)
+  const [createdAssets, setCreatedAssets] = useState<any>(null)
   const [expBal, setExpBal] = useState<any>(-1)
   const [orderBal, setOrderBal] = useState<any>(-1)
   const [boostBal, setBoostBal] = useState<any>(-1)
@@ -46,8 +46,8 @@ export default function useWalletBalance() {
       setClayOreBal(clayOreInfo ? formatAssetBalance(clayOreInfo.amount, 0, true, true, 3) : -1)
       const created = accountInfo['created-assets']
       created.reverse()
-      setAssetList(assets)
-      setCreatedAssets(created)
+      setAssetList(assets.length > 0 ? assets : -1)
+      setCreatedAssets(created.length > 0 ? created : -1)
       setWalletBalance(balance)
       setWalletAvailableBalance(availableBalance)
     } else {
