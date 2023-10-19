@@ -43,6 +43,7 @@
     "gh-pages": "^6.0.0",
     "ipfs-http-client": "^60.0.1",
     "minimist": "^1.2.8",
+    "moment-timezone": "^0.5.43",
     "multiformats": "^12.1.2",
     "next": "13.1.1",
     "react": "18.2.0",

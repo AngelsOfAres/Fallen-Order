@@ -8,20 +8,29 @@ import { AbilitiesManage } from './ManageChar/Abilities'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useWallet } from '@txnlab/use-wallet'
-import { boostChar, levelChar } from 'api/backend'
+import { boostChar, kinshipChar, levelChar } from 'api/backend'
 import { SuccessPopup } from './Popups/Success'
 import { wisdom_required, expCost, materialCost } from './Constants/levelup'
 import { formatAssetBalance } from 'utils'
 import { useEffect } from 'react'
 import EquipCharacter from './ManageChar/EquipChar'
+import { formatDuration } from 'utils/formatTimer'
 
 export function CharCard(props: any) {
     const { activeAddress } = useWallet()
-    const { metadata, asset_id, name, unitName, image, boostBal, bg_image, bg_name } = props
+    const { metadata, asset_id, name, unitName, image, boostBal, bg_image, bg_name, kin_sec } = props
     const levelFull = metadata.Level.split('/')
     const level = parseInt(levelFull[0])
     const wisdom = parseInt(levelFull[1])
     const [LVLUp, setLVLUp] = useState<boolean>(false)
+    const [popTitle, setPopTitle] = useState<any>('')
+    const [popMessage, setPopMessage] = useState<any>('')
+    const success_msg_kin = `Kinship Ritual Successful!`
+    const fail_msg_kin = `Kinship Ritual Failed!`
+    const success_msg_lvl = `${unitName} has been level up to LVL ${level+1}!`
+    const fail_msg_lvl = `Level Up Failed!`
+    const success_msg_boost = `50 Points have been added to ${unitName}!`
+    const fail_msg_boost = `Points Boost Failed!`
         
     useEffect(() => {
         if (wisdom >= wisdom_required[level + 1]) {
@@ -41,7 +50,6 @@ export function CharCard(props: any) {
     const { isOpen, onToggle } = useDisclosure()
     const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
-    const buttonText = useColorModeValue('linear(to-tr, red, yellow)', 'linear(to-tr, purple.600, cyan)')
     const buttonText3 = useColorModeValue('orange.500','cyan.500')
     const buttonText4 = useColorModeValue('orange.200','cyan.100')
     const bgCardOn = useColorModeValue('linear(60deg, whiteAlpha.300 3%, black 50%, whiteAlpha.300 97%)','linear(60deg, whiteAlpha.300 3%, black 50%, whiteAlpha.300 97%)')
@@ -55,37 +63,83 @@ export function CharCard(props: any) {
     async function handleLevelUp() {
         setLoading(true)
         onLevelConfirmClose()
-        await levelChar(asset_id, activeAddress)
-        .then((data: any) => {
-        if (data && data.includes("Error")) {
+
+        try{
+            const data = await levelChar(asset_id, activeAddress)
+            if (data && data.includes("Error")) {
             console.log(data)
-            return
+            } else {
+            console.log(data)
+            if (data) {
+                setPopTitle('Success!')
+                setPopMessage(success_msg_lvl)
+            }
+            else {
+                setPopTitle('Woops!')
+                setPopMessage(fail_msg_lvl)
+            }
+            }
+        } catch (error) {
+            setPopTitle('Woops!')
+            setPopMessage(error)
+        } finally {
+            setLoading(false)
+            onSuccessOpen()
         }
-        })
-        .catch((error: any) => {
-        console.error(error)
-        return
-        })
-        setLoading(false)
-        onSuccessOpen()
     }
 
     async function handleBoost() {
         setLoading(true)
         onBoostConfirmClose()
-        await boostChar(asset_id, activeAddress)
-        .then((data: any) => {
-        if (data && data.includes("Error")) {
+
+        try{
+            const data = await boostChar(asset_id, activeAddress)
+            if (data && data.includes("Error")) {
             console.log(data)
-            return
+            } else {
+            console.log(data)
+            if (data) {
+                setPopTitle('Success!')
+                setPopMessage(success_msg_boost)
+            }
+            else {
+                setPopTitle('Woops!')
+                setPopMessage(fail_msg_boost)
+            }
+            }
+        } catch (error) {
+            setPopTitle('Woops!')
+            setPopMessage(error)
+        } finally {
+            setLoading(false)
+            onSuccessOpen()
         }
-        })
-        .catch((error: any) => {
-        console.error(error)
-        return
-        })
-        setLoading(false)
-        onSuccessOpen()
+    }
+
+    async function handleKinship() {
+        setLoading(true)
+        try{
+            const data = await kinshipChar(asset_id, activeAddress)
+            if (data && data.includes("Error")) {
+            console.log(data)
+            } else {
+            console.log(data)
+            if (data) {
+                setPopTitle('Success!')
+                setPopMessage(success_msg_kin)
+            }
+            else {
+                setPopTitle('Woops!')
+                setPopMessage(fail_msg_kin)
+            }
+            }
+        } catch (error) {
+            setPopTitle('Woops!')
+            setPopMessage(error)
+        } finally {
+            setLoading(false)
+            onSuccessOpen()
+        }
     }
 
     return (
@@ -94,7 +148,7 @@ export function CharCard(props: any) {
                 <Image zIndex={1} mt={isOpen ? '24px' : 0} w='inherit' maxW='150px' onClick={onToggle} borderRadius='14.5px' alt={unitName} src={image} />
                 {isOpen ?
                 <Box mt={-0.3} position="relative" py={0.5} px={2} bgGradient={bgCardOn} borderColor={buttonText3} borderTopWidth='0px' borderBottomWidth='0.5px' borderLeftWidth='0.5px' borderRightWidth='0.5px' borderBottomRadius='xl' borderTopRadius='sm'>
-                    <Text bgGradient={buttonText} bgClip='text' fontSize='12px'>{unitName}</Text>
+                    <Text className={gradientText} fontSize='12px'>{unitName}</Text>
                 </Box> : null}
             </Container>
             {isOpen ?
@@ -108,7 +162,7 @@ export function CharCard(props: any) {
             >
             <Flex m={3} textColor={buttonText3} fontFamily="Orbitron" alignItems='center' justifyContent='center'>
                 <VStack mx={2} alignItems='center' spacing='2px'>
-                <Text bgGradient={buttonText} bgClip='text' fontSize='12px'>LVL</Text>
+                <Text className={gradientText} fontSize='12px'>LVL</Text>
                 <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                     <Center>
                         <Tooltip label={'Health Points'} aria-label='Tooltip'>
@@ -118,7 +172,7 @@ export function CharCard(props: any) {
                 </Box>
                 </VStack>
                 <VStack mx={2} alignItems='center' spacing='2px'>
-                <Text bgGradient={buttonText} bgClip='text' fontSize='12px'>HP</Text>
+                <Text className={gradientText} fontSize='12px'>HP</Text>
                 <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                     <Center>
                         <Tooltip label={'Health Points'} aria-label='Tooltip'>
@@ -128,7 +182,7 @@ export function CharCard(props: any) {
                 </Box>
                 </VStack>
                 <VStack mx={2} alignItems='center' spacing='2px'>
-                <Text bgGradient={buttonText} bgClip='text' fontSize='12px'>Points</Text>
+                <Text className={gradientText} fontSize='12px'>Points</Text>
                 <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                     <Center>
                         <Tooltip label={'Ability Power'} aria-label='Tooltip'>
@@ -140,7 +194,7 @@ export function CharCard(props: any) {
                 </Flex>
                 <Flex textColor={buttonText3} fontFamily="Orbitron" alignItems='center' justifyContent='center'>
                     <VStack mx={2} alignItems='center' spacing='2px'>
-                    <Text bgGradient={buttonText} bgClip='text' fontSize='12px'>ATK</Text>
+                    <Text className={gradientText} fontSize='12px'>ATK</Text>
                     <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                         <Center>
                             <Tooltip label={'Attack'} aria-label='Tooltip'>
@@ -150,7 +204,7 @@ export function CharCard(props: any) {
                     </Box>
                     </VStack>
                     <VStack mx={2} alignItems='center' spacing='2px'>
-                    <Text bgGradient={buttonText} bgClip='text' fontSize='12px'>DEF</Text>
+                    <Text className={gradientText} fontSize='12px'>DEF</Text>
                     <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                         <Center>
                             <Tooltip label={'Defense'} aria-label='Tooltip'>
@@ -160,7 +214,7 @@ export function CharCard(props: any) {
                     </Box>
                     </VStack>
                     <VStack mx={2} alignItems='center' spacing='2px'>
-                    <Text bgGradient={buttonText} bgClip='text' fontSize='12px'> AP </Text>
+                    <Text className={gradientText} fontSize='12px'> AP </Text>
                     <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                         <Center>
                             <Tooltip label={'Ability Power'} aria-label='Tooltip'>
@@ -173,24 +227,41 @@ export function CharCard(props: any) {
                 <Box p={4} alignItems='center' justifyContent='space-between'>
                 <HStack alignItems='center' justifyContent='center' spacing='10px'>
                 <VStack>
-                    <Text fontSize='14px' bgGradient={buttonText} bgClip='text'>Kinship</Text>
+                    <Text fontSize='14px' className={gradientText}>Kinship</Text>
                 `   <HStack w='inherit' justifyContent='center'>
+                        {!loading ?
                         <Box textColor={buttonText4} p={2} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='lg'>
                             <Center>
                                 <Tooltip hasArrow label={'Kinship'} aria-label='Tooltip'>
                                     <Text fontSize='12px'>{metadata.Kinship}</Text>
                                 </Tooltip>
                             </Center>
-                        </Box>
-                        <FullGlowButton text='Cast!' />
+                        </Box> : null}
+                        {kin_sec === 0 ?
+                        <motion.div
+                            animate={{ scale: [1, 1.07, 1] }}
+                            transition={{
+                              repeat: Infinity,
+                              duration: 0.75,
+                              ease: "linear",
+                            }}>
+                            <FullGlowButton text={loading ? 'Casting' : 'Cast!'} onClick={handleKinship} disabled={loading} />
+                        </motion.div>
+                        : null}
                     </HStack>
                     <Box pb={1}>
-                        <Center>
-                        <HStack className='whitespace-nowrap'>
-                            <Text fontSize='10px' bgGradient={buttonText} bgClip='text'>Next Ritual:</Text>
-                            <Text fontSize='9px' textColor={buttonText4}>23:54</Text>
-                        </HStack>
-                        </Center>
+                            {kin_sec !== 0 ?
+                            <>
+                            <HStack className='whitespace-nowrap'>
+                                <Text fontSize='10px' textColor={buttonText5}>Next Ritual:</Text>
+                                <Text fontSize='12px' textColor={buttonText4}>{formatDuration(kin_sec)}</Text>
+                            </HStack>
+                            </>
+                            : 
+                            <>
+                                <Text fontSize='12px' textColor={buttonText5}>Ready!</Text>
+                            </>
+                            }
                     </Box>
                 </VStack>
                 <Divider p={1} h='60px' borderColor={buttonText3} orientation='vertical'/>
@@ -225,13 +296,12 @@ export function CharCard(props: any) {
                         </Tooltip>
                         <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={levelTooltip} aria-label='Tooltip'>                      
                         <motion.div
-                            animate={{ scale: LVLUp ? [1, 1.1, 1] : 1 }}
+                            animate={{ scale: LVLUp ? [1, 1.07, 1] : 1 }}
                             transition={{
                               repeat: Infinity,
                               duration: 0.75,
                               ease: "linear",
-                            }}
-                        >
+                            }}>
                             <FullGlowButton text={loading ? 'Leveling Up...' : 'Level Up'} onClick={onLevelConfirmOpen} disabled={!LVLUp} />
                         </motion.div>
                         </Tooltip>
@@ -292,7 +362,7 @@ export function CharCard(props: any) {
         </motion.div>
         </AnimatePresence>
         </> : null}
-        <SuccessPopup isOpen={isSuccessOpen} onClose={onSuccessClose} message={`${unitName} has been level up to LVL ${level+1}!`} />
+        <SuccessPopup isOpen={isSuccessOpen} onClose={onSuccessClose} message={popMessage} title={popTitle} />
         </Box>
     )
 
