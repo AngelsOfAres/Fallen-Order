@@ -49,7 +49,14 @@ const ManageCharacter: React.FC = () => {
           const data = response.data
           const note = data.transactions[0].note
           const metadata_decoded_asset = JSON.parse(Buffer.from(atob(note), 'utf-8').toString('utf-8'))
-          processedAssets.push([metadata_decoded_asset.properties, singleAsset['asset-id'], assetInfo.params['name'], assetInfo.params['unit-name'], assetImage])
+          let bg_image = '-'
+          let bg_name = '-'
+          if (metadata_decoded_asset.properties.Background && metadata_decoded_asset.properties.Background !== '-') {
+            const bgInfo = await algodClient.getAssetByID(metadata_decoded_asset.properties.Background).do()
+            bg_image = 'https://cloudflare-ipfs.com/ipfs/' + bgInfo.params.url.substring(7)
+            bg_name = bgInfo.params['name']
+          }
+          processedAssets.push([metadata_decoded_asset.properties, singleAsset['asset-id'], assetInfo.params['name'], assetInfo.params['unit-name'], assetImage, bg_image, bg_name])
         } else {
           console.log('Error fetching data from API for asset ID', singleAsset['asset-id'])
         }
@@ -82,7 +89,7 @@ const ManageCharacter: React.FC = () => {
                 <Flex flexDirection="row" flexWrap="wrap" justifyContent='center'>
                   {charList.map((option: any, index: any) => (
                     <div key={index}>
-                      <CharCard metadata={option[0]} asset_id={option[1]} name={option[2]} unitName={option[3]} image={option[4]} boostBal={boostBal === -1 ? 'Not Opted!' : boostBal} />
+                      <CharCard metadata={option[0]} asset_id={option[1]} name={option[2]} unitName={option[3]} image={option[4]} boostBal={boostBal === -1 ? 'Not Opted!' : boostBal} bg_image={option[5]} bg_name={option[6]} />
                     </div>
                   ))}
                 </Flex>

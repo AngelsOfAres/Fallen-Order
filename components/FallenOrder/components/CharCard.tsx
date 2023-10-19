@@ -13,10 +13,11 @@ import { SuccessPopup } from './Popups/Success'
 import { wisdom_required, expCost, materialCost } from './Constants/levelup'
 import { formatAssetBalance } from 'utils'
 import { useEffect } from 'react'
+import EquipCharacter from './ManageChar/EquipChar'
 
 export function CharCard(props: any) {
     const { activeAddress } = useWallet()
-    const { metadata, asset_id, name, unitName, image, boostBal } = props
+    const { metadata, asset_id, name, unitName, image, boostBal, bg_image, bg_name } = props
     const levelFull = metadata.Level.split('/')
     const level = parseInt(levelFull[0])
     const wisdom = parseInt(levelFull[1])
@@ -36,6 +37,7 @@ export function CharCard(props: any) {
     const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
     const { isOpen: isLevelConfirmOpen, onOpen: onLevelConfirmOpen, onClose: onLevelConfirmClose } = useDisclosure()
     const { isOpen: isBoostConfirmOpen, onOpen: onBoostConfirmOpen, onClose: onBoostConfirmClose } = useDisclosure()
+    const { isOpen: isEquipOpen, onOpen: onEquipOpen, onClose: onEquipClose } = useDisclosure()
     const { isOpen, onToggle } = useDisclosure()
     const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
@@ -194,7 +196,21 @@ export function CharCard(props: any) {
                 <Divider p={1} h='60px' borderColor={buttonText3} orientation='vertical'/>
                 <VStack>
                 <FullGlowButton text='Edit' onClick={onManageOpen}/>
-                <Link href={'/equip'} isExternal><FullGlowButton text='Equip' /></Link>
+                <FullGlowButton text='Equip' onClick={onEquipOpen} />
+
+                <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isEquipOpen} onClose={onEquipClose}>
+                <ModalOverlay backdropFilter='blur(10px)'/>
+                <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
+                    <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Equip/Dequip</ModalHeader>
+                    <ModalBody>
+                        <EquipCharacter char_name={metadata.Name ? metadata.Name : name} char_id={asset_id} char_image={image} bg_id={metadata.Background ? metadata.Background : 0} bg_image={bg_image} bg_name={bg_name} />
+                    </ModalBody>
+                    <ModalFooter>
+                        <FullGlowButton text='X' onClick={onEquipClose} />
+                    </ModalFooter>
+                </ModalContent>
+                </Modal>
+
                 <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isManageOpen} onClose={onManageClose}>
                   <ModalOverlay backdropFilter='blur(10px)'/>
                   <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
