@@ -10,10 +10,13 @@ import { Listbox } from '@headlessui/react'
 import { classNames } from 'utils'
 import { useWallet } from '@txnlab/use-wallet'
 import { equipBG } from 'api/backend'
+import { SuccessPopup } from '../Popups/Success'
 
 const EquipCharacter = (props: any) => {
   const { char_name, char_id, char_image, bg_id, bg_image, bg_name } = props
   const { activeAddress } = useWallet()
+  const [popTitle, setPopTitle] = useState<any>('')
+  const [popMessage, setPopMessage] = useState<any>('')
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure()
   const allBGs = [...BGRank1, ...BGRank2, ...BGRank3]
@@ -28,6 +31,10 @@ const EquipCharacter = (props: any) => {
   const { assetList } = useWalletBalance()
   const [options, setOptions] = useState<any>([])
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
+  const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
+  const success_msg1 = `Character Equip Successful!`
+  const success_msg2 = `Character Dequip Successful!`
+  const fail_msg = `Character Equip Failed!`
   const [selectedBG, setSelectedBG] = useState({value: bg_id === 0 ? 'Select BG' : bg_name, label: (
     <>
     </>
@@ -93,22 +100,37 @@ const EquipCharacter = (props: any) => {
       generateImage([char_image, selectedBG.image])
     }, [options])
 
+    async function handleEquip(type: any) {
+      setLoading(true)
+      onClose()
 
-  async function handleEquip(type: any) {
-    setEquipping(true)
-    onClose()
-    await equipBG(char_id, selectedBG.asset_id, activeAddress, type)
-    .then((data: any) => {
-      if (data && data.includes("Error")) {
-        console.log(data)
-        return
+      try{
+          const data = await equipBG(char_id, selectedBG.asset_id, activeAddress, type)
+          if (data && data.includes("Error")) {
+          console.log(data)
+          } else {
+          console.log(data)
+          if (data) {
+              setPopTitle('Success!')
+              if (type === 1) {
+                setPopMessage(success_msg1)
+              }
+              else {
+                setPopMessage(success_msg2)
+              }
+          }
+          else {
+              setPopTitle('Woops!')
+              setPopMessage(fail_msg)
+          }
+          }
+      } catch (error) {
+          setPopTitle('Woops!')
+          setPopMessage(error)
+      } finally {
+          setLoading(false)
+          onSuccessOpen()
       }
-      setTxnID(encodeURIComponent(data))
-    })
-    .catch((error: any) => {
-      console.error(error)
-    })
-    setEquipping(false)
   }
 
   const generateImage = (images: any) => {
@@ -287,6 +309,7 @@ const EquipCharacter = (props: any) => {
           </>
           }
         </VStack>
+      <SuccessPopup isOpen={isSuccessOpen} onClose={onSuccessClose} message={popMessage}  title={popTitle} />
       </Center>
   </>
   )
