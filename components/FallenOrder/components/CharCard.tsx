@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Box, Container, Modal, ModalBody, ModalHeader, ModalFooter, ModalOverlay, ModalContent, Tooltip, Text, Link, Image, Button, Divider, Flex, HStack, VStack, Center, useDisclosure, useColorModeValue, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from '@chakra-ui/react'
+import { Box, Container, Modal, ModalBody, ModalHeader, ModalFooter, ModalOverlay, ModalContent, Tooltip, Text, Link, Image, Button, Divider, Flex, HStack, VStack, Center, useDisclosure, useColorModeValue, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Icon } from '@chakra-ui/react'
 import styles from '../../../styles/glow.module.css'
 import { FullGlowButton } from 'components/Buttons'
 import { RenameManage } from './ManageChar/Rename'
@@ -15,6 +15,7 @@ import { formatAssetBalance } from 'utils'
 import { useEffect } from 'react'
 import EquipCharacter from './ManageChar/EquipChar'
 import { formatDuration } from 'utils/formatTimer'
+import { MdKeyboardDoubleArrowUp } from 'react-icons/md'
 
 export function CharCard(props: any) {
     const { activeAddress } = useWallet()
@@ -162,7 +163,20 @@ export function CharCard(props: any) {
             >
             <Flex m={3} textColor={buttonText3} fontFamily="Orbitron" alignItems='center' justifyContent='center'>
                 <VStack mx={2} alignItems='center' spacing='2px'>
-                <Text className={gradientText} fontSize='12px'>LVL</Text>
+                    <HStack spacing='0px'>
+                        {LVLUp ?
+                        <motion.div
+                        initial={{ y: 0 }}
+                        animate={{ y: -6, opacity: 0 }}
+                        transition={{
+                            repeat: Infinity,
+                            duration: 1,
+                            ease: 'easeInOut',
+                        }}>
+                            <Icon as={MdKeyboardDoubleArrowUp} textColor='white' />
+                        </motion.div> : null}
+                        <Text className={gradientText} fontSize='12px'>LVL</Text>
+                    </HStack>
                 <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                     <Center>
                         <Tooltip label={'Health Points'} aria-label='Tooltip'>
@@ -181,18 +195,8 @@ export function CharCard(props: any) {
                     </Center>
                 </Box>
                 </VStack>
-                <VStack mx={2} alignItems='center' spacing='2px'>
-                <Text className={gradientText} fontSize='12px'>Points</Text>
-                <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
-                    <Center>
-                        <Tooltip label={'Ability Power'} aria-label='Tooltip'>
-                            <Text fontSize='xs'>{metadata.Points}</Text>
-                        </Tooltip>
-                    </Center>
-                </Box>
-                </VStack>
                 </Flex>
-                <Flex textColor={buttonText3} fontFamily="Orbitron" alignItems='center' justifyContent='center'>
+                <Flex mx={2} textColor={buttonText3} fontFamily="Orbitron" alignItems='center' justifyContent='center'>
                     <VStack mx={2} alignItems='center' spacing='2px'>
                     <Text className={gradientText} fontSize='12px'>ATK</Text>
                     <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
@@ -219,6 +223,16 @@ export function CharCard(props: any) {
                         <Center>
                             <Tooltip label={'Ability Power'} aria-label='Tooltip'>
                                 <Text fontSize='xs'>{metadata.AP}</Text>
+                            </Tooltip>
+                        </Center>
+                    </Box>
+                    </VStack>
+                    <VStack mx={2} alignItems='center' spacing='2px'>
+                    <Text className={gradientText} fontSize='12px'>Points</Text>
+                    <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
+                        <Center>
+                            <Tooltip label={'Ability Power'} aria-label='Tooltip'>
+                                <Text fontSize='xs'>{metadata.Points}</Text>
                             </Tooltip>
                         </Center>
                     </Box>
