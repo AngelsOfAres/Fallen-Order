@@ -10,7 +10,7 @@ async function fetchDataFromBackend(endpoint: string, data: Record<string, any>)
     })
 
     if (!response.ok) {
-      console.log("Woops! Backend sent unexpected data...")
+      console.log("Woops! Backend sent unexpected data...", response)
     }
 
     return response.json()
@@ -19,103 +19,28 @@ async function fetchDataFromBackend(endpoint: string, data: Record<string, any>)
   }
 }
 
-export async function equipBG(char_id: any, bg_id: any, wallet: any, type: any) {
+export async function manageChar(wallet: any, data: any) {
   try {
     const requestBody = {
-      char_id: char_id,
-      bg_id: bg_id,
+      auth: localStorage.getItem('token'),
       wallet: wallet,
-      type: type
+      data: data
     }
 
-    const response = await fetchDataFromBackend('manage/equip', requestBody)
+    const response = await fetchDataFromBackend('manage', requestBody)
     return response
   } catch (error) {
     console.error(error)
   }
 }
 
-export async function renameChar(char_id: any, wallet: any, newName: any) {
+export async function getAuth(decSTxn: any) {
   try {
     const requestBody = {
-      char_id: char_id,
-      wallet: wallet,
-      name: newName
+      decSTxn: decSTxn,
     }
 
-    const response = await fetchDataFromBackend('manage/rename', requestBody)
-    return response
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-export async function statsChar(char_id: any, wallet: any, stats: any) {
-  try {
-    const requestBody = {
-      char_id: char_id,
-      wallet: wallet,
-      stats: stats
-    }
-
-    const response = await fetchDataFromBackend('manage/stats', requestBody)
-    return response
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-export async function abilitiesChar(char_id: any, wallet: any, abilities: any) {
-  try {
-    const requestBody = {
-      char_id: char_id,
-      wallet: wallet,
-      abilities: abilities
-    }
-
-    const response = await fetchDataFromBackend('manage/abilities', requestBody)
-    return response
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-export async function levelChar(char_id: any, wallet: any) {
-  try {
-    const requestBody = {
-      char_id: char_id,
-      wallet: wallet
-    }
-
-    const response = await fetchDataFromBackend('manage/level', requestBody)
-    return response
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-export async function boostChar(char_id: any, wallet: any) {
-  try {
-    const requestBody = {
-      char_id: char_id,
-      wallet: wallet
-    }
-
-    const response = await fetchDataFromBackend('manage/boost', requestBody)
-    return response
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-export async function kinshipChar(char_id: any, wallet: any) {
-  try {
-    const requestBody = {
-      char_id: char_id,
-      wallet: wallet
-    }
-
-    const response = await fetchDataFromBackend('manage/boost', requestBody)
+    const response = await fetchDataFromBackend('auth', requestBody)
     return response
   } catch (error) {
     console.error(error)

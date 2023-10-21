@@ -3,7 +3,7 @@ import { Box, Modal, ModalBody, ModalHeader, ModalOverlay, ModalContent, Text, H
 import styles from '../../../../styles/glow.module.css'
 import { FullGlowButton } from 'components/Buttons'
 import { useState } from 'react'
-import { renameChar } from 'api/backend'
+import { manageChar } from 'api/backend'
 import { useWallet } from '@txnlab/use-wallet'
 import { SuccessPopup } from '../Popups/Success'
 
@@ -30,8 +30,10 @@ export function RenameManage(props: any) {
         onConfirmClose()
 
         try{
-            const data = await renameChar(asset_id, activeAddress, newName)
+            const data = await manageChar(activeAddress, ['rename', asset_id, newName])
             if (data && data.includes("Error")) {
+                setPopTitle('Woops!')
+                setPopMessage(fail_msg)
             console.log(data)
             } else {
             console.log(data)

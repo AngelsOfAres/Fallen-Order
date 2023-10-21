@@ -8,7 +8,7 @@ import { AbilitiesManage } from './ManageChar/Abilities'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useWallet } from '@txnlab/use-wallet'
-import { boostChar, kinshipChar, levelChar } from 'api/backend'
+import { manageChar } from 'api/backend'
 import { SuccessPopup } from './Popups/Success'
 import { wisdom_required, expCost, materialCost } from './Constants/levelup'
 import { formatAssetBalance } from 'utils'
@@ -66,8 +66,10 @@ export function CharCard(props: any) {
         onLevelConfirmClose()
 
         try{
-            const data = await levelChar(asset_id, activeAddress)
+            const data = await manageChar(activeAddress, ['level', asset_id])
             if (data && data.includes("Error")) {
+                setPopTitle('Woops!')
+                setPopMessage(fail_msg_lvl)
             console.log(data)
             } else {
             console.log(data)
@@ -94,8 +96,10 @@ export function CharCard(props: any) {
         onBoostConfirmClose()
 
         try{
-            const data = await boostChar(asset_id, activeAddress)
+            const data = await manageChar(activeAddress, ['boost', asset_id])
             if (data && data.includes("Error")) {
+                setPopTitle('Woops!')
+                setPopMessage(fail_msg_boost)
             console.log(data)
             } else {
             console.log(data)
@@ -120,23 +124,25 @@ export function CharCard(props: any) {
     async function handleKinship() {
         setLoading(true)
         try{
-            const data = await kinshipChar(asset_id, activeAddress)
+            const data = await manageChar(activeAddress, ['kinship', asset_id])
             if (data && data.includes("Error")) {
-            console.log(data)
-            } else {
-            console.log(data)
-            if (data) {
-                setPopTitle('Success!')
-                setPopMessage(success_msg_kin)
-            }
-            else {
                 setPopTitle('Woops!')
                 setPopMessage(fail_msg_kin)
+                console.log(data)
+            } else {
+                console.log(data)
+                if (data) {
+                    setPopTitle('Success!')
+                    setPopMessage(success_msg_kin)
+                }
+                else {
+                    setPopTitle('Woops!')
+                    setPopMessage(fail_msg_kin)
+                }
             }
-            }
-        } catch (error) {
+        } catch (error: any) {
             setPopTitle('Woops!')
-            setPopMessage(error)
+            setPopMessage(error.message)
         } finally {
             setLoading(false)
             onSuccessOpen()
@@ -180,7 +186,7 @@ export function CharCard(props: any) {
                 <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                     <Center>
                         <Tooltip label={'Health Points'} aria-label='Tooltip'>
-                            <Text fontSize='xs'>{level}/{formatAssetBalance(wisdom, 0, true, true, 3)}</Text>
+                            <Text fontSize='xs'>{level} | {formatAssetBalance(wisdom, 0, true, true, 3)}</Text>
                         </Tooltip>
                     </Center>
                 </Box>
@@ -245,7 +251,7 @@ export function CharCard(props: any) {
                 `   <HStack w='inherit' justifyContent='center'>
                         {!loading ?
                         <Box textColor={buttonText4} p={2} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='lg'>
-                            <Center>
+                            <Center minW='20px'>
                                 <Tooltip hasArrow label={'Kinship'} aria-label='Tooltip'>
                                     <Text fontSize='12px'>{metadata.Kinship}</Text>
                                 </Tooltip>

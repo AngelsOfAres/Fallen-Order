@@ -3,7 +3,7 @@ import { Modal, ModalBody, ModalHeader, ModalOverlay, ModalContent, Text, HStack
 import styles from '../../../../styles/glow.module.css'
 import { FullGlowButton } from 'components/Buttons'
 import { useState } from 'react'
-import { abilitiesChar } from 'api/backend'
+import { manageChar } from 'api/backend'
 import { useWallet } from '@txnlab/use-wallet'
 import { SuccessPopup } from '../Popups/Success'
 
@@ -65,9 +65,11 @@ export function AbilitiesManage(props: any) {
         setLoading(true)
         onConfirmClose()
         try{
-            const data = await abilitiesChar(asset_id, activeAddress, newAbilities)
+            const data = await manageChar(activeAddress, ['abilities', asset_id, newAbilities])
 
             if (data && data.includes("Error")) {
+                setPopTitle('Woops!')
+                setPopMessage(fail_msg)
             console.log(data)
             } else {
             console.log(data)

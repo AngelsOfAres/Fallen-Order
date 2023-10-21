@@ -9,7 +9,7 @@ import SelectMenu from 'components/SelectMenu'
 import { Listbox } from '@headlessui/react'
 import { classNames } from 'utils'
 import { useWallet } from '@txnlab/use-wallet'
-import { equipBG } from 'api/backend'
+import { manageChar } from 'api/backend'
 import { SuccessPopup } from '../Popups/Success'
 
 const EquipCharacter = (props: any) => {
@@ -105,8 +105,10 @@ const EquipCharacter = (props: any) => {
       onClose()
 
       try{
-          const data = await equipBG(char_id, selectedBG.asset_id, activeAddress, type)
+          const data = await manageChar(activeAddress, ['equip', char_id, selectedBG.asset_id, type])
           if (data && data.includes("Error")) {
+            setPopTitle('Woops!')
+            setPopMessage(fail_msg)
           console.log(data)
           } else {
           console.log(data)

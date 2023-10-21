@@ -3,7 +3,7 @@ import { Box, Modal, ModalBody, ModalHeader, ModalOverlay, ModalContent, Text, H
 import styles from '../../../../styles/glow.module.css'
 import { FullGlowButton } from 'components/Buttons'
 import { useState } from 'react'
-import { statsChar } from 'api/backend'
+import { manageChar } from 'api/backend'
 import { useWallet } from '@txnlab/use-wallet'
 import { SuccessPopup } from '../Popups/Success'
 
@@ -31,9 +31,11 @@ export function StatsManage(props: any) {
         onConfirmClose()
       
         try {
-          const data = await statsChar(asset_id, activeAddress, newStats)
+          const data = await manageChar(activeAddress, ['stats', asset_id, newStats])
 
           if (data && data.includes("Error")) {
+            setPopTitle('Woops!')
+            setPopMessage(fail_msg)
             console.log(data)
           } else {
             console.log(data)

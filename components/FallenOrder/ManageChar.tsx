@@ -6,7 +6,6 @@ import { Rank1, Rank2, Rank3, Rank4, Rank5 } from '../Whitelists/FOChars'
 import algodClient from 'lib/algodClient'
 import { CharCard } from './components/CharCard'
 import axios from 'axios'
-import moment from 'moment-timezone'
 
 const ManageCharacter: React.FC = () => {
   const allFO = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5]
