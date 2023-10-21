@@ -155,7 +155,7 @@ export function CharCard(props: any) {
                 <Image zIndex={1} mt={isOpen ? '24px' : 0} w='inherit' maxW='150px' onClick={onToggle} borderRadius='14.5px' alt={unitName} src={image} />
                 {isOpen ?
                 <Box mt={-0.3} position="relative" py={0.5} px={2} bgGradient={bgCardOn} borderColor={buttonText3} borderTopWidth='0px' borderBottomWidth='0.5px' borderLeftWidth='0.5px' borderRightWidth='0.5px' borderBottomRadius='xl' borderTopRadius='sm'>
-                    <Text className={gradientText} fontSize='12px'>{unitName}</Text>
+                    <Text className={gradientText} fontSize='12px'>{metadata.Name ? metadata.Name : unitName}</Text>
                 </Box> : null}
             </Container>
             {isOpen ?
