@@ -1,5 +1,5 @@
 async function fetchDataFromBackend(endpoint: string, data: Record<string, any>): Promise<any> {
-    const apiUrl = `https://5657-2607-fea8-28a0-3230-2430-64f2-1de3-35b4.ngrok-free.app/${endpoint}`
+    const apiUrl = `https://gorgeous-bunny-sadly.ngrok-free.app/${endpoint}`
   try {
     const authToken = localStorage.getItem('token')
     const headers = {
