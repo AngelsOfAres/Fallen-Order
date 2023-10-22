@@ -5,6 +5,7 @@ import NfdLookup from '../NfdLookup'
 import algodClient from 'lib/algodClient'
 import styles2 from '../../styles/glow.module.css'
 import Footer from '../Footer';
+import { rateLimiter } from 'lib/ratelimiter'
 
 interface Transaction {
     id: string;
@@ -175,7 +176,9 @@ const WalletTransactionSearch = () => {
         assetId = transaction['asset-transfer-transaction']['asset-id'];
   
       try {
-        const assetInfo = await algodClient.getAssetByID(assetId).do();
+        const assetInfo = await rateLimiter(
+          () => algodClient.getAssetByID(assetId).do()
+        );
         const decimals = assetInfo.params.decimals
         transaction['asset-transfer-transaction']['amount'] = transaction['asset-transfer-transaction']['amount']/(10**decimals)
         transaction['name'] = assetInfo.params.name

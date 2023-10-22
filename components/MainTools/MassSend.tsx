@@ -7,6 +7,7 @@ import { Box, useColorMode, useColorModeValue, Text, Input, Switch, NumberInput,
 import styles from '../../styles/glow.module.css'
 import { FullGlowButton } from '../Buttons'
 import axios from 'axios'
+import { rateLimiter } from 'lib/ratelimiter'
 
 export default function MassSend() {
   const { activeAddress, signTransactions } = useWallet()
@@ -102,7 +103,9 @@ export default function MassSend() {
                 try {
                     batchResult = await Promise.all(
                     assetIDsBatch.map(async (assetID: any, index: any) => {
-                        const assetInfo = await algodClient.getAssetByID(assetID).do()
+                        const assetInfo = await rateLimiter(
+                          () => algodClient.getAssetByID(assetID).do()
+                        );
                         const decimals = assetInfo.params.decimals
                         setCounter((counter) => counter+1)
                         const amount = (parseFloat(rawAmounts[index]))*(10**decimals)

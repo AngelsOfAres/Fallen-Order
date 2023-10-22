@@ -11,6 +11,7 @@ import { classNames } from 'utils'
 import { Listbox } from '@headlessui/react'
 import SelectMenu from 'components/SelectMenu'
 import { FullGlowButton } from '../Buttons'
+import { rateLimiter } from 'lib/ratelimiter'
 
 export default function AssetDestroy() {
   const { activeAddress, signTransactions, sendTransactions } = useWallet()
@@ -127,7 +128,9 @@ export default function AssetDestroy() {
       let finalNextOptions: any[] = []
       const assetInfoPromises = nextOptions.map(async (option: any) => {
         try {
-          const assetInfo = await algodClient.getAssetByID(option.value).do();
+          const assetInfo = await rateLimiter(
+            () => algodClient.getAssetByID(option.value).do()
+          );
           finalNextOptions.push({
             value: assetInfo.params.name,
             label: (

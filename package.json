@@ -47,6 +47,7 @@
     "moment-timezone": "^0.5.43",
     "multiformats": "^12.1.2",
     "next": "13.1.1",
+    "p-ratelimit": "^1.0.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.0",

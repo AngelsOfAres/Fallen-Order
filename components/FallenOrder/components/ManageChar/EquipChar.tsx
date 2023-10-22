@@ -11,6 +11,7 @@ import { classNames } from 'utils'
 import { useWallet } from '@txnlab/use-wallet'
 import { manageChar } from 'api/backend'
 import { SuccessPopup } from '../Popups/Success'
+import { rateLimiter } from 'lib/ratelimiter'
 
 const EquipCharacter = (props: any) => {
   const { char_name, char_id, char_image, bg_id, bg_image, bg_name } = props
@@ -51,7 +52,9 @@ const EquipCharacter = (props: any) => {
   
     for (const singleAsset of assets) {  
       try {
-        const assetInfo = await algodClient.getAssetByID(singleAsset['asset-id']).do()
+        const assetInfo = await rateLimiter(
+          () => algodClient.getAssetByID(singleAsset['asset-id']).do()
+        );
         const assetImage = 'https://cloudflare-ipfs.com/ipfs/' + assetInfo.params.url.substring(7)
         
         processedAssets.push([singleAsset['asset-id'], assetInfo.params['name'], assetInfo.params['unit-name'], assetImage])
