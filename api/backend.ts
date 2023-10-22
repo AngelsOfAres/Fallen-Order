@@ -49,3 +49,16 @@ export async function getAuth(decSTxn: any) {
     console.error(error)
   }
 }
+
+export async function getShuffle1(data: any) {
+  try {
+    const requestBody = {
+      data: data,
+    }
+
+    const response = await fetchDataFromBackend('shuffle/shuffle1', requestBody)
+    return response
+  } catch (error) {
+    console.error(error)
+  }
+}

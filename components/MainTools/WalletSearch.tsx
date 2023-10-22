@@ -170,7 +170,7 @@ const WalletTransactionSearch = () => {
     const newDecimalsMap: { [key: string]: any } = {};
   
     for (const transaction of transactions) {
-      let assetId;
+      let assetId: any
   
       if (transaction['asset-transfer-transaction']) {
         assetId = transaction['asset-transfer-transaction']['asset-id'];

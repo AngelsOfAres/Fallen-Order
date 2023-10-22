@@ -94,7 +94,7 @@ export default function AssetCreate() {
       const { id } = await sendTransactions(signedTransactions, waitRoundsToConfirm)
 
       
-      let assetID = null;
+      let assetID: any = null
       let txinfo = await algodClient.pendingTransactionInformation(id).do()
       assetID = txinfo["asset-index"]
       setAssetID(assetID)
