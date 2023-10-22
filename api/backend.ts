@@ -1,11 +1,15 @@
 async function fetchDataFromBackend(endpoint: string, data: Record<string, any>): Promise<any> {
     const apiUrl = `https://10.0.0.50:5000/${endpoint}`
   try {
+    const authToken = localStorage.getItem('token')
+    const headers = {
+      'Content-Type': 'application/json',
+      'userAuth': `${authToken}`
+    }
+
     const response = await fetch(apiUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: headers,
       body: JSON.stringify(data),
     })
 
@@ -22,7 +26,6 @@ async function fetchDataFromBackend(endpoint: string, data: Record<string, any>)
 export async function manageChar(wallet: any, data: any) {
   try {
     const requestBody = {
-      auth: localStorage.getItem('token'),
       wallet: wallet,
       data: data
     }
