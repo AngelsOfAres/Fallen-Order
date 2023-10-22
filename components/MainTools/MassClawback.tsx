@@ -6,6 +6,7 @@ import algodClient from 'lib/algodClient'
 import { Box, useColorMode, useColorModeValue, Text, Input, Switch, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, HStack, Center, Tooltip, Textarea, VStack, Progress, Button } from '@chakra-ui/react'
 import styles from '../../styles/glow.module.css'
 import { FullGlowButton } from '../Buttons'
+import { rateLimiter } from 'lib/ratelimiter'
 
 export default function MassClawback() {
   const { activeAddress, signTransactions } = useWallet()
@@ -41,7 +42,9 @@ export default function MassClawback() {
       suggestedParams.fee = 1000
       suggestedParams.flatFee = true
       const assetIndex = assetID
-      const assetInfo = await algodClient.getAssetByID(assetIndex).do()
+      const assetInfo = await rateLimiter(
+        () => algodClient.getAssetByID(assetIndex).do()
+      );
       const decimals = assetInfo.params.decimals
       const microAmount = amount*(10**decimals)
       const note = Uint8Array.from('Abyssal Portal - Mass Freeze Tool\n\nDeveloped by Angels Of Ares'.split("").map(x => x.charCodeAt(0)));

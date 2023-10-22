@@ -6,6 +6,7 @@ import { Rank1, Rank2, Rank3, Rank4, Rank5 } from '../Whitelists/FOChars'
 import algodClient from 'lib/algodClient'
 import { CharCard } from './components/CharCard'
 import axios from 'axios'
+import { rateLimiter } from 'lib/ratelimiter'
 
 const ManageCharacter: React.FC = () => {
   const allFO = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5]
@@ -90,7 +91,9 @@ async function getKinship(asset_id: any): Promise<number> {
       const metadata_api = `https://mainnet-idx.algonode.cloud/v2/transactions?tx-type=acfg&asset-id=${singleAsset['asset-id']}&address=CHARX2GZKNZZORNV2WROPUTSB5QBVRIC62QXXLABFCKA2QALEA3OHVIDYA`
   
       try {
-        const assetInfo = await algodClient.getAssetByID(singleAsset['asset-id']).do()
+        const assetInfo = await rateLimiter(
+          () => algodClient.getAssetByID(singleAsset['asset-id']).do()
+        )
         const assetImage = 'https://cloudflare-ipfs.com/ipfs/' + assetInfo.params.url.substring(7)
         const response = await axios.get(metadata_api)
         if (response.status === 200) {
@@ -100,7 +103,9 @@ async function getKinship(asset_id: any): Promise<number> {
           let bg_image = '-'
           let bg_name = '-'
           if (metadata_decoded_asset.properties.Background && metadata_decoded_asset.properties.Background !== '-') {
-            const bgInfo = await algodClient.getAssetByID(metadata_decoded_asset.properties.Background).do()
+            const bgInfo = await rateLimiter(
+              () => algodClient.getAssetByID(metadata_decoded_asset.properties.Background).do()
+            );
             bg_image = 'https://cloudflare-ipfs.com/ipfs/' + bgInfo.params.url.substring(7)
             bg_name = bgInfo.params['name']
           }

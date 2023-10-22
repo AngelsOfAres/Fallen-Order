@@ -6,6 +6,7 @@ import algodClient from 'lib/algodClient'
 import { Box, useColorMode, useColorModeValue, Text, Input, Switch, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, HStack, Center, Tooltip, Textarea, VStack, Progress } from '@chakra-ui/react'
 import styles from '../../styles/glow.module.css'
 import { FullGlowButton } from '../Buttons'
+import { rateLimiter } from 'lib/ratelimiter'
 
 export default function MassOpt() {
   const { activeAddress, signTransactions } = useWallet()
@@ -63,7 +64,9 @@ export default function MassOpt() {
           try {
             batchResult = await Promise.all(
               assetIDsBatch.map(async (assetID: any) => {
-                const assetInfo = await algodClient.getAssetByID(assetID).do();
+                const assetInfo = await rateLimiter(
+                  () => algodClient.getAssetByID(assetID).do()
+                );
                 const assetCreator = assetInfo.params.creator;
                 const assetIndex = parseInt(assetID);
                 const closeRemainderTo = optType === 'in' ? undefined : assetCreator;

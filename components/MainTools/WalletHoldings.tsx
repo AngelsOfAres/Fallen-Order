@@ -7,6 +7,8 @@ import NfdLookup from '../NfdLookup'
 import axios from 'axios'
 import { copyToClipboard } from 'utils/clipboard'
 import { ClipboardIcon } from '@heroicons/react/20/solid'
+import { rateLimiter } from 'lib/ratelimiter'
+
 
 export default function WalletHoldings() {
   const [addressToSearch, setAddressToSearch] = useState<string>('')
@@ -39,40 +41,17 @@ export default function WalletHoldings() {
   const buttonText4 = useColorModeValue('orange.100','cyan.100')
   const iconColor1 = useColorModeValue('orange','cyan')
 
-  async function fetchAssetBatches(
-    assetIds: number[],
-    batchSize: number = 80,
-    maxRetries: number = 5
-  ): Promise<any[]> {
-    let retries = 0
-  
-    async function fetchBatch(startIdx: number) {
-      try {
-        const batchIds = assetIds.slice(startIdx, startIdx + batchSize)
-        await Promise.all(
-            batchIds.map(async (assetId) => {
-              try {
-                const assetInfo = await algodClient.getAssetByID(assetId).do()
-                decimals.push(assetInfo.params.decimals)
-                console.log(decimals)
-              }
-              catch {}
-            }))
-      } catch (error: any) {
-        if (retries < maxRetries) {
-          retries++;
-          console.error(`Retry ${retries} due to error: ${error.message}`)
-          await new Promise((resolve) => setTimeout(resolve, 500))
-          await fetchBatch(startIdx)
-        } else {
-          console.error(`Max retries (${maxRetries}) reached.`)
-          throw error
+  async function fetchAssets( assetIds: number[] ): Promise<any[]> {
+    await Promise.all(
+      assetIds.map( assetId => rateLimiter( async () => {
+        try {
+          const assetInfo = await algodClient.getAssetByID(assetId).do()
+          decimals.push(assetInfo.params.decimals)
+          console.log(decimals)
         }
-      }
-    }
-    for (let i = 0; i < assetIds.length; i += batchSize) {
-      await fetchBatch(i)
-    }
+        catch {}
+      }))
+    );
     return decimals
   }
 
@@ -84,12 +63,12 @@ export default function WalletHoldings() {
       let assetId = asset['asset-id']
       if (asset['amount'] >= opted) {
         assetIDs.push(assetId)
-        }
+      }
     })
     setAssetIDs(assetIDs)
     if (bal) {
         let finalAssetIDs = []
-        await fetchAssetBatches(assetIDs)
+        await fetchAssets(assetIDs)
         for (let i = 0; i < assetIDs.length; i++) {
             const finBal = allAssets[i]['amount']*(10**decimals[i])
             const assetId = [allAssets[i]['asset-id'], finBal]

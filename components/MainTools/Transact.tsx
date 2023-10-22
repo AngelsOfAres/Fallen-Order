@@ -13,6 +13,7 @@ import { Listbox } from '@headlessui/react'
 import SelectMenu from 'components/SelectMenu'
 import { FullGlowButton } from '../Buttons'
 import NfdLookup from '../NfdLookup/NfdLookup'
+import { rateLimiter } from 'lib/ratelimiter'
 
 export default function Transact() {
   const { activeAddress, signTransactions, sendTransactions } = useWallet()
@@ -254,7 +255,9 @@ const loadMoreOptions = async () => {
     const finalNextOptions: typeof nextOptions = [];
     const assetInfoPromises = nextOptions.map(async (option: any) => {
       try {
-        const assetInfo = await algodClient.getAssetByID(option.value).do();
+        const assetInfo = await rateLimiter(
+          () => algodClient.getAssetByID(option.value).do()
+        );
         finalNextOptions.push({
           value: assetInfo.params.name,
           label: (
@@ -306,7 +309,9 @@ const loadMoreOptions = async () => {
     setSelected(value)
     setAssetID(value.asset)
     if (value.asset !== 0) {
-      const assetInfo = await algodClient.getAssetByID(value.asset).do()
+      const assetInfo = await rateLimiter(
+        () => algodClient.getAssetByID(value.asset).do()
+      );
       const decimals = assetInfo.params.decimals
       setDecimals(decimals)
       try {
