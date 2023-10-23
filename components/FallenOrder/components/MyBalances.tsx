@@ -17,7 +17,7 @@ export default function MyBalances() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const buttonText3 = useColorModeValue('orange.500','cyan.500')
   const buttonText4 = useColorModeValue('orange.200','cyan.100')
-  const buttonText5 = useColorModeValue('yellow','cyan')
+  const buttonText5 = useColorModeValue('orange','cyan')
   const orderBalOpt = orderBal !== -1 ? orderBal : <FullGlowButton text={loading ? 'Opting In...' : 'Opt In'} disabled={loading} onClick={() => sendOptIn(811718424)}/>
   const expBalOpt = expBal !== -1 ? expBal : <FullGlowButton text={loading ? 'Opting In...' : 'Opt In'} disabled={loading} onClick={() => sendOptIn(811721471)} />
   const boostBalOpt = boostBal !== -1 ? boostBal : <FullGlowButton text={loading ? 'Opting In...' : 'Opt In'} disabled={loading} onClick={() => sendOptIn(815771120)} />
@@ -95,7 +95,7 @@ export default function MyBalances() {
                     </HStack>
                     <HStack w='full' justifyContent='space-between'>
                         <Text fontSize='16px' textColor={buttonText4}>Clay Ore</Text>
-                        <Text fontSize='20px' textColor={buttonText4}>{clayOreBalOpt}</Text>
+                        <Text fontSize='20px' textColor={buttonText5}>{clayOreBalOpt}</Text>
                     </HStack>
                 </VStack>
                 </ModalBody>
