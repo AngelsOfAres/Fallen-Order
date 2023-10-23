@@ -6,7 +6,7 @@ import { useState } from 'react'
 import React from 'react'
 import { useWallet } from '@txnlab/use-wallet'
 import { FullGlowButton } from 'components/Buttons'
-import algodClient from 'lib/algodClient'
+import { algodClient } from 'lib/algodClient'
 import algosdk from 'algosdk'
 
 export default function MyBalances() {

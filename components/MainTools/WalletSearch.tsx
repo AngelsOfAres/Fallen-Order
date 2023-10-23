@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { FullGlowButton } from '../Buttons'
 import { Box, Center, Image, Progress, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr, useColorModeValue, useColorMode } from '@chakra-ui/react'
 import NfdLookup from '../NfdLookup'
-import algodClient from 'lib/algodClient'
+import { algodClient } from 'lib/algodClient'
 import styles2 from '../../styles/glow.module.css'
 import Footer from '../Footer';
 import { rateLimiter } from 'lib/ratelimiter'

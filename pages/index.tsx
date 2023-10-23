@@ -58,7 +58,10 @@ export default function Home() {
         </Center>
       )}
       <Center my={4}>
-        <Link href='/myfo'><FullGlowButton fontsize='16px' text='Fallen Order' /></Link>
+        <HStack spacing='20px'>
+          <Link href='/myfo'><FullGlowButton fontsize='16px' text='Fallen Order' /></Link>
+          <Link href='/shuffle'><FullGlowButton fontsize='16px' text='SHUFFLE!' /></Link>
+        </HStack>
       </Center>
       <Center my={4}>
         <HStack spacing='20px'>

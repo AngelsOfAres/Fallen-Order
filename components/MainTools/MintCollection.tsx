@@ -16,7 +16,7 @@ import {
 import styles from '../../styles/glow.module.css'
 import toast from 'react-hot-toast'
 import { useWallet } from '@txnlab/use-wallet'
-import algodClient from 'lib/algodClient'
+import { algodClient } from 'lib/algodClient'
 import algosdk from 'algosdk'
 import { FullGlowButton } from '../Buttons'
 import { CID } from "multiformats/cid"

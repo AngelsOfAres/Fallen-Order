@@ -62,3 +62,17 @@ export async function getShuffle1(data: any) {
     console.error(error)
   }
 }
+
+export async function getShuffle2(data: any) {
+  try {
+    const requestBody = {
+      shuffleToken: localStorage.getItem('shuffle'),
+      data: data,
+    }
+
+    const response = await fetchDataFromBackend('shuffle/shuffle2', requestBody)
+    return response
+  } catch (error) {
+    console.error(error)
+  }
+}

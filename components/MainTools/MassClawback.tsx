@@ -2,7 +2,7 @@ import { useWallet } from '@txnlab/use-wallet'
 import algosdk from 'algosdk'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import algodClient from 'lib/algodClient'
+import { algodClient } from 'lib/algodClient'
 import { Box, useColorMode, useColorModeValue, Text, Input, Switch, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, HStack, Center, Tooltip, Textarea, VStack, Progress, Button } from '@chakra-ui/react'
 import styles from '../../styles/glow.module.css'
 import { FullGlowButton } from '../Buttons'
@@ -111,7 +111,7 @@ export default function MassClawback() {
         if (sign_key) {
           signedBatch = []
           for (const txn of batchTransactions) {
-            const signedTxn = await algosdk.signTransaction(txn, sign_key.sk)
+            const signedTxn = algosdk.signTransaction(txn, sign_key.sk)
             signedBatch.push(signedTxn.blob)
           }
         } else {

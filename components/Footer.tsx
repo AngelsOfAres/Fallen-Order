@@ -8,7 +8,7 @@ export default function Footer() {
     return (
        <Box w="100%" h="10vh">
         <Center py='96px'>
-          <Text fontSize='8px' fontFamily="Orbitron" textColor={buttonText4}>
+          <Text textAlign='center' fontSize='8px' fontFamily="Orbitron" textColor={buttonText4}>
             <Link href="https://angelsofares.xyz/">
               Angels Of Ares, 2023. All Rights Reserved.
             </Link>

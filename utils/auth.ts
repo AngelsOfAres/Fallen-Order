@@ -1,6 +1,6 @@
 import algosdk from 'algosdk'
 import { getAuth } from 'api/backend'
-import algodClient from 'lib/algodClient'
+import { algodClient } from 'lib/algodClient'
 
 export const authenticate = async (activeAddress: any, signTransactions: any) => {
 

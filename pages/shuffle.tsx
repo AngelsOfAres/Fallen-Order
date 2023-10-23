@@ -13,7 +13,7 @@ import { FullGlowButton } from 'components/Buttons'
 import { useState, useEffect } from 'react'
 import Shuffle from 'components/FallenOrder/Shuffle'
 
-export default function MyFO() {
+export default function ShuffleMain() {
   const gradientText = useColorModeValue(styles2.textAnimatedGlowL, styles2.textAnimatedGlowD)
   const { activeAddress, signTransactions } = useWallet()
   const [ authUser, setAuthUser ] = useState<any>(null)
@@ -44,7 +44,7 @@ export default function MyFO() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <Text my='24px' className={`${gradientText} responsive-font`}>SHUFFLE!</Text>
+      <Text mt='48px' className={`${gradientText} responsive-font`}>SHUFFLE!</Text>
         {activeAddress ? 
           <>
             <Center>

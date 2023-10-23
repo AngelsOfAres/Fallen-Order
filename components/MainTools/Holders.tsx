@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import algodClient from 'lib/algodClient'
+import { algodClient } from 'lib/algodClient'
 import { Box, useColorMode, useColorModeValue, Text, Switch, Button, Center, Progress, HStack, VStack, Input, Tooltip } from '@chakra-ui/react'
 import styles from '../../styles/glow.module.css'
 import { FullGlowButton } from '../Buttons'

@@ -53,7 +53,7 @@ export default function MyFO() {
       <div className='w-full p-6 absolute' style={{textAlignLast: 'right'}}>
         <FullGlowButton text='Log Out' onClick={handleLogout} />
       </div>
-      <Text my='24px' className={`${gradientText} responsive-font`}>My Fallen Order</Text>
+      <Text mt='56px' mb='24px' className={`${gradientText} responsive-font`}>My Fallen Order</Text>
         {activeAddress ? 
           <>
             <MyBalances />
