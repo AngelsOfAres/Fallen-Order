@@ -160,7 +160,7 @@ const Shuffle: React.FC = () => {
 
     async function handleSendNFT() {
         try{
-            const data = await getShuffle2([activeAddress, chosenFO, shuffleID])
+            const data = await getShuffle2([activeAddress, chosenFO, shuffleID], activeAddress)
             if (data && data.includes("Error")) {
                 console.log(data)
             }
@@ -173,7 +173,7 @@ const Shuffle: React.FC = () => {
 
     async function handleShuffle1(id: any) {
             try{
-                const data = await getShuffle1([activeAddress, id])
+                const data = await getShuffle1([activeAddress, id], activeAddress)
                 if (data && data.includes("Error")) {
                     console.log(data)
                 } else {
@@ -195,7 +195,7 @@ const Shuffle: React.FC = () => {
 
     async function handleReshuffle(id: any) {
         try{
-            const data = await getShuffle1([activeAddress, id, shuffleID, FOList, localStorage.getItem('shuffle')])
+            const data = await getShuffle1([activeAddress, id, shuffleID, FOList, localStorage.getItem('shuffle')], activeAddress)
             if (data && data.includes("Error")) {
                 console.log(data)
             } else {

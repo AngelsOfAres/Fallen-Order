@@ -25,7 +25,7 @@ export default function MyFO() {
       const storedAuthUser = localStorage.getItem('token_' + activeAddress);
       setAuthUser(storedAuthUser || null);
     }
-  }, [])
+  }, [accountInfo])
   
 
   function handleLogout() {
@@ -37,13 +37,6 @@ export default function MyFO() {
     const token = await authenticate(activeAddress, signTransactions)
     setAuthUser(token)
   }
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedAuthUser = localStorage.getItem('token_' + activeAddress)
-      setAuthUser(storedAuthUser || null)
-    }
-  }, [accountInfo])
   
   return (
     <>

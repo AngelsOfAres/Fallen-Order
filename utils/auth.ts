@@ -6,7 +6,7 @@ export const authenticate = async (activeAddress: any, signTransactions: any) =>
 
     async function handleAuthToken(decSTxn: any) {
         try{
-            const data = await getAuth(decSTxn)
+            const data = await getAuth(decSTxn, activeAddress)
             if (data.token) {
               return data.token
             } else {
