@@ -54,6 +54,10 @@ async function getKinship(asset_id: any): Promise<number> {
           if (blockResponse.status === 200) {
             const blockTimestamp = blockResponse.data.timestamp
             const currentTimestamp = Math.floor(Date.now() / 1000)
+            console.log(currentTimestamp - blockTimestamp)
+            if (currentTimestamp - blockTimestamp > 86400) {
+              return 0
+            }
             return 86400 - (currentTimestamp - blockTimestamp)
           }
         }
@@ -110,6 +114,7 @@ async function getKinship(asset_id: any): Promise<number> {
             bg_name = bgInfo.params['name']
           }
           const kinship_seconds = await getKinship(singleAsset['asset-id'])
+          console.log(kinship_seconds)
           processedAssets.push([metadata_decoded_asset.properties, singleAsset['asset-id'], assetInfo.params['name'], assetInfo.params['unit-name'], assetImage, bg_image, bg_name, kinship_seconds])
         } else {
           console.log('Error fetching data from API for asset ID', singleAsset['asset-id'])

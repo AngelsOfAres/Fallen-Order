@@ -113,7 +113,6 @@ const Shuffle: React.FC = () => {
       onOpen()
       
       localStorage.removeItem("shuffle")
-      localStorage.removeItem("reshuffle")
 
       setClaiming(false)
 
@@ -195,10 +194,8 @@ const Shuffle: React.FC = () => {
         }
 
     async function handleReshuffle(id: any) {
-        setFOList([])
-        setFOImages([])
         try{
-            const data = await getShuffle1([activeAddress, id, shuffleID])
+            const data = await getShuffle1([activeAddress, id, shuffleID, FOList, localStorage.getItem('shuffle')])
             if (data && data.includes("Error")) {
                 console.log(data)
             } else {

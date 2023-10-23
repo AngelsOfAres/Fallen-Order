@@ -33,12 +33,10 @@ export const authenticate = async (activeAddress: any, signTransactions: any) =>
     const sTxn = await signTransactions([encodedTxn])
     
     const decodedTxnString = JSON.stringify(sTxn[0])
-    console.log(sTxn[0])
 
     const token = await handleAuthToken(decodedTxnString)
-
     if (token) {
-      localStorage.setItem("token", token)
+      localStorage.setItem('token_' + activeAddress, token)
       return token
     }
     else {
