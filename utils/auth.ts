@@ -32,8 +32,7 @@ export const authenticate = async (activeAddress: any, signTransactions: any) =>
     const encodedTxn = algosdk.encodeUnsignedTransaction(txn)
     const sTxn = await signTransactions([encodedTxn])
     
-    const decodedTxn = algosdk.decodeSignedTransaction(sTxn[0])
-    const decodedTxnString = JSON.stringify(decodedTxn)
+    const decodedTxnString = JSON.stringify(sTxn[0])
 
     const token = await handleAuthToken(decodedTxnString)
 
