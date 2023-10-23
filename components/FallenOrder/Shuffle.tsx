@@ -255,7 +255,7 @@ const Shuffle: React.FC = () => {
                 <>
                     <Text mt='24px' textColor={lightColor} className='text-2xl'>Available:</Text>
                     <Text textColor={xLightColor} className='text-lg whitespace-nowrap text-center'>R1: <strong className='text-xl'>{avFO[0].length}</strong> | R2: <strong className='text-xl'>{avFO[1].length}</strong> | R3: <strong className='text-xl'>{avFO[2].length}</strong> | R4: <strong className='text-xl'>{avFO[3].length}</strong></Text>
-                    <Image my='24px' boxSize='200px' borderRadius='10px' alt='Fallen Order - SHUFFLE!' src='/shuffleChars.gif' />
+                    <Image className={boxGlow} my='24px' boxSize='200px' borderRadius='12px' alt='Fallen Order - SHUFFLE!' src='/shuffleChars.gif' />
                     <Text mt='-24px' mb='12px' textColor={lightColor} className='text-lg'>Cost: <strong className='text-xl'>{shuffle_cost}A</strong></Text>
                     <FullGlowButton text='SHUFFLE!' onClick={() => shufflePayment(shuffle_cost)} />
                 </>
