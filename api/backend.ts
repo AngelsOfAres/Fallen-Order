@@ -20,8 +20,8 @@ async function fetchDataFromBackend(endpoint: string, data: Record<string, any>,
     }
 
     return response.json()
-  } catch {
-    console.log("Backend currently offline...")
+  } catch (error: any) {
+    console.log(error.message)
   }
 }
 
@@ -43,6 +43,7 @@ export async function getAuth(decSTxn: any, wallet: any) {
   try {
     const requestBody = {
       decSTxn: decSTxn,
+      wallet: wallet
     }
 
     const response = await fetchDataFromBackend('auth', requestBody, wallet)
@@ -56,6 +57,7 @@ export async function getShuffle1(data: any, wallet: any) {
   try {
     const requestBody = {
       data: data,
+      wallet: wallet
     }
 
     const response = await fetchDataFromBackend('shuffle/shuffle1', requestBody, wallet)
@@ -70,11 +72,39 @@ export async function getShuffle2(data: any, wallet: any) {
     const requestBody = {
       shuffleToken: localStorage.getItem('shuffle'),
       data: data,
+      wallet: wallet
     }
 
     const response = await fetchDataFromBackend('shuffle/shuffle2', requestBody, wallet)
     return response
   } catch (error) {
     console.error(error)
+  }
+}
+
+export async function createProfile(wallet: any, userid: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      userid: userid && userid !== 0 ? userid : '00000000000000000'
+    }
+
+    const response = await fetchDataFromBackend('users/createprofile', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}
+
+export async function getDrip(wallet: any) {
+  try {
+    const requestBody = {
+      wallet: wallet
+    }
+
+    const response = await fetchDataFromBackend('misc/drip', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
   }
 }

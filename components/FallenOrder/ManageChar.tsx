@@ -24,17 +24,17 @@ async function getKinship(asset_id: any): Promise<number> {
   const metadata_api = `https://mainnet-idx.algonode.cloud/v2/transactions?tx-type=acfg&asset-id=${asset_id}&address=CHARX2GZKNZZORNV2WROPUTSB5QBVRIC62QXXLABFCKA2QALEA3OHVIDYA`;
 
   try {
-    const response = await axios.get(metadata_api);
+    const response = await axios.get(metadata_api)
     
     if (response.status === 200) {
-      const data = response.data;
-      const kinships: number[] = [];
-      let counter = 0;
+      const data = response.data
+      const kinships: number[] = []
+      let counter = 0
 
       while (data.transactions.length > counter) {
         const base64Data = data.transactions[counter].note
-        const decodedData = atob(base64Data);
-        const encoder = new TextEncoder();
+        const decodedData = atob(base64Data)
+        const encoder = new TextEncoder()
         const encodedData = encoder.encode(decodedData).buffer
         kinships.push(
           JSON.parse(new TextDecoder('utf-8').decode(encodedData)).properties.Kinship || -1
@@ -54,7 +54,6 @@ async function getKinship(asset_id: any): Promise<number> {
           if (blockResponse.status === 200) {
             const blockTimestamp = blockResponse.data.timestamp
             const currentTimestamp = Math.floor(Date.now() / 1000)
-            console.log(currentTimestamp - blockTimestamp)
             if (currentTimestamp - blockTimestamp > 86400) {
               return 0
             }
@@ -114,7 +113,6 @@ async function getKinship(asset_id: any): Promise<number> {
             bg_name = bgInfo.params['name']
           }
           const kinship_seconds = await getKinship(singleAsset['asset-id'])
-          console.log(kinship_seconds)
           processedAssets.push([metadata_decoded_asset.properties, singleAsset['asset-id'], assetInfo.params['name'], assetInfo.params['unit-name'], assetImage, bg_image, bg_name, kinship_seconds])
         } else {
           console.log('Error fetching data from API for asset ID', singleAsset['asset-id'])
