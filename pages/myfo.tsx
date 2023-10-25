@@ -151,7 +151,6 @@ export default function MyFO() {
       Promise.all(availableTools)
         .then((results) => {
           setToolList(results)
-          console.log(results)
         })
         .catch((error) => {
           console.error('An error occurred:', error)

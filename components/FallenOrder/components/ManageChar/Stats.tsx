@@ -23,7 +23,6 @@ export function StatsManage(props: any) {
     const buttonText5 = useColorModeValue('yellow','cyan')
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
     const availablePoints = points + stats[0] + stats[1] + stats[2]
-    console.log(availablePoints)
     const success_msg = `${name && name.length > 0 ? name : unitName}'s Stats Updated!`
     const fail_msg = `Stats Update Failed!`
 
