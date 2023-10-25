@@ -20,8 +20,8 @@ import toast from 'react-hot-toast'
 import { createProfile, equipTool, getDrip } from 'api/backend'
 import { motion } from 'framer-motion'
 import { MdOutlineAdd } from 'react-icons/md'
-import { WrenchScrewdriverIcon } from '@heroicons/react/20/solid'
-import { hatchets, pickaxes, woodenHatchetImg, ironPickaxeImg } from 'components/Whitelists/FOTools'
+import { WrenchScrewdriverIcon, XMarkIcon } from '@heroicons/react/20/solid'
+import { hatchets, pickaxes } from 'components/Whitelists/FOTools'
 
 export default function MyFO() {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
@@ -81,7 +81,7 @@ export default function MyFO() {
     setTimeout(() => {
       fetchProfile()
       onOpen2()
-    }, 5000)
+    }, 3000)
   }
 
   const handleDrip = async () => {
@@ -113,7 +113,9 @@ export default function MyFO() {
       id: 'txn',
       duration: 5000
     })
-    fetchProfile()
+    setTimeout(() => {
+      fetchProfile()
+    }, 3000)
   }
 
   const fetchProfile = async () => {
@@ -213,7 +215,7 @@ export default function MyFO() {
   }
 
   
-    const handleEquipTool = async () => {
+    const handleEquipTool = async (type: any) => {
         setLoading(true)
         try {
             if (!activeAddress) {
@@ -223,7 +225,7 @@ export default function MyFO() {
             toast.loading('Equipping Tool...', { id: 'txn', duration: Infinity })
 
             try{
-                const data = await equipTool(activeAddress, tool.asset.index)
+                const data = await equipTool(activeAddress, [type, tool.asset.index])
                 if (data && data.includes("Error")) {
                 console.log(data)
                 toast.error('Oops! Tool Equip Failed!', { id: 'txn' })
@@ -245,9 +247,16 @@ export default function MyFO() {
             id: 'txn',
             duration: 5000
         })
+        if (type === 'equip') {
+          setPopMessage('New Tool Equipped!')
+        } else {
+          setPopMessage('Tool Dequipped and Unfrozen!')
+        }
         setPopTitle('Success')
-        setPopMessage('New Tool Equipped!')
         onSuccessOpen()
+        setTimeout(() => {
+          fetchProfile()
+        }, 3000)
     }
   
   return (
@@ -329,9 +338,10 @@ export default function MyFO() {
                       <Text fontSize='16px' textColor={buttonText4}>Equipped Tool</Text>
                       {userProfile.equipped_tool !== 0 ?
                       <>
+                        <Text fontSize='20px' textColor={buttonText5}>{userProfile.toolName}</Text>
                         <Box>
                           <Text ml='2px' mt='34px' position='absolute' fontSize='8px' textColor={buttonText5}>{userProfile.toolData.Uses}</Text>
-                          <Image className={boxGlow} boxSize='48px' borderRadius='6px' alt='Equipped Tool' src={userProfile.toolImage}/>
+                          <Image className={boxGlow} boxSize='48px' borderRadius='6px' alt='Equipped Tool' src={userProfile.toolImage} onClick={onOpen3} />
                         </Box>
                       </>
                       : 
@@ -345,40 +355,51 @@ export default function MyFO() {
                             <Tooltip ml={6} py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Equip Tool!'} aria-label='Tooltip'>
                               <IconGlowButton icon={WrenchScrewdriverIcon} onClick={onOpen3} />
                             </Tooltip>
-
-                            <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpen3} onClose={onClose3}>
-                            <ModalOverlay backdropFilter='blur(10px)'/>
-                            <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
-                              <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Equip Tool</ModalHeader>
-                              <ModalBody px={4} w='full'>
-                                <VStack w='full' alignItems='center' justifyContent='center'>
-                                  <Text pb={6} fontSize='16px' textAlign='center' textColor={buttonText4}>Current: {userProfile.toolName ? userProfile.toolName : '-'}</Text>
-                                  <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
-                                    {toolList.map((asset: any, index: any) => (
-                                        <VStack key={index} justifyContent='center'>
-                                          <Image className={boxGlow} boxSize={tool && tool === asset ? '24' : '20'} borderRadius='8px' alt={asset.asset.params.name}
-                                            src={'https://cloudflare-ipfs.com/ipfs/' + asset.asset.params.url.substring(7)}
-                                            onClick={() => setTool(asset)}
-                                          />
-                                          <Text fontSize='12px' textColor={buttonText4}>
-                                          {asset.asset.params['unit-name']}
-                                          </Text>
-                                        </VStack>
-                                      ))}
-                                  </Flex>
-                                  {tool ? <Text mb={2} fontSize='12px' textColor={buttonText5}>Selected: <strong>{tool.asset.params.name}</strong></Text> : null}
-                                  <FullGlowButton text={loading ? 'Equipping...' : 'Equip!'} onClick={handleEquipTool} disabled={!tool} />
-                                </VStack>
-                              </ModalBody>
-                              <ModalFooter>
-                                  <FullGlowButton text='X' onClick={onClose3} />
-                              </ModalFooter>
-                            </ModalContent>
-                            </Modal>
                           </>
                         }
                       </>
                       }
+
+                      <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpen3} onClose={onClose3}>
+                      <ModalOverlay backdropFilter='blur(10px)'/>
+                      <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
+                        <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Equip Tool</ModalHeader>
+                        <ModalBody px={4} w='full'>
+                          <VStack w='full' alignItems='center' justifyContent='center'>
+                            <HStack pb={6} spacing='12px'>
+                              <Text fontSize='16px' textAlign='center' textColor={buttonText4}>Current: {userProfile.toolName ? userProfile.toolName : '-'}</Text>
+                              {userProfile.equipped_tool !== 0 ? <IconGlowButton icon={XMarkIcon} onClick={() => handleEquipTool('dequip')} /> : null}
+                            </HStack>
+                            <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
+                              {toolList.map((asset: any, index: any) => (
+                                  <VStack key={index} justifyContent='center'>
+                                    <Image className={boxGlow} boxSize={tool && tool === asset ? '24' : '20'} borderRadius='8px' alt={asset.asset.params.name}
+                                      src={'https://cloudflare-ipfs.com/ipfs/' + asset.asset.params.url.substring(7)}
+                                      onClick={() => setTool(asset)}
+                                    />
+                                    <Text fontSize='12px' textColor={buttonText4}>
+                                    {asset.asset.params['unit-name']}
+                                    </Text>
+                                  </VStack>
+                                ))}
+                            </Flex>
+                            {tool ? 
+                              <>
+                                {userProfile.equipped_tool === tool.asset.index ?
+                                  <Text textAlign='center' mb={2} fontSize='16px' textColor={'red'}>Already Equipped!</Text>
+                                :
+                                  <Text textAlign='center' mb={2} fontSize='12px' textColor={buttonText5}>Selected: <strong>{tool.asset.params.name}</strong><br />Equipping will clawback 5 $EXP from your account</Text>
+                                }
+                                <FullGlowButton text={loading ? 'Equipping...' : 'Equip!'} onClick={() => handleEquipTool('equip')} disabled={!tool || loading || userProfile.equipped_tool === tool.asset.index} />
+                              </>
+                            : null}
+                          </VStack>
+                        </ModalBody>
+                        <ModalFooter>
+                            <FullGlowButton text='X' onClick={onClose3} />
+                        </ModalFooter>
+                      </ModalContent>
+                      </Modal>
                   </HStack>
                   <HStack w='full' justifyContent='space-between'>
                       <Text fontSize='16px' textColor={buttonText4}>Boss Battles</Text>

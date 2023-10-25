@@ -108,7 +108,7 @@ const EquipCharacter = (props: any) => {
       onClose()
 
       try{
-          const data = await manageChar(activeAddress, ['equip', char_id, selectedBG.asset_id, type])
+          const data = await manageChar(activeAddress, ['equipbg', char_id, selectedBG.asset_id, type])
           if (data && data.includes("Error")) {
             setPopTitle('Woops!')
             setPopMessage(fail_msg)

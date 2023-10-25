@@ -123,11 +123,11 @@ export async function switchMain(wallet: any, char_id: any) {
   }
 }
 
-export async function equipTool(wallet: any, tool_id: any) {
+export async function equipTool(wallet: any, data: any) {
   try {
     const requestBody = {
       wallet: wallet,
-      tool_id: tool_id
+      data: data
     }
 
     const response = await fetchDataFromBackend('users/equiptool', requestBody, wallet)
