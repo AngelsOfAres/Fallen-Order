@@ -109,11 +109,11 @@ export async function getDrip(wallet: any) {
   }
 }
 
-export async function switchMain(wallet: any, char_id: any) {
+export async function switchMain(wallet: any, data: any) {
   try {
     const requestBody = {
       wallet: wallet,
-      char_id: char_id
+      data: data
     }
 
     const response = await fetchDataFromBackend('users/maincharacter', requestBody, wallet)

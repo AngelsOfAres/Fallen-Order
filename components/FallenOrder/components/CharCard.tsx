@@ -17,10 +17,11 @@ import EquipCharacter from './ManageChar/EquipChar'
 import { formatDuration } from 'utils/formatTimer'
 import { MdKeyboardDoubleArrowUp, MdOutlineStar } from 'react-icons/md'
 import toast from 'react-hot-toast'
+import { XMarkIcon } from '@heroicons/react/20/solid'
 
 export function CharCard(props: any) {
     const { activeAddress } = useWallet()
-    const { metadata, asset_id, name, unitName, image, boostBal, bg_image, bg_name, kin_sec } = props
+    const { metadata, asset_id, name, unitName, image, boostBal, bg_image, bg_name, kin_sec, userProfile } = props
     const levelFull = metadata.Level.split('/')
     const level = parseInt(levelFull[0])
     const wisdom = parseInt(levelFull[1])
@@ -59,7 +60,6 @@ export function CharCard(props: any) {
     const bgCardOff = useColorModeValue('linear(60deg, whiteAlpha.300 10%, black 35%, black 65%, whiteAlpha.300 90%)','linear(60deg, whiteAlpha.300 10%, black 35%, black 65%, whiteAlpha.300 90%)')
     const buttonText5 = useColorModeValue('orange','cyan')
   
-    
     const [componentToRender, setComponentToRender] = useState<any>(null)
     
     const [loading, setLoading] = useState<boolean>(false)
@@ -152,7 +152,7 @@ export function CharCard(props: any) {
         }
     }
 
-    const handleMainSelect = async () => {
+    const handleMainSelect = async (type: any) => {
         setLoading(true)
         onMainClose()
         try {
@@ -163,7 +163,7 @@ export function CharCard(props: any) {
           toast.loading('Assigning Main Character...', { id: 'txn', duration: Infinity })
     
           try{
-              const data = await switchMain(activeAddress, asset_id)
+              const data = await switchMain(activeAddress, [type, asset_id])
               if (data && data.includes("Error")) {
                 console.log(data)
                 toast.error('Oops! Main Character Assign Failed!', { id: 'txn' })
@@ -181,12 +181,12 @@ export function CharCard(props: any) {
           toast.error('Oops! Main Character Assign Failed!', { id: 'txn' })
           return
         }
-        toast.success(`Main Character Assigned Successfully!`, {
+        toast.success(`Main Character Assigned!`, {
           id: 'txn',
           duration: 5000
         })
         setPopTitle('Success')
-        setPopMessage('New Main Character Assigned!')
+        setPopMessage('Main Character Assigned!')
         onSuccessOpen()
       }
 
@@ -201,9 +201,11 @@ export function CharCard(props: any) {
             </Container>
             {isOpen ?
             <>
-            <Tooltip ml={4} py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Assign Main!'} aria-label='Tooltip'>
-                <div className='absolute pl-4 pt--50'><IconGlowButton icon={MdOutlineStar} onClick={onMainOpen} /></div>
-            </Tooltip>
+                {userProfile ?
+                    <Tooltip ml={4} py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={userProfile.main_character === asset_id ? 'Remove Main' : 'Assign Main!'} aria-label='Tooltip'>
+                        <div className='absolute pl-4 pt--50'><IconGlowButton icon={userProfile.main_character === asset_id ? XMarkIcon : MdOutlineStar} onClick={() => userProfile.main_character === asset_id ? handleMainSelect('remove') : onMainOpen()} disabled={loading} /></div>
+                    </Tooltip>
+                : null}
                 <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isMainOpen} onClose={onMainClose}>
                 <ModalOverlay backdropFilter='blur(10px)'/>
                 <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
@@ -212,7 +214,7 @@ export function CharCard(props: any) {
                         <Text textAlign='center' textColor={buttonText4} fontSize='12px'>5 $EXP will be clawed back from your account</Text>
                     </ModalBody>
                     <ModalFooter mb={2}>
-                        <FullGlowButton text='Confirm!' onClick={handleMainSelect} />
+                        <FullGlowButton text='Confirm!' onClick={() => handleMainSelect('add')} />
                     </ModalFooter>
                 </ModalContent>
                 </Modal>

@@ -7,6 +7,8 @@ import { algodClient } from 'lib/algodClient'
 import { CharCard } from './components/CharCard'
 import axios from 'axios'
 import { rateLimiter } from 'lib/ratelimiter'
+import { useWallet } from '@txnlab/use-wallet'
+import getProfile from './components/Tools/getUserProfile'
 
 const ManageCharacter: React.FC = () => {
   const allFO = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5]
@@ -14,6 +16,7 @@ const ManageCharacter: React.FC = () => {
   const lightColor = useColorModeValue('orange.300','cyan.300')
   const [loading, setLoading] = useState<boolean>(true)
   const { assetList, boostBal } = useWalletBalance()
+  const { activeAddress } = useWallet()
   
   const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
   const buttonText5 = useColorModeValue('yellow','cyan')
@@ -71,7 +74,7 @@ async function getKinship(asset_id: any): Promise<number> {
   return 0
 }
   
-  async function processAssetsInBatches(): Promise<any[]> {
+  async function processAssetsInBatches(profile: any): Promise<any[]> {
     const foList = assetList.filter((item: any) => allFO.includes(item['asset-id']))
     const batches = []
     for (let i = 0; i < foList.length; i += 60) {
@@ -79,7 +82,7 @@ async function getKinship(asset_id: any): Promise<number> {
       batches.push(batch)
     }
     const promises = batches.map(async (batch) => {
-      return process_asset(batch)
+      return process_asset(batch, profile)
     })  
     const results = await Promise.all(promises)
     setCharList(results.flat().reverse())
@@ -87,7 +90,7 @@ async function getKinship(asset_id: any): Promise<number> {
     return results.flat().reverse()
   }
   
-  async function process_asset(assets: any): Promise<any[]> {
+  async function process_asset(assets: any, profile: any): Promise<any[]> {
     const processedAssets = []
   
     for (const singleAsset of assets) {
@@ -113,7 +116,7 @@ async function getKinship(asset_id: any): Promise<number> {
             bg_name = bgInfo.params['name']
           }
           const kinship_seconds = await getKinship(singleAsset['asset-id'])
-          processedAssets.push([metadata_decoded_asset.properties, singleAsset['asset-id'], assetInfo.params['name'], assetInfo.params['unit-name'], assetImage, bg_image, bg_name, kinship_seconds])
+          processedAssets.push([metadata_decoded_asset.properties, singleAsset['asset-id'], assetInfo.params['name'], assetInfo.params['unit-name'], assetImage, bg_image, bg_name, kinship_seconds, profile])
         } else {
           console.log('Error fetching data from API for asset ID', singleAsset['asset-id'])
         }
@@ -123,16 +126,27 @@ async function getKinship(asset_id: any): Promise<number> {
     return processedAssets
   }
 
+  const fetchProfile = async () => {
+    if (activeAddress) {        
+      try {
+        const profile = await getProfile(activeAddress)
+        if (assetList.length > 0) {
+          setLoading(true)
+          processAssetsInBatches(profile)
+        }
+        if (assetList === -1) {
+          setCharList([])
+          setLoading(false)
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error)
+      }
+    }
+  }
+
   useEffect(() => {
     if (assetList) {
-      if (assetList.length > 0) {
-        setLoading(true)
-        processAssetsInBatches()
-      }
-      if (assetList === -1) {
-        setCharList([])
-        setLoading(false)
-      }
+      fetchProfile()
     }
     }, [assetList])
 
@@ -146,7 +160,7 @@ async function getKinship(asset_id: any): Promise<number> {
                 <Flex flexDirection="row" flexWrap="wrap" justifyContent='center'>
                   {charList.map((option: any, index: any) => (
                     <div key={index}>
-                      <CharCard metadata={option[0]} asset_id={option[1]} name={option[2]} unitName={option[3]} image={option[4]} boostBal={boostBal === -1 ? 'Not Opted!' : boostBal} bg_image={option[5]} bg_name={option[6]} kin_sec={option[7]} />
+                      <CharCard metadata={option[0]} asset_id={option[1]} name={option[2]} unitName={option[3]} image={option[4]} boostBal={boostBal === -1 ? 'Not Opted!' : boostBal} bg_image={option[5]} bg_name={option[6]} kin_sec={option[7]} userProfile={option[8]}/>
                     </div>
                   ))}
                 </Flex>

@@ -41,9 +41,9 @@ import {
     )
   }
   
-  export const IconGlowButton = ({ icon, onClick }: textProp) => {
+  export const IconGlowButton = ({ icon, onClick, disabled }: textProp) => {
     return (
-        <Button p='1.5px' className={useColorModeValue(styles.fullglowL, styles.fullglowD)} _hover={{textColor:'white'}} textColor='black' fontSize='11px' fontFamily="Orbitron" size='sm' onClick={onClick}>
+        <Button p='1.5px' className={useColorModeValue(styles.fullglowL, styles.fullglowD)} _hover={{textColor:'white'}} textColor='black' fontSize='11px' fontFamily="Orbitron" size='sm' onClick={onClick} isDisabled={disabled}>
             <Icon boxSize={6} as={icon} zIndex={1} />
         </Button>
     )
