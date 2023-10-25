@@ -108,3 +108,31 @@ export async function getDrip(wallet: any) {
     console.error(error.message)
   }
 }
+
+export async function switchMain(wallet: any, char_id: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      char_id: char_id
+    }
+
+    const response = await fetchDataFromBackend('users/maincharacter', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}
+
+export async function equipTool(wallet: any, tool_id: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      tool_id: tool_id
+    }
+
+    const response = await fetchDataFromBackend('users/equiptool', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}

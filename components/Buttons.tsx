@@ -43,8 +43,8 @@ import {
   
   export const IconGlowButton = ({ icon, onClick }: textProp) => {
     return (
-        <Button px='0.75px' className={useColorModeValue(styles.fullglowL, styles.fullglowD)} _hover={{textColor:'white'}} textColor='black' fontSize='8px' fontFamily="Orbitron" size='xs' onClick={onClick}>
-            <Icon boxSize={4} as={icon} zIndex={1} />
+        <Button p='1.5px' className={useColorModeValue(styles.fullglowL, styles.fullglowD)} _hover={{textColor:'white'}} textColor='black' fontSize='11px' fontFamily="Orbitron" size='sm' onClick={onClick}>
+            <Icon boxSize={6} as={icon} zIndex={1} />
         </Button>
     )
   }

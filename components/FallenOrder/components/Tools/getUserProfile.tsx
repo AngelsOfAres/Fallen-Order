@@ -44,7 +44,10 @@ async function calculateElapsedSeconds(dripTimer: any) {
 
     const elapsedMilliseconds = currentDate.getTime() - utcDripDate.getTime()
     const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000)
-    const time_remaining = formatDuration(21600-elapsedSeconds)
+    let time_remaining = null
+    if (elapsedSeconds <= 21600) {
+        time_remaining = formatDuration(21600-elapsedSeconds)
+    }
 
     return time_remaining
   }

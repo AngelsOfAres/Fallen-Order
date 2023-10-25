@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Navbar from 'components/Navbar'
-import { Center, useColorModeValue, Text, useDisclosure, Image, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, VStack, HStack, ModalFooter, Input, Box } from '@chakra-ui/react'
+import { Center, useColorModeValue, Text, useDisclosure, Image, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, VStack, HStack, ModalFooter, Input, Box, Tooltip, Flex } from '@chakra-ui/react'
 import styles from '../styles/glow.module.css'
 import Footer from 'components/Footer'
 import ManageCharacter from 'components/FallenOrder/ManageChar'
@@ -9,30 +9,41 @@ import { useWallet } from '@txnlab/use-wallet'
 import Connect from 'components/MainTools/Connect'
 import MyBalances from 'components/FallenOrder/components/MyBalances'
 import { authenticate } from 'utils/auth'
-import { FullGlowButton } from 'components/Buttons'
+import { FullGlowButton, IconGlowButton } from 'components/Buttons'
 import { useState, useEffect } from 'react'
 import useWalletBalance from 'hooks/useWalletBalance'
 import getProfile from 'components/FallenOrder/components/Tools/getUserProfile'
-import { algodClient } from 'lib/algodClient'
+import { algodClient, algodIndexer } from 'lib/algodClient'
 import algosdk from 'algosdk'
+import { SuccessPopup } from '../components/FallenOrder/components/Popups/Success'
 import toast from 'react-hot-toast'
-import { createProfile, getDrip } from 'api/backend'
+import { createProfile, equipTool, getDrip } from 'api/backend'
 import { motion } from 'framer-motion'
+import { MdOutlineAdd } from 'react-icons/md'
+import { WrenchScrewdriverIcon } from '@heroicons/react/20/solid'
+import { hatchets, pickaxes, woodenHatchetImg, ironPickaxeImg } from 'components/Whitelists/FOTools'
 
 export default function MyFO() {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
+  const allTools = [...hatchets, ...pickaxes]
   const { activeAddress, signTransactions } = useWallet()
   const [ authUser, setAuthUser ] = useState<any>(null)
   const [ loading, setLoading ] = useState<boolean>(false)
   const [ userProfile, setUserProfile ] = useState<any>(null)
   const [ userID, setUserID ] = useState<any>(null)
-  const { accountInfo, expBal } = useWalletBalance()
+  const { accountInfo, expBal, assetList } = useWalletBalance()
+  const [popTitle, setPopTitle] = useState<any>('')
+  const [popMessage, setPopMessage] = useState<any>('')
+  const [tool, setTool] = useState<any>(null)
+  const [toolList, setToolList] = useState<any>([])
   const { isOpen: isOpen1, onOpen: onOpen1, onClose: onClose1 } = useDisclosure()
   const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure()
+  const { isOpen: isOpen3, onOpen: onOpen3, onClose: onClose3 } = useDisclosure()
+  const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
   const buttonText3 = useColorModeValue('orange.500','cyan.500')
   const buttonText4 = useColorModeValue('orange.200','cyan.100')
-  const buttonText5 = useColorModeValue('yellow','cyan')
+  const buttonText5 = useColorModeValue('orange','cyan')
   const xLightColor = useColorModeValue('orange.100','cyan.100')
   const medColor = useColorModeValue('orange.500','cyan.500')
 
@@ -105,7 +116,6 @@ export default function MyFO() {
     fetchProfile()
   }
 
-
   const fetchProfile = async () => {
     if (activeAddress && typeof window !== 'undefined') {        
       try {
@@ -125,6 +135,27 @@ export default function MyFO() {
   useEffect(() => {
     fetchProfile()
   }, [accountInfo])
+
+  useEffect(() => {
+    if (assetList && assetList.length > 0) {
+      const availableTools = assetList
+        .filter((item: any) => allTools.includes(item['asset-id']))
+        .map((item: any) => item['asset-id'])
+        .map(async (id: any) => {
+          const assetInfo = await algodIndexer.lookupAssetByID(id).do()
+          return assetInfo
+        })
+
+      Promise.all(availableTools)
+        .then((results) => {
+          setToolList(results)
+          console.log(results)
+        })
+        .catch((error) => {
+          console.error('An error occurred:', error)
+        })
+    }
+  }, [assetList])
   
 
   function handleLogout() {
@@ -180,6 +211,44 @@ export default function MyFO() {
       toast.error('Oops! Opt In Failed!', { id: 'txn' })
     }
   }
+
+  
+    const handleEquipTool = async () => {
+        setLoading(true)
+        try {
+            if (!activeAddress) {
+            throw new Error('Log In First Please!!')
+            }
+
+            toast.loading('Equipping Tool...', { id: 'txn', duration: Infinity })
+
+            try{
+                const data = await equipTool(activeAddress, tool.asset.index)
+                if (data && data.includes("Error")) {
+                console.log(data)
+                toast.error('Oops! Tool Equip Failed!', { id: 'txn' })
+                return
+                }
+            } catch (error: any) {
+                console.log(error.message)
+                toast.error('Oops! Tool Equip Failed!', { id: 'txn' })
+                return
+            } finally {
+                setLoading(false)
+            }
+        } catch (error) {
+            console.error(error)
+            toast.error('Oops! Tool Equip Failed!', { id: 'txn' })
+            return
+        }
+        toast.success(`Tool Equipped Successfully!`, {
+            id: 'txn',
+            duration: 5000
+        })
+        setPopTitle('Success')
+        setPopMessage('New Tool Equipped!')
+        onSuccessOpen()
+    }
   
   return (
     <>
@@ -239,7 +308,7 @@ export default function MyFO() {
           </Modal>
           
           {userProfile ?
-          <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpen2} onClose={onClose2}>
+          <Modal scrollBehavior={'outside'} size='xl' isCentered isOpen={isOpen2} onClose={onClose2}>
           <ModalOverlay backdropFilter='blur(10px)'/>
           <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
               <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>My Profile</ModalHeader>
@@ -253,7 +322,7 @@ export default function MyFO() {
                         <Image className={boxGlow} boxSize='48px' borderRadius='6px' alt='Main Character' src={userProfile.mainImage}/>
                       </>
                       : 
-                        <FullGlowButton text='Assign' />
+                      <Text fontSize='20px' textColor={buttonText5}>-</Text>
                       }
                   </HStack>
                   <HStack w='full' justifyContent='space-between'>
@@ -266,7 +335,49 @@ export default function MyFO() {
                         </Box>
                       </>
                       : 
-                        <FullGlowButton text='Equip' />
+                      <>
+                        {toolList.length === 0 ?
+                          <>
+                            <a href='https://www.nftexplorer.app/sellers/fallen-order-accessories'><FullGlowButton text='Get Tools!' /></a>
+                          </>
+                        : 
+                          <>
+                            <Tooltip ml={6} py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Equip Tool!'} aria-label='Tooltip'>
+                              <IconGlowButton icon={WrenchScrewdriverIcon} onClick={onOpen3} />
+                            </Tooltip>
+
+                            <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpen3} onClose={onClose3}>
+                            <ModalOverlay backdropFilter='blur(10px)'/>
+                            <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
+                              <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Equip Tool</ModalHeader>
+                              <ModalBody px={4} w='full'>
+                                <VStack w='full' alignItems='center' justifyContent='center'>
+                                  <Text pb={6} fontSize='16px' textAlign='center' textColor={buttonText4}>Current: {userProfile.toolName ? userProfile.toolName : '-'}</Text>
+                                  <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
+                                    {toolList.map((asset: any, index: any) => (
+                                        <VStack key={index} justifyContent='center'>
+                                          <Image className={boxGlow} boxSize={tool && tool === asset ? '24' : '20'} borderRadius='8px' alt={asset.asset.params.name}
+                                            src={'https://cloudflare-ipfs.com/ipfs/' + asset.asset.params.url.substring(7)}
+                                            onClick={() => setTool(asset)}
+                                          />
+                                          <Text fontSize='12px' textColor={buttonText4}>
+                                          {asset.asset.params['unit-name']}
+                                          </Text>
+                                        </VStack>
+                                      ))}
+                                  </Flex>
+                                  {tool ? <Text mb={2} fontSize='12px' textColor={buttonText5}>Selected: <strong>{tool.asset.params.name}</strong></Text> : null}
+                                  <FullGlowButton text={loading ? 'Equipping...' : 'Equip!'} onClick={handleEquipTool} disabled={!tool} />
+                                </VStack>
+                              </ModalBody>
+                              <ModalFooter>
+                                  <FullGlowButton text='X' onClick={onClose3} />
+                              </ModalFooter>
+                            </ModalContent>
+                            </Modal>
+                          </>
+                        }
+                      </>
                       }
                   </HStack>
                   <HStack w='full' justifyContent='space-between'>
@@ -275,7 +386,7 @@ export default function MyFO() {
                   </HStack>
                   <HStack w='full' justifyContent='space-between'>
                       <Text fontSize='16px' textColor={buttonText4}>Drip</Text>
-                      {userProfile.drip_timer !== 0 ?
+                      {userProfile.time_remaining ?
                       <>
                         <Text fontSize='20px' textColor={buttonText5}>{userProfile.time_remaining}</Text>
                       </>
@@ -305,7 +416,7 @@ export default function MyFO() {
                       <Text fontSize='16px' textColor={buttonText4}>Kinship Subs</Text>
                       <HStack>
                         <Text fontSize='20px' textColor={buttonText5}>{userProfile.kinship_subs}</Text>
-                        <FullGlowButton text='ADD' />
+                        <IconGlowButton icon={MdOutlineAdd} />
                       </HStack>
                   </HStack>
                 </VStack>
@@ -324,6 +435,7 @@ export default function MyFO() {
         <Center><Connect /></Center>
       </>
       }
+      <SuccessPopup isOpen={isSuccessOpen} onClose={onSuccessClose} message={popMessage} title={popTitle} />
       <Footer />
     </>
   )

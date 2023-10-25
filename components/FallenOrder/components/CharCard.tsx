@@ -1,21 +1,22 @@
 import * as React from 'react'
 import { Box, Container, Modal, ModalBody, ModalHeader, ModalFooter, ModalOverlay, ModalContent, Tooltip, Text, Link, Image, Button, Divider, Flex, HStack, VStack, Center, useDisclosure, useColorModeValue, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Icon } from '@chakra-ui/react'
 import styles from '../../../styles/glow.module.css'
-import { FullGlowButton } from 'components/Buttons'
+import { FullGlowButton, IconGlowButton } from 'components/Buttons'
 import { RenameManage } from './ManageChar/Rename'
 import { StatsManage } from './ManageChar/Stats'
 import { AbilitiesManage } from './ManageChar/Abilities'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useWallet } from '@txnlab/use-wallet'
-import { manageChar } from 'api/backend'
+import { equipTool, manageChar, switchMain } from 'api/backend'
 import { SuccessPopup } from './Popups/Success'
 import { wisdom_required, expCost, materialCost } from './Constants/levelup'
 import { formatAssetBalance } from 'utils'
 import { useEffect } from 'react'
 import EquipCharacter from './ManageChar/EquipChar'
 import { formatDuration } from 'utils/formatTimer'
-import { MdKeyboardDoubleArrowUp } from 'react-icons/md'
+import { MdKeyboardDoubleArrowUp, MdOutlineStar } from 'react-icons/md'
+import toast from 'react-hot-toast'
 
 export function CharCard(props: any) {
     const { activeAddress } = useWallet()
@@ -48,6 +49,7 @@ export function CharCard(props: any) {
     const { isOpen: isLevelConfirmOpen, onOpen: onLevelConfirmOpen, onClose: onLevelConfirmClose } = useDisclosure()
     const { isOpen: isBoostConfirmOpen, onOpen: onBoostConfirmOpen, onClose: onBoostConfirmClose } = useDisclosure()
     const { isOpen: isEquipOpen, onOpen: onEquipOpen, onClose: onEquipClose } = useDisclosure()
+    const { isOpen: isMainOpen, onOpen: onMainOpen, onClose: onMainClose } = useDisclosure()
     const { isOpen, onToggle } = useDisclosure()
     const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
@@ -55,7 +57,8 @@ export function CharCard(props: any) {
     const buttonText4 = useColorModeValue('orange.200','cyan.100')
     const bgCardOn = useColorModeValue('linear(60deg, whiteAlpha.300 3%, black 50%, whiteAlpha.300 97%)','linear(60deg, whiteAlpha.300 3%, black 50%, whiteAlpha.300 97%)')
     const bgCardOff = useColorModeValue('linear(60deg, whiteAlpha.300 10%, black 35%, black 65%, whiteAlpha.300 90%)','linear(60deg, whiteAlpha.300 10%, black 35%, black 65%, whiteAlpha.300 90%)')
-    const buttonText5 = useColorModeValue('yellow','cyan')
+    const buttonText5 = useColorModeValue('orange','cyan')
+  
     
     const [componentToRender, setComponentToRender] = useState<any>(null)
     
@@ -149,6 +152,44 @@ export function CharCard(props: any) {
         }
     }
 
+    const handleMainSelect = async () => {
+        setLoading(true)
+        onMainClose()
+        try {
+          if (!activeAddress) {
+            throw new Error('Log In First Please!!')
+          }
+    
+          toast.loading('Assigning Main Character...', { id: 'txn', duration: Infinity })
+    
+          try{
+              const data = await switchMain(activeAddress, asset_id)
+              if (data && data.includes("Error")) {
+                console.log(data)
+                toast.error('Oops! Main Character Assign Failed!', { id: 'txn' })
+                return
+              }
+          } catch (error: any) {
+              console.log(error.message)
+              toast.error('Oops! Main Character Assign Failed!', { id: 'txn' })
+              return
+          } finally {
+              setLoading(false)
+          }
+        } catch (error) {
+          console.error(error)
+          toast.error('Oops! Main Character Assign Failed!', { id: 'txn' })
+          return
+        }
+        toast.success(`Main Character Assigned Successfully!`, {
+          id: 'txn',
+          duration: 5000
+        })
+        setPopTitle('Success')
+        setPopMessage('New Main Character Assigned!')
+        onSuccessOpen()
+      }
+
     return (
         <Box w={isOpen ? 'auto' : '100px'} h={isOpen ? 'auto' : '100px'} className={boxGlow} bgGradient={bgCardOn} borderColor={buttonText3} m={4} borderWidth='1.5px' borderRadius='16px'>
             <Container pb={0} pt={0} pl={0} pr={0} centerContent>
@@ -160,6 +201,21 @@ export function CharCard(props: any) {
             </Container>
             {isOpen ?
             <>
+            <Tooltip ml={4} py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Assign Main!'} aria-label='Tooltip'>
+                <div className='absolute pl-4 pt--50'><IconGlowButton icon={MdOutlineStar} onClick={onMainOpen} /></div>
+            </Tooltip>
+                <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isMainOpen} onClose={onMainClose}>
+                <ModalOverlay backdropFilter='blur(10px)'/>
+                <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
+                    <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Assign Main Character</ModalHeader>
+                    <ModalBody>
+                        <Text textAlign='center' textColor={buttonText4} fontSize='12px'>5 $EXP will be clawed back from your account</Text>
+                    </ModalBody>
+                    <ModalFooter mb={2}>
+                        <FullGlowButton text='Confirm!' onClick={handleMainSelect} />
+                    </ModalFooter>
+                </ModalContent>
+                </Modal>
             <AnimatePresence>
             <motion.div
               initial={{ opacity: 0, height: '100px', width: '100px' }}
@@ -167,8 +223,8 @@ export function CharCard(props: any) {
               exit={{ opacity: 0, height: '100px', width: '100px' }}
               transition={{ duration: 0.2 }}
             >
-            <Flex m={3} textColor={buttonText3} fontFamily="Orbitron" alignItems='center' justifyContent='center'>
-                <VStack mx={2} alignItems='center' spacing='2px'>
+            <Flex mt={6} mx={3} textColor={buttonText3} fontFamily="Orbitron" alignItems='center' justifyContent='center'>
+                <VStack mx={2} alignItems='center' spacing='2px'>                    
                     <HStack spacing='0px'>
                         {LVLUp ?
                         <motion.div
@@ -185,7 +241,7 @@ export function CharCard(props: any) {
                     </HStack>
                 <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                     <Center>
-                        <Tooltip label={'Health Points'} aria-label='Tooltip'>
+                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Level | Wisdom'} aria-label='Tooltip'>
                             <Text fontSize='xs'>{level} | {formatAssetBalance(wisdom, 0, true, true, 3)}</Text>
                         </Tooltip>
                     </Center>
@@ -195,19 +251,19 @@ export function CharCard(props: any) {
                 <Text className={gradientText} fontSize='12px'>HP</Text>
                 <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                     <Center>
-                        <Tooltip label={'Health Points'} aria-label='Tooltip'>
+                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Health Points'} aria-label='Tooltip'>
                             <Text fontSize='xs'>{metadata.HP}</Text>
                         </Tooltip>
                     </Center>
                 </Box>
                 </VStack>
                 </Flex>
-                <Flex mx={2} textColor={buttonText3} fontFamily="Orbitron" alignItems='center' justifyContent='center'>
+                <Flex mt={2} mx={2} textColor={buttonText3} fontFamily="Orbitron" alignItems='center' justifyContent='center'>
                     <VStack mx={2} alignItems='center' spacing='2px'>
                     <Text className={gradientText} fontSize='12px'>ATK</Text>
                     <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                         <Center>
-                            <Tooltip label={'Attack'} aria-label='Tooltip'>
+                            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Attack'} aria-label='Tooltip'>
                                 <Text fontSize='xs'>{metadata.ATK}</Text>
                             </Tooltip>
                         </Center>
@@ -217,7 +273,7 @@ export function CharCard(props: any) {
                     <Text className={gradientText} fontSize='12px'>DEF</Text>
                     <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                         <Center>
-                            <Tooltip label={'Defense'} aria-label='Tooltip'>
+                            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Defense'} aria-label='Tooltip'>
                                 <Text fontSize='xs'>{metadata.DEF}</Text>
                             </Tooltip>
                         </Center>
@@ -227,7 +283,7 @@ export function CharCard(props: any) {
                     <Text className={gradientText} fontSize='12px'> AP </Text>
                     <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                         <Center>
-                            <Tooltip label={'Ability Power'} aria-label='Tooltip'>
+                            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Ability Power'} aria-label='Tooltip'>
                                 <Text fontSize='xs'>{metadata.AP}</Text>
                             </Tooltip>
                         </Center>
@@ -237,7 +293,7 @@ export function CharCard(props: any) {
                     <Text className={gradientText} fontSize='12px'>Points</Text>
                     <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                         <Center>
-                            <Tooltip label={'Ability Power'} aria-label='Tooltip'>
+                            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Battle Points'} aria-label='Tooltip'>
                                 <Text fontSize='xs'>{metadata.Points}</Text>
                             </Tooltip>
                         </Center>
@@ -252,7 +308,7 @@ export function CharCard(props: any) {
                         {!loading ?
                         <Box textColor={buttonText4} p={2} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='lg'>
                             <Center minW='20px'>
-                                <Tooltip hasArrow label={'Kinship'} aria-label='Tooltip'>
+                                <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Kinship'} aria-label='Tooltip'>
                                     <Text fontSize='12px'>{metadata.Kinship}</Text>
                                 </Tooltip>
                             </Center>
@@ -311,10 +367,10 @@ export function CharCard(props: any) {
                         <FullGlowButton text='Rename' onClick={() => setComponentToRender('rename')} disabled={componentToRender === 'rename'}/>
                         <FullGlowButton text='Stats'  onClick={() => setComponentToRender('stats')} disabled={componentToRender === 'stats'}/>
                         <FullGlowButton text='Abilities'  onClick={() => setComponentToRender('abilities')} disabled={componentToRender === 'abilities'}/>
-                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={`Available Boosters: ${boostBal}`} aria-label='Tooltip'>                  
+                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={`Available Boosters: ${boostBal}`} aria-label='Tooltip'>                  
                             <div><FullGlowButton text={loading ? 'Boosting...' : 'Boost'} onClick={onBoostConfirmOpen}  disabled={boostBal <= 0 || boostBal === 'Not Opted!'}/></div>
                         </Tooltip>
-                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={levelTooltip} aria-label='Tooltip'>                      
+                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={levelTooltip} aria-label='Tooltip'>                      
                         <motion.div
                             animate={{ scale: LVLUp ? [1, 1.07, 1] : 1 }}
                             transition={{
