@@ -22,7 +22,8 @@ export function StatsManage(props: any) {
     const medColor = useColorModeValue('orange.500','cyan.500')
     const buttonText5 = useColorModeValue('yellow','cyan')
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
-    const availablePoints = points - newStats[0] - newStats[1] - newStats[2]
+    const availablePoints = points + stats[0] + stats[1] + stats[2]
+    console.log(availablePoints)
     const success_msg = `${name && name.length > 0 ? name : unitName}'s Stats Updated!`
     const fail_msg = `Stats Update Failed!`
 
@@ -31,6 +32,7 @@ export function StatsManage(props: any) {
         onConfirmClose()
       
         try {
+            console.log(newStats)
           const data = await manageChar(activeAddress, ['stats', asset_id, newStats])
 
           if (data && data.includes("Error")) {
@@ -61,27 +63,27 @@ export function StatsManage(props: any) {
     return (
         <VStack my={4} mx={8}>
             <Text textColor={buttonText3} fontSize='18px'>Available Points</Text>
-            <Text mb='12px' textColor={buttonText5} fontSize='18px'>{isNaN(availablePoints) ? 0 : availablePoints}</Text>
+            <Text mb='12px' textColor={buttonText5} fontSize='18px'>{isNaN(availablePoints - newStats[0] - newStats[1] - newStats[2]) ? 0 : availablePoints - newStats[0] - newStats[1] - newStats[2]}</Text>
 
             <HStack w='95%' justifyContent='space-between'>
                 <Text textColor={buttonText4}>ATK</Text>
                 <Input w='100px' type="number" name="attack" id="attack" max={36} textAlign='center' _hover={{ bgColor: 'black' }} _focus={{ borderColor: medColor }}
                     textColor={xLightColor} borderColor={medColor} borderRadius='lg' className={`block w-full bg-black sm:text-sm`} value={newStats[0]}
-                    onChange={(e) => setNewStats([Math.min(parseInt(e.target.value), points - newStats[1] - newStats[2]), newStats[1], newStats[2]])} placeholder='0' />
+                    onChange={(e) => setNewStats([Math.min(parseInt(e.target.value), availablePoints - newStats[1] - newStats[2]), newStats[1], newStats[2]])} placeholder='0' />
             </HStack>
                 
             <HStack w='95%' justifyContent='space-between'>
                 <Text textColor={buttonText4}>DEF</Text>
                 <Input w='100px' type="number" name="defense" id="defense" max={36} textAlign='center' _hover={{ bgColor: 'black' }} _focus={{ borderColor: medColor }}
                     textColor={xLightColor} borderColor={medColor} borderRadius='lg' className={`block w-full bg-black sm:text-sm`} value={newStats[1]}
-                    onChange={(e) => setNewStats([newStats[0], Math.min(parseInt(e.target.value), points - newStats[0] - newStats[2]), newStats[2]])} placeholder='0' />
+                    onChange={(e) => setNewStats([newStats[0], Math.min(parseInt(e.target.value), availablePoints - newStats[0] - newStats[2]), newStats[2]])} placeholder='0' />
             </HStack>
                 
             <HStack w='95%' justifyContent='space-between'>
                 <Text textColor={buttonText4}>AP</Text>
                 <Input w='100px' type="number" name="abilitypower" id="abilitypower" max={36} textAlign='center' _hover={{ bgColor: 'black' }} _focus={{ borderColor: medColor }}
                     textColor={xLightColor} borderColor={medColor} borderRadius='lg' className={`block w-full bg-black sm:text-sm`} value={newStats[2]}
-                    onChange={(e) => setNewStats([newStats[0], newStats[1], Math.min(parseInt(e.target.value), points - newStats[0] - newStats[1])])} placeholder='0' />
+                    onChange={(e) => setNewStats([newStats[0], newStats[1], Math.min(parseInt(e.target.value), availablePoints - newStats[0] - newStats[1])])} placeholder='0' />
             </HStack>
 
             <Center mt='20px'><FullGlowButton text={loading? 'Editing Stats...' : 'Edit Stats'} onClick={onConfirmOpen} disabled={!stats || stats.length === 0 || loading} /></Center>
