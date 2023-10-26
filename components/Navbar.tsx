@@ -46,9 +46,7 @@ import Connect from './MainTools/Connect'
             <HamburgerIcon />
           </MenuButton>
           <MenuList p={0} m={3} borderRadius='20px'>
-                <MenuItem closeOnSelect={false} p={0} m={0}  borderRadius='20px'>
-                  <Connect />
-                </MenuItem>
+            <Connect />
           </MenuList>
         </Menu>
     </Flex>

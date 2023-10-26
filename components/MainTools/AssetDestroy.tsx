@@ -84,7 +84,7 @@ export default function AssetDestroy() {
       ),
       asset: 0,
     },
-    ...(createdAssets ? createdAssets.map((asset: any) => ({
+    ...(Array.isArray(createdAssets) ? createdAssets.map((asset: any) => ({
       value: asset['index'],
       label: (
         <>
