@@ -201,7 +201,6 @@ export default function Transact() {
       sendTransaction()
     }
   }
-
   const options = [
     {
       value: 0,
@@ -214,7 +213,7 @@ export default function Transact() {
       ),
       asset: 0,
     },
-    ...(assetList ? assetList.map((asset: any) => ({
+    ...(Array.isArray(assetList) ? assetList.map((asset: any) => ({
       value: asset['asset-id'],
       label: (
         <>
