@@ -136,3 +136,17 @@ export async function equipTool(wallet: any, data: any) {
     console.error(error.message)
   }
 }
+
+export async function subKinship(wallet: any, subCount: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      subCount: subCount
+    }
+
+    const response = await fetchDataFromBackend('users/subkinship', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}

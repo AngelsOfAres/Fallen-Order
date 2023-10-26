@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Navbar from 'components/Navbar'
-import { Center, useColorModeValue, Text, useDisclosure, Image, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, VStack, HStack, ModalFooter, Input, Box, Tooltip, Flex } from '@chakra-ui/react'
+import { Center, useColorModeValue, Text, useDisclosure, Image, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, VStack, HStack, ModalFooter, Input, Box, Tooltip, Flex, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper } from '@chakra-ui/react'
 import styles from '../styles/glow.module.css'
 import Footer from 'components/Footer'
 import ManageCharacter from 'components/FallenOrder/ManageChar'
@@ -17,7 +17,7 @@ import { algodClient, algodIndexer } from 'lib/algodClient'
 import algosdk from 'algosdk'
 import { SuccessPopup } from '../components/FallenOrder/components/Popups/Success'
 import toast from 'react-hot-toast'
-import { createProfile, equipTool, getDrip } from 'api/backend'
+import { createProfile, equipTool, getDrip, subKinship } from 'api/backend'
 import { motion } from 'framer-motion'
 import { MdOutlineAdd } from 'react-icons/md'
 import { WrenchScrewdriverIcon, XMarkIcon } from '@heroicons/react/20/solid'
@@ -36,16 +36,19 @@ export default function MyFO() {
   const [popTitle, setPopTitle] = useState<any>('')
   const [popMessage, setPopMessage] = useState<any>('')
   const [tool, setTool] = useState<any>(null)
+  const [subCount, setSubCount] = useState<number>(1)
   const [toolList, setToolList] = useState<any>([])
   const { isOpen: isOpen1, onOpen: onOpen1, onClose: onClose1 } = useDisclosure()
   const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure()
   const { isOpen: isOpen3, onOpen: onOpen3, onClose: onClose3 } = useDisclosure()
+  const { isOpen: isOpen4, onOpen: onOpen4, onClose: onClose4 } = useDisclosure()
   const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
   const buttonText3 = useColorModeValue('orange.500','cyan.500')
   const buttonText4 = useColorModeValue('orange.200','cyan.100')
   const buttonText5 = useColorModeValue('orange','cyan')
   const xLightColor = useColorModeValue('orange.100','cyan.100')
   const medColor = useColorModeValue('orange.500','cyan.500')
+  const lightColor = useColorModeValue('orange.300','cyan.300')
 
   const createUserProfile = async () => {
     setLoading(true)
@@ -257,6 +260,47 @@ export default function MyFO() {
           fetchProfile()
         }, 3000)
     }
+
+    const handleKinshipSub = async () => {
+      setLoading(true)
+      try {
+          if (!activeAddress) {
+          throw new Error('Log In First Please!!')
+          }
+
+          toast.loading('Adding To Kinship Subscription...', { id: 'txn', duration: Infinity })
+
+          try{
+              const data = await subKinship(activeAddress, subCount)
+              if (data && data.includes("Error")) {
+              console.log(data)
+              toast.error('Oops! Kinship Subscription Failed!', { id: 'txn' })
+              return
+              }
+          } catch (error: any) {
+              console.log(error.message)
+              toast.error('Oops! Kinship Subscription Failed!', { id: 'txn' })
+              return
+          } finally {
+              setLoading(false)
+          }
+      } catch (error) {
+          console.error(error)
+          toast.error('Oops! Kinship Subscription Failed!', { id: 'txn' })
+          return
+      }
+      toast.success(`Kinship Subscription Successful!`, {
+          id: 'txn',
+          duration: 5000
+      })
+      setPopMessage('Kinship Subscription Added!')
+      setPopTitle('Success')
+      onClose4()
+      onSuccessOpen()
+      setTimeout(() => {
+        fetchProfile()
+      }, 3000)
+  }
   
   return (
     <>
@@ -434,9 +478,39 @@ export default function MyFO() {
                   </HStack>
                   <HStack w='full' justifyContent='space-between'>
                       <Text fontSize='16px' textColor={buttonText4}>Kinship Subs</Text>
-                      <HStack>
+                      <HStack spacing='12px'>
                         <Text fontSize='20px' textColor={buttonText5}>{userProfile.kinship_subs}</Text>
-                        <IconGlowButton icon={MdOutlineAdd} />
+                        <IconGlowButton icon={MdOutlineAdd} onClick={onOpen4} />
+
+                          <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpen4} onClose={onClose4}>
+                          <ModalOverlay backdropFilter='blur(10px)'/>
+                          <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
+                              <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Auto Kinship</ModalHeader>
+                              <ModalBody>
+                                <VStack mx={4} alignItems='center' justifyContent='center'>
+                                  <Text pb={4} fontSize='16px' textAlign='center' textColor={buttonText4}>Subscribe to Auto-Kinship to guarantee your characters&apos; Kinship is received on time daily!</Text>
+                                  <HStack>
+                                    <Text py={4} fontSize='16px' textAlign='center' textColor={buttonText5}>Units</Text>
+                                    <NumberInput w='80px' min={0} max={10000} value={isNaN(subCount) ? 0 : subCount} onChange={(valueString) => setSubCount(parseInt(valueString))} isInvalid={subCount < 0 || subCount > 10000}>
+                                    <NumberInputField textAlign='center' _hover={{ bgColor: 'black' }} _focus={{ borderColor: medColor }} textColor={xLightColor} borderColor={medColor} className={`block rounded-none rounded-l-md bg-black sm:text-sm`}/>
+                                    <NumberInputStepper>
+                                        <NumberIncrementStepper _hover={{ textColor: medColor }} textColor={lightColor} borderColor={medColor}/>
+                                        <NumberDecrementStepper _hover={{ textColor: medColor }} textColor={lightColor} borderColor={medColor}/>
+                                    </NumberInputStepper>
+                                    </NumberInput>
+                                  </HStack>
+                                  <HStack>
+                                    <Text py={4} fontSize='16px' textAlign='center' textColor={buttonText5}>Total Cost:</Text>
+                                    <Text py={4} fontSize='16px' textAlign='center' textColor={buttonText4}>{isNaN(subCount*5) ? 0 : subCount*5} $EXP</Text>
+                                  </HStack>
+                                  <FullGlowButton text='Subscribe!' onClick={handleKinshipSub} disabled={loading || subCount === 0 || isNaN(subCount)} />
+                                </VStack>
+                              </ModalBody>
+                              <ModalFooter>
+                                  <FullGlowButton text='X' onClick={onClose4} />
+                              </ModalFooter>
+                          </ModalContent>
+                          </Modal>
                       </HStack>
                   </HStack>
                 </VStack>

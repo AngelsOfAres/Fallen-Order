@@ -189,7 +189,6 @@ export function CharCard(props: any) {
         setPopMessage('Main Character Assigned!')
         onSuccessOpen()
       }
-      console.log(bg_image)
 
     return (
         <Box w={isOpen ? 'auto' : '100px'} h={isOpen ? 'auto' : '100px'} className={boxGlow} bgGradient={bgCardOn} borderColor={buttonText3} m={4} borderWidth='2px' borderRadius='16px'>
