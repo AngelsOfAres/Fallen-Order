@@ -237,3 +237,17 @@ export async function updateListing(wallet: any, data: any) {
     console.error(error.message)
   }
 }
+
+export async function unfreezeAsset(wallet: any, assetID: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      assetID: assetID
+    }
+
+    const response = await fetchDataFromBackend('ge/unfreezeasset', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}

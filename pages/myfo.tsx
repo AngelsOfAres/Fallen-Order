@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Navbar from 'components/Navbar'
-import { Center, useColorModeValue, Text, useDisclosure, Image, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, VStack, HStack, ModalFooter, Input, Box, Tooltip, Flex, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper } from '@chakra-ui/react'
+import { Center, useColorModeValue, Text, useDisclosure, Image, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, VStack, HStack, ModalFooter, Input, Box, Tooltip, Flex, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Progress } from '@chakra-ui/react'
 import styles from '../styles/glow.module.css'
 import Footer from 'components/Footer'
 import ManageCharacter from 'components/FallenOrder/ManageChar'
@@ -17,22 +17,28 @@ import { algodClient, algodIndexer } from 'lib/algodClient'
 import algosdk from 'algosdk'
 import { SuccessPopup } from '../components/FallenOrder/components/Popups/Success'
 import toast from 'react-hot-toast'
-import { createProfile, equipTool, getDrip, subKinship } from 'api/backend'
+import { equipTool, getDrip, subKinship, unfreezeAsset } from 'api/backend'
 import { motion } from 'framer-motion'
 import { MdOutlineAdd } from 'react-icons/md'
 import { WrenchScrewdriverIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { hatchets, pickaxes } from 'components/Whitelists/FOTools'
+import { Rank1, Rank2, Rank3, Rank4, Rank5 } from 'components/Whitelists/FOChars'
+import { BGRank1, BGRank2, BGRank3 } from 'components/Whitelists/FOBGs'
+import { skillPotions, kinshipPotions } from 'components/Whitelists/FOPotions'
+import CreateUserProfile from 'components/FallenOrder/components/CreateUserProfile'
+import { CreateListing } from 'components/FallenOrder/components/CreateListing'
 
 export default function MyFO() {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
   const allTools = [...hatchets, ...pickaxes]
+  const allFOAssets = [...allTools, ...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5, ...BGRank1, ...BGRank2, ...BGRank3, ...skillPotions, ...kinshipPotions]
   const { activeAddress, signTransactions } = useWallet()
   const [ authUser, setAuthUser ] = useState<any>(null)
-  const [ loading, setLoading ] = useState<boolean>(false)
+  const [ loading, setLoading ] = useState<boolean>(true)
   const [ userProfile, setUserProfile ] = useState<any>(null)
-  const [ userID, setUserID ] = useState<any>(null)
-  const { accountInfo, expBal, assetList } = useWalletBalance()
+  const [ frozen, setFrozen ] = useState<any>([])
+  const { expBal, assetList } = useWalletBalance()
   const [popTitle, setPopTitle] = useState<any>('')
   const [popMessage, setPopMessage] = useState<any>('')
   const [tool, setTool] = useState<any>(null)
@@ -42,6 +48,8 @@ export default function MyFO() {
   const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure()
   const { isOpen: isOpen3, onOpen: onOpen3, onClose: onClose3 } = useDisclosure()
   const { isOpen: isOpen4, onOpen: onOpen4, onClose: onClose4 } = useDisclosure()
+  const { isOpen: isOpenFrozen, onOpen: onOpenFrozen, onClose: onCloseFrozen } = useDisclosure()
+  const { isOpen: isOpenFrozenPopup, onOpen: onOpenFrozenPopup, onClose: onCloseFrozenPopup } = useDisclosure()
   const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
   const buttonText3 = useColorModeValue('orange.500','cyan.500')
   const buttonText4 = useColorModeValue('orange.200','cyan.100')
@@ -49,43 +57,6 @@ export default function MyFO() {
   const xLightColor = useColorModeValue('orange.100','cyan.100')
   const medColor = useColorModeValue('orange.500','cyan.500')
   const lightColor = useColorModeValue('orange.300','cyan.300')
-
-  const createUserProfile = async () => {
-    setLoading(true)
-    try {
-      if (!activeAddress || !authUser) {
-        throw new Error('Log In First Please!!')
-      }
-
-      toast.loading('Creating Profile...', { id: 'txn', duration: Infinity })
-
-      try{
-          const data = await createProfile(activeAddress, userID)
-          if (data && data.includes("Error")) {
-            toast.error('Oops! Profile Creation Failed!', { id: 'txn' })
-            return
-          }
-      } catch (error: any) {
-          console.log(error.message)
-          toast.error('Oops! Profile Creation Failed!', { id: 'txn' })
-          return
-      } finally {
-          setLoading(false)
-      }
-    } catch (error) {
-      console.error(error)
-      toast.error('Oops! Profile Creation Failed!', { id: 'txn' })
-    }
-    onClose1()
-    toast.success(`Your Profile Has Been Created!`, {
-      id: 'txn',
-      duration: 5000
-    })
-    setTimeout(() => {
-      fetchProfile()
-      onOpen2()
-    }, 3000)
-  }
 
   const handleDrip = async () => {
     setLoading(true)
@@ -121,7 +92,38 @@ export default function MyFO() {
     }, 3000)
   }
 
+  const handleUnfreezeAsset = async (assetID: any) => {
+    setLoading(true)
+    if (!activeAddress || !authUser) {
+      throw new Error('Log In First Please!!')
+    }
+
+    toast.loading('Melting Item...', { id: 'txn', duration: Infinity })
+
+    try{
+        const data = await unfreezeAsset(activeAddress, assetID)
+        if (data && data.message) {
+          toast.success(`Item Successfully Melted!`, {
+            id: 'txn',
+            duration: 5000
+          })
+          setPopTitle('Success')
+          setPopMessage(`Item Melted (Unfrozen)!`)
+          onSuccessOpen()
+          return
+        }
+    } catch (error) {
+        toast.error(`Oops! Purchase failed. Please contact an admin if issue persists...`, { id: 'txn' })
+        return
+    } finally {
+      setLoading(false)
+      onCloseFrozenPopup()
+    }
+  }
+
   const fetchProfile = async () => {
+    const storedAuthUser = localStorage.getItem('token_' + activeAddress)
+    setAuthUser(storedAuthUser || null)
     if (activeAddress && typeof window !== 'undefined') {        
       try {
         const profile = await getProfile(activeAddress)
@@ -132,31 +134,43 @@ export default function MyFO() {
       } catch (error) {
         console.error("Error fetching profile:", error)
       }
-      const storedAuthUser = localStorage.getItem('token_' + activeAddress)
-      setAuthUser(storedAuthUser || null)  
     }
   }
 
   useEffect(() => {
-    fetchProfile()
-  }, [accountInfo])
-
-  useEffect(() => {
     if (assetList && assetList.length > 0) {
+      fetchProfile()
+      const fetchAssetInfo = async (assetIds: any) => {
+        try {
+          const assetInfoPromises = assetIds.map(async (id: any) => {
+            return await algodIndexer.lookupAssetByID(id).do()
+          })
+      
+          const assetInfo = await Promise.all(assetInfoPromises)
+          return assetInfo
+        } catch (error) {
+          console.error('An error occurred:', error)
+          throw error
+        }
+      }
+      
       const availableTools = assetList
         .filter((item: any) => allTools.includes(item['asset-id']))
         .map((item: any) => item['asset-id'])
-        .map(async (id: any) => {
-          const assetInfo = await algodIndexer.lookupAssetByID(id).do()
-          return assetInfo
-        })
-
-      Promise.all(availableTools)
-        .then((results) => {
-          setToolList(results)
+      
+      const allFrozen = assetList
+        .filter((item: any) => allFOAssets.includes(item['asset-id']) && item['is-frozen'])
+        .map((item: any) => item['asset-id'])
+      
+      Promise.all([fetchAssetInfo(availableTools), fetchAssetInfo(allFrozen)])
+        .then(([availableToolsInfo, allFrozenInfo]) => {
+          setToolList(availableToolsInfo)
+          setFrozen(allFrozenInfo.reverse())
+          setLoading(false)
         })
         .catch((error) => {
           console.error('An error occurred:', error)
+          setLoading(false)
         })
     }
   }, [assetList])
@@ -320,7 +334,7 @@ export default function MyFO() {
           </>
         :
         <>
-            <VStack className='w-full p-6 absolute' alignItems='self-end'>
+            <HStack className='w-full pt-6' justifyContent='center' spacing='24px'>
               <FullGlowButton text='Log Out' onClick={handleLogout} />
               
               <motion.div
@@ -330,33 +344,59 @@ export default function MyFO() {
                   duration: 0.75,
                   ease: "linear",
                 }}>
-                <FullGlowButton text='Profile' onClick={userProfile ? onOpen2 : onOpen1} />
+                <FullGlowButton text={userProfile ? 'Profile' : 'Create Profile'} onClick={userProfile ? onOpen2 : onOpen1} />
               </motion.div>
-            </VStack>
-          <Text mt='56px' mb='24px' className={`${gradientText} responsive-font`}>My Fallen Order</Text>
+              <CreateListing />
+              {frozen.length > 0 ? <FullGlowButton text='Melt' onClick={onOpenFrozen} /> : null}
+            </HStack>
+          <Text my='24px' className={`${gradientText} responsive-font`}>My Fallen Order</Text>
           <MyBalances />
           <Center>
             <ManageCharacter />
           </Center>
+          <CreateUserProfile isOpen={isOpen1} onClose={onClose1} />
 
-          <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpen1} onClose={onClose1}>
-          <ModalOverlay backdropFilter='blur(10px)'/>
-          <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
-              <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Create New Profile!</ModalHeader>
-              <ModalBody>
-                <VStack mx={4} alignItems='center' justifyContent='center'>
-                  <Text pb={4} fontSize='16px' textAlign='center' textColor={buttonText4}>This will create a new on chain user profile for your account.<br />Profiles are used to track your stats, timers, gameplay, and more.<br />They essentially act as our database, except it&apos;s on chain!</Text>
-                  <Input type="text" name="userid" id="userid" maxLength={19} textAlign='center' _hover={{ bgColor: 'black' }} _focus={{ borderColor: medColor }}
-                      textColor={xLightColor} borderColor={medColor} borderRadius='lg' className={`block w-full bg-black sm:text-sm`} value={userID}
-                      onChange={(e) => setUserID(e.target.value)} placeholder="Discord User ID" />
-                      <Text pb={4} fontSize='12px' textAlign='center' textColor={buttonText5}>*You may attach a Discord User ID later*</Text>
-                  <FullGlowButton text='Let&apos;s Go!' onClick={createUserProfile} />
-                </VStack>
-              </ModalBody>
-              <ModalFooter>
-                  <FullGlowButton text='X' onClick={onClose1} />
-              </ModalFooter>
-          </ModalContent>
+          <Modal scrollBehavior={'outside'} size='xl' isCentered isOpen={isOpenFrozen} onClose={onCloseFrozen}>
+            <ModalOverlay backdropFilter='blur(10px)'/>
+            <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
+                <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Melt Item</ModalHeader>
+                <ModalBody>
+                  <VStack m={1} alignItems='center' justifyContent='center' spacing='10px'>
+                      <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
+                        {frozen.map((asset: any, index: any) => (
+                            <>
+                              <VStack key={index} justifyContent='center'>
+                                <Image _hover={{ boxSize: '24' }} className={boxGlow} boxSize='20' borderRadius='8px' alt={asset.asset.params.name}
+                                  src={'https://cloudflare-ipfs.com/ipfs/' + asset.asset.params.url.substring(7)} onClick={onOpenFrozenPopup} />
+                                <Text fontSize='12px' textColor={buttonText4}>
+                                {asset.asset.params['unit-name']}
+                                </Text>
+                              </VStack>
+
+                                <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpenFrozenPopup} onClose={onCloseFrozenPopup}>
+                                <ModalOverlay backdropFilter='blur(10px)'/>
+                                <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
+                                    <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Confirm Melt!</ModalHeader>
+                                    <ModalBody>
+                                      <VStack mx={4} alignItems='center' justifyContent='center'>
+                                        <Text pb={4} fontSize='16px' textAlign='center' textColor={buttonText4}>This will unfreeze the asset from your account.<br />Be aware that any listings and equips involving this asset will be cleared.</Text>
+                                        <FullGlowButton text={loading ? 'Melting...' : 'Melt!'} onClick={() => handleUnfreezeAsset(asset.asset.index)} disabled={loading} />
+                                      </VStack>
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <FullGlowButton text='X' onClick={onCloseFrozenPopup} />
+                                    </ModalFooter>
+                                </ModalContent>
+                                </Modal>
+                            </>
+                          ))}
+                      </Flex>
+                      <HStack pb={4}>
+                          <FullGlowButton text='X' onClick={onCloseFrozen} />
+                      </HStack>
+                  </VStack>
+                </ModalBody>
+              </ModalContent>
           </Modal>
           
           {userProfile ?

@@ -11,7 +11,7 @@ import { authenticate } from 'utils/auth'
 import { FullGlowButton } from 'components/Buttons'
 import { useState, useEffect } from 'react'
 import useWalletBalance from 'hooks/useWalletBalance'
-import { getListings } from 'components/FallenOrder/components/Tools/getUserProfile'
+import { getListings, getProfile } from 'components/FallenOrder/components/Tools/getUserProfile'
 import { SuccessPopup } from '../components/FallenOrder/components/Popups/Success'
 import { WrenchScrewdriverIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { hatchets, pickaxes } from 'components/Whitelists/FOTools'
@@ -23,6 +23,7 @@ import { PiSelectionBackground } from 'react-icons/pi'
 import { CreateListing } from 'components/FallenOrder/components/CreateListing'
 import { ListingCard } from 'components/FallenOrder/components/ListingCard'
 import { MyListingCard } from 'components/FallenOrder/components/MyListingCard'
+import CreateUserProfile from 'components/FallenOrder/components/CreateUserProfile'
 
 export default function MyFO() {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
@@ -33,10 +34,12 @@ export default function MyFO() {
   const [ authUser, setAuthUser ] = useState<any>(null)
   const { assetList } = useWalletBalance()
   const [popTitle, setPopTitle] = useState<any>('')
+  const [ userProfile, setUserProfile ] = useState<any>(null)
   const [popMessage, setPopMessage] = useState<any>('')
   const [listings, setListings] = useState<any>(null)
   const [myListings, setMyListings] = useState<any>([])
   const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
+  const { isOpen: isOpen1, onOpen: onOpen1, onClose: onClose1 } = useDisclosure()
   const buttonText3 = useColorModeValue('orange.500','cyan.500')
   const buttonText4 = useColorModeValue('orange.200','cyan.100')
   const buttonText5 = useColorModeValue('orange','cyan')
@@ -47,10 +50,25 @@ export default function MyFO() {
 
   useEffect(() => {
     if (!fetchListingsCalled) {
+      fetchProfile()
       fetchListings()
       fetchListingsCalled = true
     }
   }, [assetList])
+
+  const fetchProfile = async () => {
+    if (activeAddress) {        
+      try {
+        const profile = await getProfile(activeAddress)
+        setUserProfile(profile || null)
+        if (!profile) {
+          onOpen1()
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error)
+      }
+    }
+  }
 
   const fetchListings = async () => {
     if (typeof window !== 'undefined') {
@@ -93,10 +111,21 @@ export default function MyFO() {
             </>
         :
         <>
-            <HStack className='w-full p-8 absolute' justifyContent='space-between'>
-                <CreateListing />
-                <FullGlowButton text='Log Out' onClick={handleLogout} />
-            </HStack>
+          {listings ?
+            <>
+              <HStack className='w-full p-7 absolute' justifyContent='space-between'>
+                  {userProfile ?
+                    <CreateListing />
+                  :
+                  <>
+                    <FullGlowButton text='Create Profile' onClick={onOpen1} />
+                    <CreateUserProfile isOpen={isOpen1} onClose={onClose1} />
+                  </>
+                  }
+                  <FullGlowButton text='Log Out' onClick={handleLogout} />
+              </HStack>
+            </>
+            : null}
             <MyBalances />
             <Text my='36px' className={`${gradientText} responsive-font`}>Grand Exchange</Text>
             
