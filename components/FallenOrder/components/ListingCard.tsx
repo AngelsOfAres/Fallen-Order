@@ -31,6 +31,10 @@ export function ListingCard(props: any) {
     const xLightColor = useColorModeValue('orange.100','cyan.100')
     const medColor = useColorModeValue('orange.500','cyan.500')
 
+    const fee = (parseFloat(price)*0.01).toFixed(3).toString().replace(/\.?0+$/, '')
+    const totalFee = payExp ? parseInt(price) : fee
+    const totalPrice = payExp ? (((price*100)+royalty+totalFee)).toFixed(0) : ((parseFloat(price)+(parseFloat(price)*0.01)+royalty).toFixed(3).toString()).replace(/\.?0+$/, '')
+
     const sendOptIn = async () => {
         try {      
             if (!activeAddress) {
@@ -214,10 +218,14 @@ export function ListingCard(props: any) {
                                         />
                                     <Image boxSize={payExp ? '21px' : '16px'} alt={payExp ? 'Experience' : 'Algorand'} src={payExp ? '/exp.png' : '/algologo.png'} />
                                 </HStack>
-                                <Text my={2} fontSize='14px' textAlign='center' textColor={buttonText4}>Fee: {(parseFloat(price)*0.01).toFixed(3).toString().replace(/\.?0+$/, '')}</Text>
+                                <HStack mb={-4} spacing='4px'>
+                                <Text fontSize='14px' textAlign='center' textColor={buttonText4}>Fee:</Text>
+                                    <Text fontSize='20px' textColor={buttonText5}>{totalFee}</Text>
+                                    <Image boxSize={payExp ? '21px' : '16px'} alt={payExp ? 'Experience' : 'Algorand'} src={payExp ? '/exp.png' : '/algologo.png'} />
+                                </HStack>
                                 <HStack spacing='4px'>
                                     <Text mr={1} fontSize='14px' textColor={buttonText4}>Total:</Text>
-                                    <Text fontSize='20px' textColor={buttonText5}>{payExp ? (((price*100)+royalty)).toFixed(0) : ((parseFloat(price)+(parseFloat(price)*0.01)+royalty).toFixed(3).toString()).replace(/\.?0+$/, '')}</Text>
+                                    <Text fontSize='20px' textColor={buttonText5}>{totalPrice}</Text>
                                     <Image boxSize={payExp ? '21px' : '16px'} alt={payExp ? 'Experience' : 'Algorand'} src={payExp ? '/exp.png' : '/algologo.png'} />
                                 </HStack>
                                 <FullGlowButton ref={null} text='BUY!' onClick={handlePurchase} />
