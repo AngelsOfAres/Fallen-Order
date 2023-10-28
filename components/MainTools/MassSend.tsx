@@ -159,6 +159,7 @@ export default function MassSend() {
         setStatus((status) => status = 'Signing')
         const batchToSign = encodedBatches.slice(i, i + 4)
         const flattenedBatchToSign = batchToSign.reduce((acc, curr) => [...acc, ...curr], [])
+        console.log(flattenedBatchToSign)
         const signedBatch = await signTransactions(flattenedBatchToSign)
         groupcount++
         

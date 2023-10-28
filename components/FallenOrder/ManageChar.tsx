@@ -8,7 +8,7 @@ import { CharCard } from './components/CharCard'
 import axios from 'axios'
 import { rateLimiter } from 'lib/ratelimiter'
 import { useWallet } from '@txnlab/use-wallet'
-import getProfile from './components/Tools/getUserProfile'
+import { getProfile } from './components/Tools/getUserProfile'
 
 const ManageCharacter: React.FC = () => {
   const allFO = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5]
@@ -111,7 +111,7 @@ async function getKinship(asset_id: any): Promise<number> {
           if (metadata_decoded_asset.properties.Background && metadata_decoded_asset.properties.Background !== '-') {
             const bgInfo = await rateLimiter(
               () => algodClient.getAssetByID(metadata_decoded_asset.properties.Background).do()
-            );
+            )
             bg_image = 'https://cloudflare-ipfs.com/ipfs/' + bgInfo.params.url.substring(7)
             bg_name = bgInfo.params['name']
           }

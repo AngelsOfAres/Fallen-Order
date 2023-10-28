@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { algodIndexer } from 'lib/algodClient'
+import { rateLimiter } from 'lib/ratelimiter'
 import { formatDuration } from 'utils/formatTimer'
 
 const user_data_wallet = "QBLXBZZ5CVAEJJBO63RQEC43XBWBJHVEO46WHHWR7XJ6YOJHPHUQ3CTSMM"
@@ -52,7 +53,8 @@ async function calculateElapsedSeconds(dripTimer: any) {
     return time_remaining
   }
 
-export default async function getProfile(wallet: string): Promise<any> {
+export async function getProfile(wallet: string): Promise<any> {
+    let allListings = []
     const metadata_api = `https://mainnet-idx.algonode.cloud/v2/accounts/${user_data_wallet}`
     
     try {
@@ -120,6 +122,22 @@ export default async function getProfile(wallet: string): Promise<any> {
                             const boss_battles = metadata_decoded_asset.properties["Boss Battles"] || "0/0"
                             const name = metadata_decoded_asset.properties["Name"] || "-"
                             const image = metadata_decoded_asset.properties["Image"] || "-"
+                            const listings = metadata_decoded_asset.properties["Listings"] || null
+                            if (listings) {
+                                const listingData = listings.split('/').slice(1).map(async (listing: any) => {
+                                    const listingID = parseInt(listing.split(',')[0])
+                                    const assetID = parseInt(listing.split(',')[1])
+                                    const price = listing.split(',')[1]
+                                    const expAccepted = parseInt(listing.split(',')[2])
+                                    const assetInfo = await algodIndexer.lookupAssetByID(assetID).do()
+                                    const assetName = assetInfo.asset.params['unit-name']
+                                    const assetImage = 'https://cloudflare-ipfs.com/ipfs/' + assetInfo.asset.params.url.substring(7)
+                                    return { wallet, listingID, assetID, price, assetName, assetImage, expAccepted }
+                                })
+                            
+                                const processedListings = await Promise.all(listingData)
+                                allListings.push(...processedListings)
+                            }
                             const time_remaining = await calculateElapsedSeconds(drip_timer)
                             const user_data = {
                                 asset_id,
@@ -138,7 +156,8 @@ export default async function getProfile(wallet: string): Promise<any> {
                                 time_remaining,
                                 boss_battles,
                                 name,
-                                image
+                                image,
+                                allListings
                             }
                             return user_data
                         } else {
@@ -161,3 +180,62 @@ export default async function getProfile(wallet: string): Promise<any> {
     }
     return null
 }
+
+export async function getListings(): Promise<any> {
+    try {
+      const metadata_api = `https://mainnet-idx.algonode.cloud/v2/accounts/${user_data_wallet}`
+      const response = await axios.get(metadata_api)
+      const data = response.data
+      const assets = data.account["created-assets"]
+      const batchSize = 100
+      let allListings: any = []
+  
+      const fetchAssetData = async (asset: any) => {
+        const metadata_api = `https://mainnet-idx.algonode.cloud/v2/transactions?tx-type=acfg&asset-id=${asset.index}&address=${user_data_wallet}`
+        try {
+          const response = await rateLimiter(() => axios.get(metadata_api))
+          if (response.status === 200) {
+            const data = response.data
+            const note = data.transactions[0].note
+            const metadata_decoded_asset = JSON.parse(Buffer.from(note, 'base64').toString('utf-8'))
+            const listings = metadata_decoded_asset.properties["Listings"] || null
+  
+            if (listings) {
+              const listingData = listings.split('/').slice(1).map(async (listing: any) => {                
+                const listingID = parseInt(listing.split(',')[0])
+                const assetID = parseInt(listing.split(',')[1])
+                const price = listing.split(',')[2]
+                const expAccepted = parseInt(listing.split(',')[3])
+                const assetInfo = await algodIndexer.lookupAssetByID(assetID).do()
+                const assetName = assetInfo.asset.params['unit-name']
+                const assetImage = 'https://cloudflare-ipfs.com/ipfs/' + assetInfo.asset.params.url.substring(7)
+                return { wallet: asset.params.reserve, listingID, assetID, price, assetName, assetImage, expAccepted }
+              })
+  
+              const processedListings = await Promise.all(listingData)
+              allListings.push(...processedListings)
+            }
+          } else {
+            console.log("Error fetching data from API")
+          }
+        } catch (error) {
+          console.error("Error fetching data from API:", error)
+        }
+      }
+
+      await Promise.all(
+        assets.map((asset: any, index: any) => {
+          if (index % batchSize === 0) {
+            return Promise.all(assets.slice(index, index + batchSize).map(fetchAssetData))
+          }
+          return null
+        })
+      )
+      return allListings
+    } catch (error) {
+      console.error("Error fetching listings:", error)
+      return null
+    }
+  }
+  
+  

@@ -16,6 +16,9 @@ async function fetchDataFromBackend(endpoint: string, data: Record<string, any>,
     })
 
     if (!response.ok) {
+      if (response.status === 400) {
+        return 'Error'
+      }
       console.log("Woops! Backend sent unexpected data...", response)
     }
 
@@ -145,6 +148,90 @@ export async function subKinship(wallet: any, subCount: any) {
     }
 
     const response = await fetchDataFromBackend('users/subkinship', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}
+
+export async function createListing(wallet: any, data: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      data: data
+    }
+
+    const response = await fetchDataFromBackend('ge/createlisting', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}
+
+export async function purchaseItem(wallet: any, data: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      data: data
+    }
+
+    const response = await fetchDataFromBackend('ge/purchaselisting', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}
+
+export async function makeAlgoPurchase(wallet: any, data: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      data: data
+    }
+
+    const response = await fetchDataFromBackend('ge/makealgopurchase', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}
+
+export async function finalizeAlgoPurchase(wallet: any, data: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      data: data
+    }
+
+    const response = await fetchDataFromBackend('ge/finalizealgopurchase', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}
+
+export async function makeExpPurchase(wallet: any, data: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      data: data
+    }
+
+    const response = await fetchDataFromBackend('ge/makeexppurchase', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}
+
+export async function updateListing(wallet: any, data: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      data: data
+    }
+
+    const response = await fetchDataFromBackend('ge/updatelisting', requestBody, wallet)
     return response
   } catch (error: any) {
     console.error(error.message)
