@@ -214,9 +214,10 @@ export function ListingCard(props: any) {
                                         />
                                     <Image boxSize={payExp ? '21px' : '16px'} alt={payExp ? 'Experience' : 'Algorand'} src={payExp ? '/exp.png' : '/algologo.png'} />
                                 </HStack>
+                                <Text my={2} fontSize='14px' textAlign='center' textColor={buttonText4}>Fee: {(parseFloat(price)*0.01).toFixed(3).toString().replace(/\.?0+$/, '')}</Text>
                                 <HStack spacing='4px'>
                                     <Text mr={1} fontSize='14px' textColor={buttonText4}>Total:</Text>
-                                    <Text fontSize='20px' textColor={buttonText5}>{payExp ? (((price*100)+royalty)).toFixed(0) : ((parseFloat(price)+royalty).toFixed(3).toString()).replace(/\.?0+$/, '')}</Text>
+                                    <Text fontSize='20px' textColor={buttonText5}>{payExp ? (((price*100)+royalty)).toFixed(0) : ((parseFloat(price)+(parseFloat(price)*0.01)+royalty).toFixed(3).toString()).replace(/\.?0+$/, '')}</Text>
                                     <Image boxSize={payExp ? '21px' : '16px'} alt={payExp ? 'Experience' : 'Algorand'} src={payExp ? '/exp.png' : '/algologo.png'} />
                                 </HStack>
                                 <FullGlowButton ref={null} text='BUY!' onClick={handlePurchase} />
