@@ -190,11 +190,11 @@ export function ListingCard(props: any) {
                                 {expAccepted === 1 ?
                                     <VStack w='fit-content' spacing='4px'>
                                         <Text textColor={buttonText5}>Pay With $EXP?</Text>
-                                        <Switch size='lg' colorScheme={buttonText5} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}}
+                                        <Switch defaultChecked={payExp} size='lg' colorScheme={buttonText5} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}}
                                             onChange={() => setPayExp(!payExp)} />
                                     </VStack>
                                 : null}
-                                <Text mb={-7} fontSize='14px' textAlign='center' textColor={buttonText5}>Royalty</Text>
+                                <Text mb={-6} fontSize='14px' textAlign='center' textColor={buttonText5}>Royalty</Text>
                                 <HStack>
                                     <Input
                                         type="number"

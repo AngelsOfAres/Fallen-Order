@@ -30,7 +30,7 @@ export function CharCard(props: any) {
     const [popMessage, setPopMessage] = useState<any>('')
     const success_msg_kin = `Kinship Ritual Successful!`
     const fail_msg_kin = `Kinship Ritual Failed!`
-    const success_msg_lvl = `${unitName} has been level up to LVL ${level+1}!`
+    const success_msg_lvl = `${unitName} has been leveled up to LVL ${level+1}!`
     const fail_msg_lvl = `Level Up Failed!`
     const success_msg_boost = `50 Points have been added to ${unitName}!`
     const fail_msg_boost = `Points Boost Failed!`
