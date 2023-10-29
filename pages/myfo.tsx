@@ -518,7 +518,7 @@ export default function MyFO() {
                       </>
                       :
                       <>
-                        {expBal > -1 ?
+                        {expBal !== -1 ?
                           <motion.div
                           animate={{ scale: [1, 1.07, 1] }}
                           transition={{
