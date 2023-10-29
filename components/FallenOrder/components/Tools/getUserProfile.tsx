@@ -80,6 +80,8 @@ export async function getProfile(wallet: string): Promise<any> {
                             let mainName = null
                             let mainImage = null
                             let mainData = null
+                            let bgImage = null
+                            let bgName = null
 
                             if (main_character !== 0) {
                                 const charInfo = await algodIndexer.lookupAssetByID(main_character).do()
@@ -90,6 +92,13 @@ export async function getProfile(wallet: string): Promise<any> {
                                     const response = await axios.get(metadata_api)
                                     if (response.status === 200) {
                                         mainData = JSON.parse(atob(response.data.transactions[0].note)).properties
+                                        const bgID = JSON.parse(atob(response.data.transactions[0].note)).properties["Background"] || null
+                                        if (bgID && bgID !== '-') {
+                                          const bgInfo = await algodIndexer.lookupAssetByID(bgID).do()
+                                          bgImage = 'https://cloudflare-ipfs.com/ipfs/' + bgInfo.asset.params.url.substring(7)
+                                          bgName = bgInfo.asset.params['unit-name']
+                                        }
+
                                     }
                                 } catch (error: any) {
                                     console.log(error.message)
@@ -145,6 +154,8 @@ export async function getProfile(wallet: string): Promise<any> {
                                 mainName,
                                 mainImage,
                                 mainData,
+                                bgName,
+                                bgImage,
                                 metadata_decoded_asset,
                                 equipped_tool,
                                 toolName,

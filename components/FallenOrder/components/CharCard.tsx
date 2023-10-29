@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Box, Container, Modal, ModalBody, ModalHeader, ModalFooter, ModalOverlay, ModalContent, Tooltip, Text, Link, Image, Button, Divider, Flex, HStack, VStack, Center, useDisclosure, useColorModeValue, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Icon } from '@chakra-ui/react'
+import { Box, Container, Modal, ModalBody, ModalHeader, ModalFooter, ModalOverlay, ModalContent, Tooltip, Text, Image, Divider, Flex, HStack, VStack, Center, useDisclosure, useColorModeValue, Icon } from '@chakra-ui/react'
 import styles from '../../../styles/glow.module.css'
 import { FullGlowButton, IconGlowButton } from 'components/Buttons'
 import { RenameManage } from './ManageChar/Rename'
@@ -8,7 +8,7 @@ import { AbilitiesManage } from './ManageChar/Abilities'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useWallet } from '@txnlab/use-wallet'
-import { equipTool, manageChar, switchMain } from 'api/backend'
+import { manageChar, switchMain } from 'api/backend'
 import { SuccessPopup } from './Popups/Success'
 import { wisdom_required, expCost, materialCost } from './Constants/levelup'
 import { formatAssetBalance } from 'utils'
@@ -18,6 +18,7 @@ import { formatDuration } from 'utils/formatTimer'
 import { MdKeyboardDoubleArrowUp, MdOutlineStar } from 'react-icons/md'
 import toast from 'react-hot-toast'
 import { XMarkIcon } from '@heroicons/react/20/solid'
+import { combineImages } from './Tools/combineImages'
 
 export function CharCard(props: any) {
     const { activeAddress } = useWallet()
@@ -26,6 +27,7 @@ export function CharCard(props: any) {
     const level = parseInt(levelFull[0])
     const wisdom = parseInt(levelFull[1])
     const [LVLUp, setLVLUp] = useState<boolean>(false)
+    const [finalImage, setFinalImage] = useState<any>(image)
     const [popTitle, setPopTitle] = useState<any>('')
     const [popMessage, setPopMessage] = useState<any>('')
     const success_msg_kin = `Kinship Ritual Successful!`
@@ -34,8 +36,25 @@ export function CharCard(props: any) {
     const fail_msg_lvl = `Level Up Failed!`
     const success_msg_boost = `50 Points have been added to ${unitName}!`
     const fail_msg_boost = `Points Boost Failed!`
+
+    const getFinalImage = async () => {
+        try {
+            combineImages(image, bg_image)
+            .then((finalImageDataURL) => {
+                setFinalImage(finalImageDataURL)
+            })
+            .catch((error) => {
+                console.error('Error:', error)
+            })
+        } catch (error) {
+            console.error('Error combining images:', error)
+        }
+    }
         
     useEffect(() => {
+        if (bg_image !== '-') {
+            getFinalImage()
+        }
         if (wisdom >= wisdom_required[level + 1]) {
             setLVLUp(true)
         } else {
@@ -58,10 +77,8 @@ export function CharCard(props: any) {
     const buttonText4 = useColorModeValue('orange.200','cyan.100')
     const bgCardOn = useColorModeValue('linear(60deg, whiteAlpha.300 3%, black 50%, whiteAlpha.300 97%)','linear(60deg, whiteAlpha.300 3%, black 50%, whiteAlpha.300 97%)')
     const bgCardOff = useColorModeValue('linear(60deg, whiteAlpha.300 10%, black 35%, black 65%, whiteAlpha.300 90%)','linear(60deg, whiteAlpha.300 10%, black 35%, black 65%, whiteAlpha.300 90%)')
-    const buttonText5 = useColorModeValue('orange','cyan')
-  
-    const [componentToRender, setComponentToRender] = useState<any>(null)
-    
+    const buttonText5 = useColorModeValue('orange','cyan')  
+    const [componentToRender, setComponentToRender] = useState<any>(null)    
     const [loading, setLoading] = useState<boolean>(false)
 
     async function handleLevelUp() {
@@ -193,8 +210,7 @@ export function CharCard(props: any) {
     return (
         <Box w={isOpen ? 'auto' : '100px'} h={isOpen ? 'auto' : '100px'} className={boxGlow} bgGradient={bgCardOn} borderColor={buttonText3} m={4} borderWidth='2px' borderRadius='16px'>
             <Container pb={0} pt={0} pl={0} pr={0} centerContent>
-                {bg_image !== '-' ? <Image position='absolute' zIndex={1} mt={isOpen ? '24px' : '-1px'} w={isOpen ? '150px' : '99px'} borderRadius='15.5px' alt={bg_name} src={bg_image} /> : null}
-                <Image position={isOpen ? undefined : 'absolute'} zIndex={2} mt={isOpen ? '24px' : '-1px'} w={isOpen ? '150px' : '99px'} onClick={onToggle} borderRadius='15.5px' alt={unitName} src={image} />
+                <Image position={isOpen ? undefined : 'absolute'} zIndex={2} mt={isOpen ? '24px' : '-1px'} w={isOpen ? '150px' : '99px'} onClick={onToggle} borderRadius='15.5px' alt={unitName} src={finalImage} />
                 {isOpen ?
                 <Box mt={-0.3} position="relative" py={0.5} px={2} bgGradient={bgCardOn} borderColor={buttonText3} borderTopWidth='0px' borderBottomWidth='0.5px' borderLeftWidth='0.5px' borderRightWidth='0.5px' borderBottomRadius='xl' borderTopRadius='sm'>
                     <Text className={gradientText} fontSize='12px'>{metadata.Name ? metadata.Name : unitName}</Text>

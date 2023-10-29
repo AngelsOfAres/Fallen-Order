@@ -27,6 +27,7 @@ import { BGRank1, BGRank2, BGRank3 } from 'components/Whitelists/FOBGs'
 import { skillPotions, kinshipPotions } from 'components/Whitelists/FOPotions'
 import CreateUserProfile from 'components/FallenOrder/components/CreateUserProfile'
 import { CreateListing } from 'components/FallenOrder/components/CreateListing'
+import { combineImages } from 'components/FallenOrder/components/Tools/combineImages'
 
 export default function MyFO() {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
@@ -37,6 +38,7 @@ export default function MyFO() {
   const [ authUser, setAuthUser ] = useState<any>(null)
   const [ loading, setLoading ] = useState<boolean>(true)
   const [ userProfile, setUserProfile ] = useState<any>(null)
+  const [finalImage, setFinalImage] = useState<any>(null)
   const [ frozen, setFrozen ] = useState<any>([])
   const { expBal, assetList } = useWalletBalance()
   const [popTitle, setPopTitle] = useState<any>('')
@@ -121,6 +123,20 @@ export default function MyFO() {
     }
   }
 
+  const getFinalImage = async (img1: any, img2: any) => {
+    try {
+        combineImages(img1, img2)
+        .then((finalImageDataURL) => {
+            setFinalImage(finalImageDataURL)
+        })
+        .catch((error) => {
+            console.error('Error:', error)
+        })
+    } catch (error) {
+        console.error('Error combining images:', error)
+    }
+  }
+
   const fetchProfile = async () => {
     const storedAuthUser = localStorage.getItem('token_' + activeAddress)
     setAuthUser(storedAuthUser || null)
@@ -130,6 +146,9 @@ export default function MyFO() {
         setUserProfile(profile || null)
         if (!profile) {
           onOpen1()
+        } else {
+          setFinalImage(profile.mainImage)
+          getFinalImage(profile.mainImage, profile.bgImage)
         }
       } catch (error) {
         console.error("Error fetching profile:", error)
@@ -334,9 +353,9 @@ export default function MyFO() {
           </>
         :
         <>
-            <HStack className='w-full pt-6' justifyContent='center' spacing='24px'>
+            <Flex pt={6} flexDirection="row" flexWrap="wrap" justifyContent='center' gap='12px'>
               <FullGlowButton text='Log Out' onClick={handleLogout} />
-              
+
               <motion.div
                 animate={{ scale: userProfile && userProfile.drip_timer === 0 ? [1, 1.07, 1] : 1 }}
                 transition={{
@@ -346,9 +365,12 @@ export default function MyFO() {
                 }}>
                 <FullGlowButton text={userProfile ? 'Profile' : 'Create Profile'} onClick={userProfile ? onOpen2 : onOpen1} />
               </motion.div>
+
               <CreateListing />
+
               {frozen.length > 0 ? <FullGlowButton text='Melt' onClick={onOpenFrozen} /> : null}
-            </HStack>
+
+            </Flex>
           <Text my='24px' className={`${gradientText} responsive-font`}>My Fallen Order</Text>
           <MyBalances />
           <Center>
@@ -411,7 +433,7 @@ export default function MyFO() {
                       {userProfile.main_character !== 0 ?
                       <>
                         <Text fontSize='20px' textColor={buttonText5}>{userProfile.mainData.Name ? userProfile.mainData.Name : userProfile.mainName}</Text>
-                        <Image className={boxGlow} boxSize='48px' borderRadius='6px' alt='Main Character' src={userProfile.mainImage}/>
+                        <Image className={boxGlow} boxSize='48px' borderRadius='6px' alt='Main Character' src={finalImage} />
                       </>
                       : 
                       <Text fontSize='20px' textColor={buttonText5}>-</Text>

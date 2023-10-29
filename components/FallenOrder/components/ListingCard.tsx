@@ -198,7 +198,7 @@ export function ListingCard(props: any) {
                                             onChange={() => setPayExp(!payExp)} />
                                     </VStack>
                                 : null}
-                                <Text mb={-6} fontSize='14px' textAlign='center' textColor={buttonText5}>Royalty</Text>
+                                <Text mb={-4} fontSize='14px' textAlign='center' textColor={buttonText5}>Royalty</Text>
                                 <HStack>
                                     <Input
                                         type="number"
