@@ -114,7 +114,7 @@ export default function MyFO() {
         <>
           {listings ?
             <>
-              <HStack className='w-full p-7 absolute' justifyContent='space-between'>
+              <HStack className='w-full p-6 absolute' justifyContent='space-between'>
                   {userProfile ?
                     <CreateListing />
                   :
