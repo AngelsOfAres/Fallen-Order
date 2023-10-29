@@ -12,7 +12,7 @@ import { algodClient } from 'lib/algodClient'
 import algosdk from 'algosdk'
 
 export function ListingCard(props: any) {
-    const { activeAddress, sendTransactions, signTransactions } = useWallet()
+    const { activeAddress, signTransactions } = useWallet()
     const { listing_wallet, listingID, assetID, price, name, image, expAccepted } = props
     const listing_wallet_short = listing_wallet.substring(0, 5) + '...' + listing_wallet.substring(listing_wallet.length - 5)
     const [payExp, setPayExp] = useState<boolean>(false)

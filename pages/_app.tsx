@@ -44,11 +44,11 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <Toaster />
       <ChakraProvider theme={theme}>
       <WalletProvider value={walletProviders}>
         <QueryClientProvider client={queryClient}>
           <Component {...pageProps} />
+          <Toaster />
         </QueryClientProvider>
       </WalletProvider>
       </ChakraProvider>

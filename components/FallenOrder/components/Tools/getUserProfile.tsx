@@ -242,6 +242,7 @@ export async function getListings(): Promise<any> {
           return null
         })
       )
+      console.log(allListings)
       return allListings
     } catch (error) {
       console.error("Error fetching listings:", error)

@@ -79,6 +79,7 @@ export default function MyFO() {
       const allListings = await getListings()
       const myListings = allListings.filter((listing: any) => activeAddress === listing.wallet)
       setListings(allListings)
+      console.log(allListings)
       setMyListings(myListings)
     }
   }
@@ -177,7 +178,7 @@ export default function MyFO() {
                             .filter((listing: any) => allBGs.includes(listing.assetID))
                             .map((listing: any, index: any) => (
                               <div key={index}>
-                                <ListingCard listing_wallet={activeAddress} listingID={listing.listingID} assetID={listing.assetID} price={listing.price} name={listing.assetName} image={listing.assetImage} expAccepted={listing.expAccepted}  />
+                                <ListingCard listing_wallet={listing.wallet} listingID={listing.listingID} assetID={listing.assetID} price={listing.price} name={listing.assetName} image={listing.assetImage} expAccepted={listing.expAccepted}  />
                               </div>
                               ))}
                           </Flex>
@@ -191,7 +192,7 @@ export default function MyFO() {
                             .filter((listing: any) => allAccessories.includes(listing.assetID))
                             .map((listing: any, index: any) => (
                               <div key={index}>
-                                <ListingCard listing_wallet={activeAddress} listingID={listing.listingID} assetID={listing.assetID} price={listing.price} name={listing.assetName} image={listing.assetImage} expAccepted={listing.expAccepted}  />
+                                <ListingCard listing_wallet={listing.wallet} listingID={listing.listingID} assetID={listing.assetID} price={listing.price} name={listing.assetName} image={listing.assetImage} expAccepted={listing.expAccepted}  />
                               </div>
                               ))}
                           </Flex>
@@ -206,7 +207,7 @@ export default function MyFO() {
                               {myListings
                               .map((listing: any, index: any) => (
                                 <div key={index}>
-                                  <MyListingCard listing_wallet={activeAddress} listingID={listing.listingID} assetID={listing.assetID} price={listing.price} name={listing.assetName} image={listing.assetImage} expAccepted={listing.expAccepted}  />
+                                  <MyListingCard listing_wallet={listing.wallet} listingID={listing.listingID} assetID={listing.assetID} price={listing.price} name={listing.assetName} image={listing.assetImage} expAccepted={listing.expAccepted}  />
                                 </div>
                                 ))}
                             </Flex>

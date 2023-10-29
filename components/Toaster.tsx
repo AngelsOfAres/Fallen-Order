@@ -1,4 +1,4 @@
-import { useColorMode } from '@chakra-ui/react'
+import { useColorModeValue } from '@chakra-ui/react'
 import { Transition } from '@headlessui/react'
 import { CheckCircleIcon, XCircleIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { Fragment } from 'react'
@@ -21,12 +21,11 @@ const Loading = () => (
 )
 
 export default function CustomToaster() {
-  const { colorMode } = useColorMode()
-  const bgColor = colorMode === "light" ? "bg-orange-500" : "bg-cyan-500"
-  const borderColor = colorMode === "light" ? "border:bg-orange-500" : "borderg-cyan-500"
-  const ringColor = colorMode === "light" ? "ring-orange-500" : "ring-cyan-500"
-  const textColor = colorMode === "light" ? "text-orange-500" : "text-cyan-500"
-  const focusringColor = colorMode === "light" ? "focus:ring-orange-500" : "focus:ring-cyan-500"
+  const bgColor = useColorModeValue("bg-orange-500", "bg-cyan-500")
+  const ringColor = useColorModeValue("ring-orange-500", "ring-cyan-500")
+  const textColor = useColorModeValue("text-orange-500", "text-cyan-500")
+  const focusringColor = useColorModeValue("focus:ring-orange-500", "focus:ring-cyan-500")
+
   const renderIcon = (type: string) => {
     const getIcon = (type: string) => {
       switch (type) {
