@@ -36,7 +36,7 @@ export default function Tools() {
   return (
     <>
       <Head>
-        <title>The Abyssal Portal</title>
+        <title>Fallen Order - Abyssal Portal</title>
         <meta name="description" content="Developed by Angels Of Ares" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />

@@ -344,7 +344,7 @@ export default function MyFO() {
   return (
     <>
       <Head>
-        <title>Abyssal Portal - Fallen Order</title>
+        <title>Fallen Order - My FO</title>
         <meta name="description" content="Developed by Angels Of Ares" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
