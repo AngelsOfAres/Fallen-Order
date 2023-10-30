@@ -25,26 +25,24 @@ import {
   
   export const FullGlowButton = ({ fontsize, type, leftIcon, ref, text, onClick, disabled }: textProp) => {
     return (
-    <Button borderRadius='10px' className={useColorModeValue(styles.fullglowL, styles.fullglowD)} leftIcon={leftIcon? leftIcon : null} _hover={{textColor:'white'}} textColor='black' fontSize={fontsize? fontsize : '12px'} fontFamily="Orbitron" size='md' ref={ref} type={type} onClick={onClick} isDisabled={disabled}>
+    <Button borderRadius='10px' className={useColorModeValue(styles.fullglowL, styles.fullglowD)} leftIcon={leftIcon? leftIcon : null} _hover={{textColor:'white'}} textColor='black' fontSize={fontsize? fontsize : '12px'} size='md' ref={ref} type={type} onClick={onClick} isDisabled={disabled}>
         <Text zIndex={1}>{text}</Text>
-    </Button>
-    )
-  }
-  
-  export const OutlineGlowButton = ({ text, onClick }: textProp) => {
-    return (
-    <Button px='0.75px' className={useColorModeValue(styles.outlineglowL, styles.outlineglowD)} fontSize='10px' fontFamily="Orbitron" size='xs' onClick={onClick}>
-        <Container className={styles.glowInnerBlack} zIndex={1}>
-            <Text pt='5px' className={useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)}>{text}</Text>
-        </Container>
     </Button>
     )
   }
   
   export const IconGlowButton = ({ icon, onClick, disabled }: textProp) => {
     return (
-        <Button p='1.5px' className={useColorModeValue(styles.fullglowL, styles.fullglowD)} _hover={{textColor:'white'}} textColor='black' fontSize='11px' fontFamily="Orbitron" size='sm' onClick={onClick} isDisabled={disabled}>
+        <Button p='1.5px' className={useColorModeValue(styles.fullglowL, styles.fullglowD)} _hover={{textColor:'white'}} textColor='black' fontSize='11px' size='sm' onClick={onClick} isDisabled={disabled}>
             <Icon boxSize={6} as={icon} zIndex={1} />
+        </Button>
+    )
+  }
+
+  export const IconGlowButton2 = ({ icon, onClick, disabled }: textProp) => {
+    return (
+        <Button p='1.5px' className={useColorModeValue(styles.fullglowL, styles.fullglowD)} _hover={{textColor:'white'}} textColor='black' fontSize='11px' size='md' onClick={onClick} isDisabled={disabled}>
+            <Icon boxSize={8} as={icon} zIndex={1} />
         </Button>
     )
   }

@@ -8,8 +8,8 @@ import { useWallet } from '@txnlab/use-wallet'
 import Connect from 'components/MainTools/Connect'
 import MyBalances from 'components/FallenOrder/components/MyBalances'
 import { authenticate } from 'utils/auth'
-import { FullGlowButton } from 'components/Buttons'
-import { useState, useEffect } from 'react'
+import { FullGlowButton, IconGlowButton2 } from 'components/Buttons'
+import { useState, useEffect, useRef } from 'react'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { getListings, getProfile } from 'components/FallenOrder/components/Tools/getUserProfile'
 import { SuccessPopup } from '../components/FallenOrder/components/Popups/Success'
@@ -19,11 +19,12 @@ import { BGRank1, BGRank2, BGRank3 } from 'components/Whitelists/FOBGs'
 import { Rank1, Rank2, Rank3, Rank4, Rank5 } from 'components/Whitelists/FOChars'
 import { skillPotions, kinshipPotions } from 'components/Whitelists/FOPotions'
 import { BsPersonLinesFill, BsPersonSquare } from 'react-icons/bs'
-import { PiSelectionBackground } from 'react-icons/pi'
+import { PiSelectionBackground, PiUserCirclePlusFill } from 'react-icons/pi'
 import { CreateListing } from 'components/FallenOrder/components/CreateListing'
 import { ListingCard } from 'components/FallenOrder/components/ListingCard'
 import { MyListingCard } from 'components/FallenOrder/components/MyListingCard'
 import CreateUserProfile from 'components/FallenOrder/components/CreateUserProfile'
+import { TbPlugConnectedX } from 'react-icons/tb'
 
 export default function MyFO() {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
@@ -46,13 +47,13 @@ export default function MyFO() {
   const xLightColor = useColorModeValue('orange.100','cyan.100')
   const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
 
-  let fetchListingsCalled = false
+  let fetchListingsRun = false
 
   useEffect(() => {
-    if (!fetchListingsCalled) {
+    if (!fetchListingsRun) {
       fetchProfile()
       fetchListings()
-      fetchListingsCalled = true
+      fetchListingsRun = true
     }
   }, [assetList])
 
@@ -75,7 +76,7 @@ export default function MyFO() {
       const storedAuthUser = localStorage.getItem('token_' + activeAddress)
       setAuthUser(storedAuthUser || null)
     }
-    if (!listings && !fetchListingsCalled) {
+    if (!listings && !fetchListingsRun) {
       const allListings = await getListings()
       const myListings = allListings.filter((listing: any) => activeAddress === listing.wallet)
       setListings(allListings)
@@ -114,26 +115,34 @@ export default function MyFO() {
         <>
           {listings ?
             <>
-              <HStack className='w-full p-8 absolute' justifyContent='space-between'>
+              <HStack className='w-full p-8' justifyContent='space-between'>
                   {userProfile ?
-                    <CreateListing />
+                    <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Create Listing'} aria-label='Tooltip'>
+                      <div><CreateListing /></div>
+                    </Tooltip>
                   :
                   <>
-                    <FullGlowButton text='Create Profile' onClick={onOpen1} />
+                    <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Create Profile!'} aria-label='Tooltip'>
+                        <div><IconGlowButton2 icon={PiUserCirclePlusFill} onClick={onOpen1} /></div>
+                    </Tooltip>
                     <CreateUserProfile isOpen={isOpen1} onClose={onClose1} />
                   </>
                   }
-                  <FullGlowButton text='Log Out' onClick={handleLogout} />
+                  
+                  <MyBalances />
+
+                  <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Log Out'} aria-label='Tooltip'>
+                    <div><IconGlowButton2 icon={TbPlugConnectedX} onClick={handleLogout} /></div>
+                  </Tooltip>
               </HStack>
             </>
             : null}
-            <MyBalances />
-            <Text my='36px' className={`${gradientText} responsive-font`}>Grand Exchange</Text>
+            <Text mb='36px' className={`${gradientText} responsive-font`}>Grand Exchange</Text>
             
             {listings ?
               <>
                 <Center px='36px' w='100%'>
-                  <Tabs w='100%' maxW='900px' isFitted size='xs' variant='enclosed' borderColor={buttonText3}>
+                  <Tabs w='95%' maxW='1200px' isFitted size='xs' variant='enclosed' borderColor={buttonText3}>
                     <TabList fontFamily="Orbitron" fontWeight='bold' textColor={buttonText4}>
                       <Tooltip py={1} px={2} placement='top' borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='10px' textAlign='center' hasArrow label={'Characters'} aria-label='Tooltip'>
                         <Tab _focus={{boxShadow: 'none'}} _selected={{ borderColor: 'gray.700', borderWidth: '1px'}}>
@@ -158,7 +167,6 @@ export default function MyFO() {
                     </TabList>
                     <TabPanels>
                       <TabPanel my={5} w='stretch'>
-                        <p>
                           <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
                             {listings
                             .filter((listing: any) => allChars.includes(listing.assetID))
@@ -168,11 +176,9 @@ export default function MyFO() {
                               </div>
                               ))}
                           </Flex>
-                        </p>
                       </TabPanel>
                       
                       <TabPanel my={5} w='stretch'>
-                        <p>
                         <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
                             {listings
                             .filter((listing: any) => allBGs.includes(listing.assetID))
@@ -182,11 +188,9 @@ export default function MyFO() {
                               </div>
                               ))}
                           </Flex>
-                        </p>
                       </TabPanel>
                       
                       <TabPanel my={5} w='stretch'>
-                        <p>
                         <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
                             {listings
                             .filter((listing: any) => allAccessories.includes(listing.assetID))
@@ -196,12 +200,10 @@ export default function MyFO() {
                               </div>
                               ))}
                           </Flex>
-                        </p>
                       </TabPanel>
 
                       
                       <TabPanel my={5} w='stretch'>
-                        <p>
                           {myListings.length > 0 ?
                             <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
                               {myListings
@@ -216,7 +218,6 @@ export default function MyFO() {
                               <Text mt={4} fontSize='14px' textAlign='center' textColor={buttonText5}>You Don&apos;t Have Any Listings!</Text>
                             </>
                           }
-                        </p>
                       </TabPanel>
 
                     </TabPanels>

@@ -231,76 +231,76 @@ export default function Transact() {
   const [canLoadMore, setCanLoadMore] = useState(false)
   const [loadedOptionsCount, setLoadedOptionsCount] = useState(0)
 
+  const loadMoreOptions = async () => {
+    setLoadedOptionsCount((prevCount) => prevCount + optionsPerPage)
+    
+    if (options.length > loadedOptionsCount) {
+      const nextOptionsStartIndex = loadedOptionsCount;
+      const nextOptionsEndIndex = nextOptionsStartIndex + optionsPerPage;
+      let nextOptions = options.slice(nextOptionsStartIndex, nextOptionsEndIndex);
+      
+      const finalNextOptions: typeof nextOptions = [];
+      const assetInfoPromises = nextOptions.map(async (option: any) => {
+        try {
+          const assetInfo = await rateLimiter(
+            () => algodClient.getAssetByID(option.value).do()
+          );
+          finalNextOptions.push({
+            value: assetInfo.params.name,
+            label: (
+              <>
+                <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
+                  {option.value}
+                </span>
+              </>
+            ),
+            asset: option.value,
+          });
+        } catch (error: any) {
+          if (error.response && error.response.data && error.response.data.message !== 'asset does not exist') {
+          finalNextOptions.push({
+            value: 'N/A',
+            label: (
+              <>
+                <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
+                  {option.value}
+                </span>
+              </>
+            ),
+            asset: option.value,
+          })
+        }
+        }
+      })
+      const batchedPromises = async () => {
+        for (let i = 0; i < assetInfoPromises.length; i += 40) {
+          const batch = assetInfoPromises.slice(i, i + 40)
+          await Promise.all(batch)
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+        }
+      }
+      
+      await batchedPromises();
+      
+      setVisibleOptions(finalNextOptions);
+      setCanLoadMore(options.length > nextOptionsEndIndex);
+    } else {
+      setVisibleOptions(options)
+      setCanLoadMore(false)
+    }
+  }
 
   useEffect(() => {
     if (visibleOptions.length === 0 && options.length > 1 && loadedOptionsCount === 0) {
       loadMoreOptions()
     }
-  }, [visibleOptions, options, loadedOptionsCount])
-  
+  }, [visibleOptions, options, loadedOptionsCount, loadMoreOptions])
+
   useEffect(() => {
     setVisibleOptions([])
     setLoadedOptionsCount(0)
   }, [activeAddress])
 
-const loadMoreOptions = async () => {
-  setLoadedOptionsCount((prevCount) => prevCount + optionsPerPage)
-  
-  if (options.length > loadedOptionsCount) {
-    const nextOptionsStartIndex = loadedOptionsCount;
-    const nextOptionsEndIndex = nextOptionsStartIndex + optionsPerPage;
-    let nextOptions = options.slice(nextOptionsStartIndex, nextOptionsEndIndex);
-    
-    const finalNextOptions: typeof nextOptions = [];
-    const assetInfoPromises = nextOptions.map(async (option: any) => {
-      try {
-        const assetInfo = await rateLimiter(
-          () => algodClient.getAssetByID(option.value).do()
-        );
-        finalNextOptions.push({
-          value: assetInfo.params.name,
-          label: (
-            <>
-              <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
-                {option.value}
-              </span>
-            </>
-          ),
-          asset: option.value,
-        });
-      } catch (error: any) {
-        if (error.response && error.response.data && error.response.data.message !== 'asset does not exist') {
-        finalNextOptions.push({
-          value: 'N/A',
-          label: (
-            <>
-              <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
-                {option.value}
-              </span>
-            </>
-          ),
-          asset: option.value,
-        })
-      }
-      }
-    })
-    const batchedPromises = async () => {
-      for (let i = 0; i < assetInfoPromises.length; i += 40) {
-        const batch = assetInfoPromises.slice(i, i + 40)
-        await Promise.all(batch)
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-      }
-    }
-    
-    await batchedPromises();
-    
-    setVisibleOptions(finalNextOptions);
-    setCanLoadMore(options.length > nextOptionsEndIndex);
-  } else {
-    setVisibleOptions(options)
-    setCanLoadMore(false)
-  }
-}
   
   const [selected, setSelected] = useState(options[0])
 

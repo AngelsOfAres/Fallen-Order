@@ -60,7 +60,7 @@ export function CharCard(props: any) {
         } else {
             setLVLUp(false)
         }
-    }, [wisdom, level])
+    }, [wisdom, level, bg_image, getFinalImage])
 
     const levelTooltip = LVLUp ? `Ready for LVL ${level + 1}, Master!` : `Wisdom to LVL ${(level+1)} = ${formatAssetBalance(wisdom, 0, true, true, 3)}/${formatAssetBalance(wisdom_required[level+1], 0 , true, true, 3)}`
 

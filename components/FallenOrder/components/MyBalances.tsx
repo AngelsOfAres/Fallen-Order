@@ -1,13 +1,14 @@
-import { Center, useColorModeValue, Text, VStack, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, HStack, useDisclosure } from '@chakra-ui/react'
+import { Center, useColorModeValue, Text, VStack, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, HStack, useDisclosure, Tooltip } from '@chakra-ui/react'
 import styles2 from '../../../styles/glow.module.css'
 import toast from 'react-hot-toast'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { useState } from 'react'
 import React from 'react'
 import { useWallet } from '@txnlab/use-wallet'
-import { FullGlowButton } from 'components/Buttons'
+import { FullGlowButton, IconGlowButton2 } from 'components/Buttons'
 import { algodClient } from 'lib/algodClient'
 import algosdk from 'algosdk'
+import { GiWallet } from 'react-icons/gi'
 
 export default function MyBalances() {
   const gradientText = useColorModeValue(styles2.textAnimatedGlowL, styles2.textAnimatedGlowD)
@@ -70,7 +71,9 @@ export default function MyBalances() {
 
   return (
     <>
-        <Center m={8}><FullGlowButton text='My Balances' onClick={onOpen} /></Center>
+        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'My Balances'} aria-label='Tooltip'>
+          <div><IconGlowButton2 icon={GiWallet} onClick={onOpen} /></div>
+        </Tooltip>
         <Modal scrollBehavior={'outside'} size='sm' isCentered isOpen={isOpen} onClose={onClose}>
             <ModalOverlay backdropFilter='blur(10px)'/>
             <ModalContent className='whitespace-nowrap' p={6} m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>

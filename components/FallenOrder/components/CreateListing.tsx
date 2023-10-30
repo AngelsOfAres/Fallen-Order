@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Modal, ModalBody, ModalHeader, ModalOverlay, ModalContent, Text, HStack, VStack, useDisclosure, useColorModeValue, NumberInput, NumberInputField, Image, Flex, Box, Progress } from '@chakra-ui/react'
 import styles from '../../../styles/glow.module.css'
-import { FullGlowButton } from 'components/Buttons'
+import { FullGlowButton, IconGlowButton, IconGlowButton2 } from 'components/Buttons'
 import { useState, useEffect } from 'react'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { useWallet } from '@txnlab/use-wallet'
@@ -11,6 +11,7 @@ import { hatchets, pickaxes } from '../../Whitelists/FOTools'
 import { kinshipPotions, skillPotions } from '../../Whitelists/FOPotions'
 import { algodIndexer } from 'lib/algodClient'
 import { ListingPopup } from './Popups/ListingPop'
+import { TbReportMoney } from 'react-icons/tb'
 
 export function CreateListing() {
     const allFOAssets = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5, ...BGRank1, ...BGRank2, ...BGRank3, ...kinshipPotions, ...skillPotions, ...hatchets, ...pickaxes]
@@ -49,7 +50,7 @@ export function CreateListing() {
               setLoading(false)
             })
         }
-      }, [assetList])
+      }, [assetList, allFOAssets])
 
       const openListingPopup = (index: any) => {
         setOpenPopupIndex(index)
@@ -61,7 +62,7 @@ export function CreateListing() {
 
     return (
       <>
-        <FullGlowButton text='List' onClick={onOpen} />
+        <IconGlowButton2 icon={TbReportMoney} onClick={onOpen} />
         <Modal scrollBehavior={'outside'} size='xl' isCentered isOpen={isOpen} onClose={onClose}>
             <ModalOverlay backdropFilter='blur(10px)'/>
             <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
@@ -74,23 +75,21 @@ export function CreateListing() {
                         <>
                           <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
                             {allInfo.map((asset: any, index: any) => (
-                                <>
                                   <VStack key={index} justifyContent='center'>
                                     <Image _hover={{ boxSize: '24' }} className={boxGlow} boxSize='20' borderRadius='8px' alt={asset.asset.params.name}
                                       src={'https://cloudflare-ipfs.com/ipfs/' + asset.asset.params.url.substring(7)} onClick={() => openListingPopup(index)} />
                                     <Text fontSize='12px' textColor={buttonText4}>
                                     {asset.asset.params['unit-name']}
                                     </Text>
+                                    <ListingPopup
+                                      wallet={activeAddress}
+                                      assetID={asset.asset.index}
+                                      assetName={asset.asset.params.name}
+                                      assetImage={'https://cloudflare-ipfs.com/ipfs/' + asset.asset.params.url.substring(7)}
+                                      isOpen={openPopupIndex === index}
+                                      onClose={closeListingPopup}
+                                      mainClose={onClose} />
                                   </VStack>
-                                  <ListingPopup
-                                    wallet={activeAddress}
-                                    assetID={asset.asset.index}
-                                    assetName={asset.asset.params.name}
-                                    assetImage={'https://cloudflare-ipfs.com/ipfs/' + asset.asset.params.url.substring(7)}
-                                    isOpen={openPopupIndex === index}
-                                    onClose={closeListingPopup}
-                                    mainClose={onClose} />
-                                </>
                               ))}
                           </Flex>
                         </>

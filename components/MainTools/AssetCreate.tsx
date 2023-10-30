@@ -37,7 +37,7 @@ export default function AssetCreate() {
   const note = Uint8Array.from(rawNote.split("").map(x => x.charCodeAt(0)))
 
   useEffect(() => {
-    if (activeAddress && supply === 0) {
+    if (activeAddress) {
       setManager(activeAddress)
       setReserve(activeAddress)
       setFreeze(activeAddress)

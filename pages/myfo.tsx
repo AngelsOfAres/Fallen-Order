@@ -9,7 +9,7 @@ import { useWallet } from '@txnlab/use-wallet'
 import Connect from 'components/MainTools/Connect'
 import MyBalances from 'components/FallenOrder/components/MyBalances'
 import { authenticate } from 'utils/auth'
-import { FullGlowButton, IconGlowButton } from 'components/Buttons'
+import { FullGlowButton, IconGlowButton, IconGlowButton2 } from 'components/Buttons'
 import { useState, useEffect } from 'react'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { getProfile } from 'components/FallenOrder/components/Tools/getUserProfile'
@@ -20,6 +20,8 @@ import toast from 'react-hot-toast'
 import { equipTool, getDrip, subKinship, unfreezeAsset } from 'api/backend'
 import { motion } from 'framer-motion'
 import { MdOutlineAdd } from 'react-icons/md'
+import { CgProfile } from 'react-icons/cg'
+import { TbPlugConnectedX } from 'react-icons/tb'
 import { WrenchScrewdriverIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { hatchets, pickaxes } from 'components/Whitelists/FOTools'
 import { Rank1, Rank2, Rank3, Rank4, Rank5 } from 'components/Whitelists/FOChars'
@@ -28,6 +30,10 @@ import { skillPotions, kinshipPotions } from 'components/Whitelists/FOPotions'
 import CreateUserProfile from 'components/FallenOrder/components/CreateUserProfile'
 import { CreateListing } from 'components/FallenOrder/components/CreateListing'
 import { combineImages } from 'components/FallenOrder/components/Tools/combineImages'
+import Link from 'next/link'
+import { BsShop } from 'react-icons/bs'
+import { GiMeltingIceCube } from 'react-icons/gi'
+import { PiUserCirclePlusFill } from 'react-icons/pi'
 
 export default function MyFO() {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
@@ -353,26 +359,41 @@ export default function MyFO() {
           </>
         :
         <>
-            <Flex pt={6} flexDirection="row" flexWrap="wrap" justifyContent='center' gap='12px'>
-              <FullGlowButton text='Log Out' onClick={handleLogout} />
+            <Flex pt={6} flexDirection="row" flexWrap="wrap" justifyContent='center' gap='16px'>
 
-              <motion.div
-                animate={{ scale: userProfile && userProfile.drip_timer === 0 ? [1, 1.07, 1] : 1 }}
-                transition={{
-                  repeat: Infinity,
-                  duration: 0.75,
-                  ease: "linear",
-                }}>
-                <FullGlowButton text={userProfile ? 'Profile' : 'Create Profile'} onClick={userProfile ? onOpen2 : onOpen1} />
-              </motion.div>
+              <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={userProfile ? 'My Profile' : 'Create Profile!'} aria-label='Tooltip'>
+                <motion.div
+                  animate={{ scale: userProfile && userProfile.drip_timer === 0 ? [1, 1.07, 1] : 1 }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 0.75,
+                    ease: "linear",
+                  }}>
+                  <IconGlowButton2 icon={userProfile ? CgProfile : PiUserCirclePlusFill} onClick={userProfile ? onOpen2 : onOpen1} />
+                </motion.div>
+              </Tooltip>
+              
+              {frozen.length > 0 ? 
+                <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Melt Items'} aria-label='Tooltip'>
+                  <div><IconGlowButton2 icon={GiMeltingIceCube} onClick={onOpenFrozen} /></div>
+                </Tooltip>
+                : null}
 
-              <CreateListing />
+              <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Grand Exchange'} aria-label='Tooltip'>
+                <Link href={'/ge'} target='_blank' rel='noreferrer'><IconGlowButton2 icon={BsShop} /></Link>
+              </Tooltip>
+              <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Create Listing'} aria-label='Tooltip'>
+                <div><CreateListing /></div>
+              </Tooltip>
+              
+              <MyBalances />
 
-              {frozen.length > 0 ? <FullGlowButton text='Melt' onClick={onOpenFrozen} /> : null}
+              <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Log Out'} aria-label='Tooltip'>
+                <div><IconGlowButton2 icon={TbPlugConnectedX} onClick={handleLogout} /></div>
+              </Tooltip>
 
             </Flex>
           <Text my='24px' className={`${gradientText} responsive-font`}>My Fallen Order</Text>
-          <MyBalances />
           <Center>
             <ManageCharacter />
           </Center>
@@ -386,14 +407,12 @@ export default function MyFO() {
                   <VStack m={1} alignItems='center' justifyContent='center' spacing='10px'>
                       <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
                         {frozen.map((asset: any, index: any) => (
-                            <>
                               <VStack key={index} justifyContent='center'>
                                 <Image _hover={{ boxSize: '24' }} className={boxGlow} boxSize='20' borderRadius='8px' alt={asset.asset.params.name}
                                   src={'https://cloudflare-ipfs.com/ipfs/' + asset.asset.params.url.substring(7)} onClick={onOpenFrozenPopup} />
                                 <Text fontSize='12px' textColor={buttonText4}>
                                 {asset.asset.params['unit-name']}
                                 </Text>
-                              </VStack>
 
                                 <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpenFrozenPopup} onClose={onCloseFrozenPopup}>
                                 <ModalOverlay backdropFilter='blur(10px)'/>
@@ -410,7 +429,7 @@ export default function MyFO() {
                                     </ModalFooter>
                                 </ModalContent>
                                 </Modal>
-                            </>
+                              </VStack>
                           ))}
                       </Flex>
                       <HStack pb={4}>

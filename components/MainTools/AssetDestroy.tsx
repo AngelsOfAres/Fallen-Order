@@ -28,7 +28,6 @@ export default function AssetDestroy() {
   const { accountInfo, createdAssets } = useWalletBalance()
 
   const sendAssetDestroy = async () => {
-    console.log(assetID)
     try {
       if (!activeAddress) {
         throw new Error('Wallet Not Connected!')
@@ -98,32 +97,21 @@ export default function AssetDestroy() {
   ]
   const optionsPerPage = 120;
   const [visibleOptions, setVisibleOptions] = useState<any[]>([])
-  const [canLoadMore, setCanLoadMore] = useState(false);
-  const [loadedOptionsCount, setLoadedOptionsCount] = useState(0);
+  const [canLoadMore, setCanLoadMore] = useState(false)
+  const [loadedOptionsCount, setLoadedOptionsCount] = useState(0)
   const [filterText, setFilterText] = useState('')
 
   const handleFilterChange = (e: any) => {
     setFilterText(e.target.value)
   }
-  
-  useEffect(() => {
-    if (visibleOptions.length === 0 && options.length > 1 && loadedOptionsCount === 0) {
-      loadMoreOptions();
-    }
-  }, [visibleOptions, options, loadedOptionsCount])
 
-  useEffect(() => {
-    setVisibleOptions([])
-    setLoadedOptionsCount(0)
-  }, [activeAddress])
-  
   const loadMoreOptions = async () => {
     setLoadedOptionsCount((prevCount) => prevCount + optionsPerPage);
   
     if (options.length > loadedOptionsCount) {
-      const nextOptionsStartIndex = loadedOptionsCount;
-      const nextOptionsEndIndex = nextOptionsStartIndex + optionsPerPage;
-      let nextOptions = options.slice(nextOptionsStartIndex, nextOptionsEndIndex);
+      const nextOptionsStartIndex = loadedOptionsCount
+      const nextOptionsEndIndex = nextOptionsStartIndex + optionsPerPage
+      let nextOptions = options.slice(nextOptionsStartIndex, nextOptionsEndIndex)
       
       let finalNextOptions: any[] = []
       const assetInfoPromises = nextOptions.map(async (option: any) => {
@@ -160,9 +148,9 @@ export default function AssetDestroy() {
       })
       const batchedPromises = async () => {
         for (let i = 0; i < assetInfoPromises.length; i += 40) {
-          const batch = assetInfoPromises.slice(i, i + 40);
-          await Promise.all(batch);
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          const batch = assetInfoPromises.slice(i, i + 40)
+          await Promise.all(batch)
+          await new Promise((resolve) => setTimeout(resolve, 1000))
         }
       };
   
@@ -180,7 +168,19 @@ export default function AssetDestroy() {
       setVisibleOptions(options)
       setCanLoadMore(false);
     }
-  };
+  }
+
+  useEffect(() => {
+    if (visibleOptions.length === 0 && options.length > 1 && loadedOptionsCount === 0) {
+      loadMoreOptions()
+    }
+  }, [visibleOptions, options, loadedOptionsCount, loadMoreOptions])
+
+  useEffect(() => {
+    setVisibleOptions([])
+    setLoadedOptionsCount(0)
+  }, [activeAddress])
+  
   
 
   const [selected, setSelected] = useState(options[0])

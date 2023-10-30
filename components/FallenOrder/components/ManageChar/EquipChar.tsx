@@ -97,11 +97,11 @@ const EquipCharacter = (props: any) => {
         setLoading(false)
       }
     }
-    }, [assetList])
+    }, [assetList, allBGs, processAssets])
 
     useEffect(() => {
       generateImage([char_image, selectedBG.image])
-    }, [options])
+    }, [options, char_image, selectedBG.image])
 
     async function handleEquip(type: any) {
       setLoading(true)
