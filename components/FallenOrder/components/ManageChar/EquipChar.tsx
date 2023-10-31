@@ -97,7 +97,7 @@ const EquipCharacter = (props: any) => {
         setLoading(false)
       }
     }
-    }, [assetList, allBGs, processAssets])
+    }, [assetList, allBGs])
 
     useEffect(() => {
       generateImage([char_image, selectedBG.image])

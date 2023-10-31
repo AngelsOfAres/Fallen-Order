@@ -45,7 +45,7 @@ import Connect from './MainTools/Connect'
             >
             <HamburgerIcon />
           </MenuButton>
-          <MenuList p={0} m={3} borderRadius='20px'>
+          <MenuList zIndex={999} p={0} m={3} borderRadius='20px'>
             <Connect />
           </MenuList>
         </Menu>
