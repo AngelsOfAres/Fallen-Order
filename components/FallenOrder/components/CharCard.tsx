@@ -12,7 +12,7 @@ import { manageChar, switchMain } from 'api/backend'
 import { SuccessPopup } from './Popups/Success'
 import { wisdom_required, expCost, materialCost } from './Constants/levelup'
 import { formatAssetBalance } from 'utils'
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import EquipCharacter from './ManageChar/EquipChar'
 import { formatDuration } from 'utils/formatTimer'
 import { MdKeyboardDoubleArrowUp, MdOutlineStar } from 'react-icons/md'
@@ -37,7 +37,7 @@ export function CharCard(props: any) {
     const success_msg_boost = `50 Points have been added to ${unitName}!`
     const fail_msg_boost = `Points Boost Failed!`
 
-    const getFinalImage = async () => {
+    const getFinalImage = useCallback(async () => {
         try {
             combineImages(image, bg_image)
             .then((finalImageDataURL) => {
@@ -49,7 +49,7 @@ export function CharCard(props: any) {
         } catch (error) {
             console.error('Error combining images:', error)
         }
-    }
+    }, [bg_image, image])
         
     useEffect(() => {
         if (bg_image !== '-') {
@@ -60,7 +60,7 @@ export function CharCard(props: any) {
         } else {
             setLVLUp(false)
         }
-    }, [wisdom, level, bg_image])
+    }, [wisdom, level, bg_image, getFinalImage])
 
     const levelTooltip = LVLUp ? `Ready for LVL ${level + 1}, Master!` : `Wisdom to LVL ${(level+1)} = ${formatAssetBalance(wisdom, 0, true, true, 3)}/${formatAssetBalance(wisdom_required[level+1], 0 , true, true, 3)}`
 

@@ -9,11 +9,11 @@ import Connect from 'components/MainTools/Connect'
 import MyBalances from 'components/FallenOrder/components/MyBalances'
 import { authenticate } from 'utils/auth'
 import { FullGlowButton, IconGlowButton2 } from 'components/Buttons'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { getListings, getProfile } from 'components/FallenOrder/components/Tools/getUserProfile'
 import { SuccessPopup } from '../components/FallenOrder/components/Popups/Success'
-import { WrenchScrewdriverIcon, XMarkIcon } from '@heroicons/react/20/solid'
+import { WrenchScrewdriverIcon } from '@heroicons/react/20/solid'
 import { hatchets, pickaxes } from 'components/Whitelists/FOTools'
 import { BGRank1, BGRank2, BGRank3 } from 'components/Whitelists/FOBGs'
 import { Rank1, Rank2, Rank3, Rank4, Rank5 } from 'components/Whitelists/FOChars'
@@ -47,17 +47,10 @@ export default function MyFO() {
   const xLightColor = useColorModeValue('orange.100','cyan.100')
   const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
 
-  let fetchListingsRun = false
+  const fetchListingsRun = useRef(false)
 
-  useEffect(() => {
-    if (!fetchListingsRun) {
-      fetchProfile()
-      fetchListings()
-      fetchListingsRun = true
-    }
-  }, [assetList])
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     if (activeAddress) {        
       try {
         const profile = await getProfile(activeAddress)
@@ -69,21 +62,28 @@ export default function MyFO() {
         console.error("Error fetching profile:", error)
       }
     }
-  }
+  }, [activeAddress, onOpen1])
 
-  const fetchListings = async () => {
+  const fetchListings = useCallback(async () => {
     if (typeof window !== 'undefined') {
       const storedAuthUser = localStorage.getItem('token_' + activeAddress)
       setAuthUser(storedAuthUser || null)
     }
-    if (!listings && !fetchListingsRun) {
+    if (!listings && !fetchListingsRun.current) {
       const allListings = await getListings()
       const myListings = allListings.filter((listing: any) => activeAddress === listing.wallet)
       setListings(allListings)
-      console.log(allListings)
       setMyListings(myListings)
     }
-  }
+  }, [activeAddress, listings, fetchListingsRun])
+  
+  useEffect(() => {
+    if (!fetchListingsRun.current) {
+      fetchProfile()
+      fetchListings()
+      fetchListingsRun.current = true
+    }
+  }, [assetList, fetchListings, fetchProfile])
 
   function handleLogout() {
     localStorage.removeItem('token_' + activeAddress)

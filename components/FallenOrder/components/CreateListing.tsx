@@ -14,7 +14,6 @@ import { ListingPopup } from './Popups/ListingPop'
 import { TbReportMoney } from 'react-icons/tb'
 
 export function CreateListing() {
-    const allFOAssets = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5, ...BGRank1, ...BGRank2, ...BGRank3, ...kinshipPotions, ...skillPotions, ...hatchets, ...pickaxes]
     const [ allInfo, setAllInfo ] = useState<any>(null)
     const [ loading, setLoading ] = useState<boolean>(true)
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -32,6 +31,7 @@ export function CreateListing() {
 
     useEffect(() => {
         if (assetList && assetList.length > 0) {
+          const allFOAssets = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5, ...BGRank1, ...BGRank2, ...BGRank3, ...kinshipPotions, ...skillPotions, ...hatchets, ...pickaxes]
           const FOInfo = assetList
             .filter((item: any) => allFOAssets.includes(item['asset-id']))
             .map((item: any) => item['asset-id'])
@@ -50,7 +50,7 @@ export function CreateListing() {
               setLoading(false)
             })
         }
-      }, [assetList, allFOAssets])
+      }, [assetList])
 
       const openListingPopup = (index: any) => {
         setOpenPopupIndex(index)

@@ -1,6 +1,6 @@
 import { HStack, Text, useColorModeValue, Box, Center, VStack, Image as CImage, Progress, Tooltip, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, useDisclosure } from '@chakra-ui/react'
 import { FullGlowButton } from 'components/Buttons'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import styles from '../../../../styles/glow.module.css'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { BGRank1, BGRank2, BGRank3 } from '../../../Whitelists/FOBGs'
@@ -20,7 +20,6 @@ const EquipCharacter = (props: any) => {
   const [popMessage, setPopMessage] = useState<any>('')
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure()
-  const allBGs = [...BGRank1, ...BGRank2, ...BGRank3]
   const xLightColor = useColorModeValue('orange.100','cyan.100')
   const lightColor = useColorModeValue('orange.300','cyan.300')
   const [equippedChar, setEquippedChar] = useState<string>('')
@@ -47,7 +46,7 @@ const EquipCharacter = (props: any) => {
   const buttonText4 = useColorModeValue('orange.100', 'cyan.100')
   const iconColor1 = useColorModeValue('orange', 'cyan')
 
-  async function processAssets(assets: any): Promise<any[]> {
+  const processAssets = useCallback(async (assets: any) => {
     const processedAssets = []
   
     for (const singleAsset of assets) {  
@@ -79,11 +78,12 @@ const EquipCharacter = (props: any) => {
       setSelectedBG(bgOptions[0])
     }
     return processedAssets
-  }
+  }, [bg_image, bgColor])
 
   useEffect(() => {
     if (assetList) {
-      if (assetList.length > 0) {
+      if (assetList.length > 0 && options.length < 1) {
+        const allBGs = [...BGRank1, ...BGRank2, ...BGRank3]
         setLoading(true)
         const filteredAssetList = assetList.filter((item: any) => allBGs.includes(item['asset-id']))
         if (filteredAssetList.length > 0) {
@@ -97,11 +97,11 @@ const EquipCharacter = (props: any) => {
         setLoading(false)
       }
     }
-    }, [assetList, allBGs])
+    }, [assetList, options.length, processAssets])
 
     useEffect(() => {
       generateImage([char_image, selectedBG.image])
-    }, [options, char_image, selectedBG.image])
+    }, [char_image, selectedBG.image])
 
     async function handleEquip(type: any) {
       setLoading(true)

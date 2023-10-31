@@ -10,7 +10,7 @@ import Connect from 'components/MainTools/Connect'
 import MyBalances from 'components/FallenOrder/components/MyBalances'
 import { authenticate } from 'utils/auth'
 import { FullGlowButton, IconGlowButton, IconGlowButton2 } from 'components/Buttons'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { getProfile } from 'components/FallenOrder/components/Tools/getUserProfile'
 import { algodClient, algodIndexer } from 'lib/algodClient'
@@ -38,8 +38,6 @@ import { PiUserCirclePlusFill } from 'react-icons/pi'
 export default function MyFO() {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
-  const allTools = [...hatchets, ...pickaxes]
-  const allFOAssets = [...allTools, ...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5, ...BGRank1, ...BGRank2, ...BGRank3, ...skillPotions, ...kinshipPotions]
   const { activeAddress, signTransactions } = useWallet()
   const [ authUser, setAuthUser ] = useState<any>(null)
   const [ loading, setLoading ] = useState<boolean>(true)
@@ -129,7 +127,7 @@ export default function MyFO() {
     }
   }
 
-  const getFinalImage = async (img1: any, img2: any) => {
+  const getFinalImage = useCallback(async (img1: any, img2: any) => {
     try {
         combineImages(img1, img2)
         .then((finalImageDataURL) => {
@@ -141,9 +139,9 @@ export default function MyFO() {
     } catch (error) {
         console.error('Error combining images:', error)
     }
-  }
+  }, [])
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     const storedAuthUser = localStorage.getItem('token_' + activeAddress)
     setAuthUser(storedAuthUser || null)
     if (activeAddress && typeof window !== 'undefined') {        
@@ -160,7 +158,7 @@ export default function MyFO() {
         console.error("Error fetching profile:", error)
       }
     }
-  }
+  }, [onOpen1, activeAddress, getFinalImage])
 
   useEffect(() => {
     if (assetList && assetList.length > 0) {
@@ -178,6 +176,8 @@ export default function MyFO() {
           throw error
         }
       }
+      const allTools = [...hatchets, ...pickaxes]
+      const allFOAssets = [...allTools, ...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5, ...BGRank1, ...BGRank2, ...BGRank3, ...skillPotions, ...kinshipPotions]
       
       const availableTools = assetList
         .filter((item: any) => allTools.includes(item['asset-id']))
@@ -198,7 +198,7 @@ export default function MyFO() {
           setLoading(false)
         })
     }
-  }, [assetList])
+  }, [assetList, fetchProfile])
   
 
   function handleLogout() {

@@ -1,7 +1,7 @@
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import { useWallet } from '@txnlab/use-wallet'
 import algosdk from 'algosdk'
-import { useMemo, useEffect, useState } from 'react'
+import { useMemo, useEffect, useState, useCallback } from 'react'
 import toast from 'react-hot-toast'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { convertAlgosToMicroalgos } from 'utils'
@@ -201,7 +201,7 @@ export default function Transact() {
       sendTransaction()
     }
   }
-  const options = [
+  const options = useMemo(() => [
     {
       value: 0,
       label: (
@@ -213,25 +213,29 @@ export default function Transact() {
       ),
       asset: 0,
     },
-    ...(Array.isArray(assetList) ? assetList.map((asset: any) => ({
-      value: asset['asset-id'],
-      label: (
-        <>
-          <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
-            {asset['asset-id']}
-          </span>
-        </>
-      ),
-      asset
-    })) : [])
-  ]
+    ...(Array.isArray(assetList)
+      ? assetList.map((asset: any) => ({
+          value: asset['asset-id'],
+          label: (
+            <>
+              <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
+                {asset['asset-id']}
+              </span>
+            </>
+          ),
+          asset
+        }))
+      : []
+    ),
+  ], [assetList, bgColor])
+  
 
   const optionsPerPage = 120
   const [visibleOptions, setVisibleOptions] = useState<any[]>([])
   const [canLoadMore, setCanLoadMore] = useState(false)
   const [loadedOptionsCount, setLoadedOptionsCount] = useState(0)
 
-  const loadMoreOptions = async () => {
+  const loadMoreOptions = useCallback(async () => {
     setLoadedOptionsCount((prevCount) => prevCount + optionsPerPage)
     
     if (options.length > loadedOptionsCount) {
@@ -280,19 +284,19 @@ export default function Transact() {
         }
       }
       
-      await batchedPromises();
+      await batchedPromises()
       
-      setVisibleOptions(finalNextOptions);
-      setCanLoadMore(options.length > nextOptionsEndIndex);
+      setVisibleOptions(finalNextOptions)
+      setCanLoadMore(options.length > nextOptionsEndIndex)
     } else {
       setVisibleOptions(options)
       setCanLoadMore(false)
     }
-  }
+  }, [options, loadedOptionsCount, bgColor])
 
   useEffect(() => {
     if (visibleOptions.length === 0 && options.length > 1 && loadedOptionsCount === 0) {
-      loadMoreOptions()
+      loadMoreOptions();
     }
   }, [visibleOptions, options, loadedOptionsCount, loadMoreOptions])
 

@@ -1,11 +1,10 @@
-import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import { useWallet } from '@txnlab/use-wallet'
 import algosdk from 'algosdk'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import toast from 'react-hot-toast'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { algodClient } from 'lib/algodClient'
-import { Box, useColorMode, useColorModeValue, Text, Input, Button, Center } from '@chakra-ui/react'
+import { Box, useColorMode, useColorModeValue, Text, Input, Center } from '@chakra-ui/react'
 import styles from '../../styles/glow.module.css'
 import { classNames } from 'utils'
 import { Listbox } from '@headlessui/react'
@@ -19,13 +18,12 @@ export default function AssetDestroy() {
   const { colorMode } = useColorMode();
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)  
   const xLightColor = useColorModeValue('orange.100','cyan.100')
-  const lightColor = useColorModeValue('orange.300','cyan.300')
   const medColor = useColorModeValue('orange.500','cyan.500')
   const bgColor = colorMode === "light" ? "bg-orange-400" : "bg-cyan-500";
   const hoverBgColor = colorMode === "light" ? "hover:bg-orange-400" : "hover:bg-cyan-500";
   const textColor = colorMode === "light" ? "text-orange-900" : "text-cyan-900";
 
-  const { accountInfo, createdAssets } = useWalletBalance()
+  const { createdAssets } = useWalletBalance()
 
   const sendAssetDestroy = async () => {
     try {
@@ -71,7 +69,7 @@ export default function AssetDestroy() {
     sendAssetDestroy()
   }
 
-  const options = [
+  const options = useMemo(() => [
     {
       value: '',
       label: (
@@ -83,18 +81,22 @@ export default function AssetDestroy() {
       ),
       asset: 0,
     },
-    ...(Array.isArray(createdAssets) ? createdAssets.map((asset: any) => ({
-      value: asset['index'],
-      label: (
-        <>
-          <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
-            {asset['index']}
-          </span>
-        </>
-      ),
-      asset
-    })) : [])
-  ]
+    ...(Array.isArray(createdAssets)
+      ? createdAssets.map((asset: any) => ({
+          value: asset['index'],
+          label: (
+            <>
+              <span className={`inline-flex items-center rounded ${bgColor} px-2.5 py-0.5 text-sm font-medium text-black mr-3`}>
+                {asset['index']}
+              </span>
+            </>
+          ),
+          asset
+        }))
+      : []
+    )
+  ], [bgColor, createdAssets])
+  
   const optionsPerPage = 120;
   const [visibleOptions, setVisibleOptions] = useState<any[]>([])
   const [canLoadMore, setCanLoadMore] = useState(false)
@@ -105,8 +107,8 @@ export default function AssetDestroy() {
     setFilterText(e.target.value)
   }
 
-  const loadMoreOptions = async () => {
-    setLoadedOptionsCount((prevCount) => prevCount + optionsPerPage);
+  const loadMoreOptions = useCallback(async () => {
+    setLoadedOptionsCount((prevCount) => prevCount + optionsPerPage)
   
     if (options.length > loadedOptionsCount) {
       const nextOptionsStartIndex = loadedOptionsCount
@@ -159,7 +161,7 @@ export default function AssetDestroy() {
       if (filterText.trim() !== '') {
         finalNextOptions = finalNextOptions.filter((option) =>
           option.asset.toString().includes(filterText)
-        );
+        )
       }
   
       setVisibleOptions(finalNextOptions)
@@ -168,7 +170,7 @@ export default function AssetDestroy() {
       setVisibleOptions(options)
       setCanLoadMore(false);
     }
-  }
+  }, [options, loadedOptionsCount, bgColor, filterText])
 
   useEffect(() => {
     if (visibleOptions.length === 0 && options.length > 1 && loadedOptionsCount === 0) {

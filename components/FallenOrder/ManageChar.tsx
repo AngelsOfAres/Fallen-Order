@@ -1,6 +1,6 @@
 import { Text, useColorModeValue, Box, VStack, Progress, Flex } from '@chakra-ui/react'
 import { FullGlowButton } from 'components/Buttons'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { Rank1, Rank2, Rank3, Rank4, Rank5 } from '../Whitelists/FOChars'
 import { algodClient } from 'lib/algodClient'
@@ -11,7 +11,6 @@ import { useWallet } from '@txnlab/use-wallet'
 import { getProfile } from './components/Tools/getUserProfile'
 
 const ManageCharacter: React.FC = () => {
-  const allFO = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5]
   const xLightColor = useColorModeValue('orange.100','cyan.100')
   const lightColor = useColorModeValue('orange.300','cyan.300')
   const [loading, setLoading] = useState<boolean>(true)
@@ -74,23 +73,7 @@ async function getKinship(asset_id: any): Promise<number> {
   return 0
 }
   
-  async function processAssetsInBatches(profile: any): Promise<any[]> {
-    const foList = assetList.filter((item: any) => allFO.includes(item['asset-id']))
-    const batches = []
-    for (let i = 0; i < foList.length; i += 60) {
-      const batch = foList.slice(i, i + 60)
-      batches.push(batch)
-    }
-    const promises = batches.map(async (batch) => {
-      return process_asset(batch, profile)
-    })  
-    const results = await Promise.all(promises)
-    setCharList(results.flat().reverse())
-    setLoading(false)
-    return results.flat().reverse()
-  }
-  
-  async function process_asset(assets: any, profile: any): Promise<any[]> {
+const process_asset = useCallback(async (assets: any, profile: any) => {
     const processedAssets = []
   
     for (const singleAsset of assets) {
@@ -124,9 +107,26 @@ async function getKinship(asset_id: any): Promise<number> {
         console.error('Error:', error)
       }}
     return processedAssets
-  }
+  }, [])
 
-  const fetchProfile = async () => {
+  const processAssetsInBatches = useCallback(async (profile: any) => {
+    const allFO = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5]
+    const foList = assetList.filter((item: any) => allFO.includes(item['asset-id']))
+    const batches = []
+    for (let i = 0; i < foList.length; i += 60) {
+      const batch = foList.slice(i, i + 60)
+      batches.push(batch)
+    }
+    const promises = batches.map(async (batch) => {
+      return process_asset(batch, profile)
+    })  
+    const results = await Promise.all(promises)
+    setCharList(results.flat().reverse())
+    setLoading(false)
+    return results.flat().reverse()
+  }, [assetList, process_asset])
+
+  const fetchProfile = useCallback(async () => {
     if (activeAddress) {        
       try {
         const profile = await getProfile(activeAddress)
@@ -142,13 +142,13 @@ async function getKinship(asset_id: any): Promise<number> {
         console.error("Error fetching profile:", error)
       }
     }
-  }
+  }, [activeAddress, assetList, processAssetsInBatches])
 
   useEffect(() => {
     if (assetList) {
       fetchProfile()
     }
-    }, [assetList])
+    }, [assetList, fetchProfile])
 
   return (
     <>
