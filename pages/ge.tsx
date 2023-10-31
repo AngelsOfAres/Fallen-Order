@@ -49,9 +49,9 @@ export default function MyFO() {
 
   const fetchListingsRun = useRef(false)
 
-
   const fetchProfile = useCallback(async () => {
     if (activeAddress) {        
+      fetchListingsRun.current = true
       try {
         const profile = await getProfile(activeAddress)
         setUserProfile(profile || null)
@@ -76,12 +76,11 @@ export default function MyFO() {
       setMyListings(myListings)
     }
   }, [activeAddress, listings, fetchListingsRun])
-  
+
   useEffect(() => {
     if (!fetchListingsRun.current) {
       fetchProfile()
       fetchListings()
-      fetchListingsRun.current = true
     }
   }, [assetList, fetchListings, fetchProfile])
 
@@ -137,12 +136,12 @@ export default function MyFO() {
               </HStack>
             </>
             : null}
-            <Text mb='36px' className={`${gradientText} responsive-font`}>Grand Exchange</Text>
+            <Text mt={!listings ? '36px' : '0px'} mb='36px' className={`${gradientText} responsive-font`}>Grand Exchange</Text>
             
             {listings ?
               <>
-                <Center px='36px' w='100%'>
-                  <Tabs w='95%' maxW='1200px' isFitted size='xs' variant='enclosed' borderColor={buttonText3}>
+                <Center px='24px' w='100%'>
+                  <Tabs w='100%' maxW='1200px' isFitted size='xs' variant='enclosed' borderColor={buttonText3}>
                     <TabList fontFamily="Orbitron" fontWeight='bold' textColor={buttonText4}>
                       <Tooltip py={1} px={2} placement='top' borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='10px' textAlign='center' hasArrow label={'Characters'} aria-label='Tooltip'>
                         <Tab _focus={{boxShadow: 'none'}} _selected={{ borderColor: 'gray.700', borderWidth: '1px'}}>
