@@ -160,10 +160,10 @@ export function ListingCard(props: any) {
     }
     
     return (
-        <Box m={2} className={boxGlow} maxW='140px' bgGradient={bgCardOff} borderColor={buttonText3} borderWidth='1.5px' borderRadius='13px'>
+        <Box m={2} className={boxGlow} maxW='120px' bgGradient={bgCardOff} borderColor={buttonText3} borderWidth='1.5px' borderRadius='13px'>
             <Container pb={0} pt={0} pl={0} pr={0} centerContent>
                 <Box borderBottomWidth='0.25px' borderColor={buttonText3} borderBottomRadius='xl'>
-                    <Image objectFit='cover' w='140px' borderRadius='11.5px' borderBottomRadius='xl' alt={name} src={image} onClick={onOpen}/>
+                    <Image objectFit='cover' borderRadius='11.5px' borderBottomRadius='xl' alt={name} src={image} onClick={onOpen}/>
                 </Box>
                 <Box maxW='85%' textAlign='center' py={0.5} px={2} borderColor={buttonText3} borderTopWidth='0px' borderBottomWidth='0.5px' borderLeftWidth='0.5px' borderRightWidth='0.5px' borderBottomRadius='lg' borderTopRadius='xs'>
                     <Text className={gradientText} fontSize='10px'>{name}</Text>
@@ -172,8 +172,8 @@ export function ListingCard(props: any) {
             <Container pb={2} pt={0} pl={2} pr={2} centerContent>
                 <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='10px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Listing Owner'} aria-label='Tooltip'>
                     <a href={'https://algoexplorer.io/address/' + listing_wallet} target='_blank' rel='noreferrer'>
-                        <Text mt={2} textAlign='center' fontFamily='Orbitron' bgColor={buttonText5} bgClip='text' fontSize='11px'>
-                            <Icon mr={1} boxSize='12px' color={buttonText3} as={BsFillPersonFill}/>
+                        <Text mt={2} textAlign='center' fontFamily='Orbitron' bgColor={buttonText5} bgClip='text' fontSize='9px'>
+                            <Icon mr={1} boxSize='10px' color={buttonText3} as={BsFillPersonFill}/>
                             {listing_wallet_short}
                         </Text>
                     </a>
