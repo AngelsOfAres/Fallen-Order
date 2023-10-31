@@ -116,9 +116,7 @@ export default function MyFO() {
             <>
               <HStack className='w-full p-8' justifyContent='space-between'>
                   {userProfile ?
-                    <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Create Listing'} aria-label='Tooltip'>
-                      <div><CreateListing /></div>
-                    </Tooltip>
+                    <CreateListing />
                   :
                   <>
                     <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Create Profile!'} aria-label='Tooltip'>

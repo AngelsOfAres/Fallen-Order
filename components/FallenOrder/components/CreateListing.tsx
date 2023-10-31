@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Modal, ModalBody, ModalHeader, ModalOverlay, ModalContent, Text, HStack, VStack, useDisclosure, useColorModeValue, NumberInput, NumberInputField, Image, Flex, Box, Progress } from '@chakra-ui/react'
+import { Modal, ModalBody, ModalHeader, ModalOverlay, ModalContent, Text, HStack, VStack, useDisclosure, useColorModeValue, NumberInput, NumberInputField, Image, Flex, Box, Progress, Tooltip } from '@chakra-ui/react'
 import styles from '../../../styles/glow.module.css'
 import { FullGlowButton, IconGlowButton, IconGlowButton2 } from 'components/Buttons'
 import { useState, useEffect } from 'react'
@@ -62,7 +62,9 @@ export function CreateListing() {
 
     return (
       <>
-        <IconGlowButton2 icon={TbReportMoney} onClick={onOpen} />
+        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Create Listing'} aria-label='Tooltip'>
+          <div><IconGlowButton2 icon={TbReportMoney} onClick={onOpen} /></div>
+        </Tooltip>
         <Modal scrollBehavior={'outside'} size='xl' isCentered isOpen={isOpen} onClose={onClose}>
             <ModalOverlay backdropFilter='blur(10px)'/>
             <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
