@@ -251,3 +251,35 @@ export async function unfreezeAsset(wallet: any, assetID: any) {
     console.error(error.message)
   }
 }
+
+
+
+export async function getBVMShuffle1(wallet: any, txn: any) {
+  console.log(wallet, txn)
+  try {
+    const requestBody = {
+      wallet: wallet,
+      txn: txn
+    }
+
+    const response = await fetchDataFromBackend('bvm/shuffle1', requestBody, wallet)
+    return response
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export async function getBVMShuffle2(data: any, wallet: any) {
+  try {
+    const requestBody = {
+      shuffleToken: localStorage.getItem('bvmshuffle'),
+      data: data,
+      wallet: wallet
+    }
+
+    const response = await fetchDataFromBackend('bvm/shuffle2', requestBody, wallet)
+    return response
+  } catch (error) {
+    console.error(error)
+  }
+}

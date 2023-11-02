@@ -154,6 +154,7 @@ export default function MyFO() {
           setFinalImage(profile.mainImage)
           getFinalImage(profile.mainImage, profile.bgImage)
         }
+        setLoading(false)
       } catch (error) {
         console.error("Error fetching profile:", error)
       }
@@ -191,7 +192,6 @@ export default function MyFO() {
         .then(([availableToolsInfo, allFrozenInfo]) => {
           setToolList(availableToolsInfo)
           setFrozen(allFrozenInfo.reverse())
-          setLoading(false)
         })
         .catch((error) => {
           console.error('An error occurred:', error)
@@ -360,7 +360,7 @@ export default function MyFO() {
         :
         <>
             <Flex pt={6} flexDirection="row" flexWrap="wrap" justifyContent='center' gap='16px'>
-
+              {!loading ?
               <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={userProfile ? 'My Profile' : 'Create Profile!'} aria-label='Tooltip'>
                 <motion.div
                   animate={{ scale: userProfile && userProfile.drip_timer === 0 ? [1, 1.07, 1] : 1 }}
@@ -371,7 +371,7 @@ export default function MyFO() {
                   }}>
                   <IconGlowButton2 icon={userProfile ? CgProfile : PiUserCirclePlusFill} onClick={userProfile ? onOpen2 : onOpen1} />
                 </motion.div>
-              </Tooltip>
+              </Tooltip> : null}
               
               {frozen.length > 0 ? 
                 <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Melt Items'} aria-label='Tooltip'>

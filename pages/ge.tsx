@@ -36,6 +36,7 @@ export default function MyFO() {
   const { assetList } = useWalletBalance()
   const [popTitle, setPopTitle] = useState<any>('')
   const [ userProfile, setUserProfile ] = useState<any>(null)
+  const [ loading, setLoading ] = useState<boolean>(true)
   const [popMessage, setPopMessage] = useState<any>('')
   const [listings, setListings] = useState<any>(null)
   const [myListings, setMyListings] = useState<any>([])
@@ -69,11 +70,12 @@ export default function MyFO() {
       const storedAuthUser = localStorage.getItem('token_' + activeAddress)
       setAuthUser(storedAuthUser || null)
     }
-    if (!listings && !fetchListingsRun.current) {
+    if (!listings) {
       const allListings = await getListings()
       const myListings = allListings.filter((listing: any) => activeAddress === listing.wallet)
       setListings(allListings)
       setMyListings(myListings)
+      setLoading(false)
     }
   }, [activeAddress, listings, fetchListingsRun])
 
@@ -136,7 +138,7 @@ export default function MyFO() {
             : null}
             <Text mt={!listings ? '36px' : '0px'} mb='36px' className={`${gradientText} responsive-font`}>Grand Exchange</Text>
             
-            {listings ?
+            {listings && !loading ?
               <>
                 <Center px='24px' w='100%'>
                   <Tabs w='100%' maxW='1200px' isFitted size='xs' variant='enclosed' borderColor={buttonText3}>
