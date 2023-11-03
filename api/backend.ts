@@ -255,7 +255,6 @@ export async function unfreezeAsset(wallet: any, assetID: any) {
 
 
 export async function getBVMShuffle1(wallet: any, txn: any) {
-  console.log(wallet, txn)
   try {
     const requestBody = {
       wallet: wallet,
@@ -269,14 +268,14 @@ export async function getBVMShuffle1(wallet: any, txn: any) {
   }
 }
 
-export async function getBVMShuffle2(data: any, wallet: any) {
+export async function getBVMShuffle2(wallet: any, data: any) {
   try {
+    const shuffleToken = localStorage.getItem('bvmshuffle')
     const requestBody = {
-      shuffleToken: localStorage.getItem('bvmshuffle'),
-      data: data,
-      wallet: wallet
+      wallet: wallet,
+      shuffleToken: shuffleToken,
+      data: data
     }
-
     const response = await fetchDataFromBackend('bvm/shuffle2', requestBody, wallet)
     return response
   } catch (error) {

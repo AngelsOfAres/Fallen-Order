@@ -1,26 +1,29 @@
-import { Text, useColorModeValue, Box, VStack, Image, Flex, Progress, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, HStack, ModalFooter, Center } from '@chakra-ui/react'
+import { Text, useColorModeValue, Box, VStack, Image, Progress, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, HStack, Center } from '@chakra-ui/react'
 import { FullGlowButton } from 'components/Buttons'
 import React, { useState, useEffect } from 'react'
 import { algodClient, algodIndexer } from 'lib/algodClient'
 import styles from '../../styles/glow.module.css'
-import { getBVMShuffle1, getBVMShuffle2, getShuffle1, getShuffle2 } from 'api/backend'
+import { getBVMShuffle1, getBVMShuffle2 } from 'api/backend'
 import { useWallet } from '@txnlab/use-wallet'
 import Connect from 'components/MainTools/Connect'
 import algosdk from 'algosdk'
 import toast from 'react-hot-toast'
-import { motion, useAnimation } from 'framer-motion'
-import { CID } from 'multiformats/cid'
+import { motion } from 'framer-motion'
+import { getIpfsFromAddress } from './components/Tools/getIPFS'
+import createGifFromImages from './components/Tools/makeGIF'
 
 const BVMShuffle: React.FC = () => {
-  const { activeAddress, signTransactions, sendTransactions } = useWallet()
+  const { activeAddress, signTransactions } = useWallet()
   const xLightColor = useColorModeValue('orange.100','cyan.100')
   const lightColor = useColorModeValue('orange.300','cyan.300')
   const [loading, setLoading] = useState<boolean>(true)
   const [claiming, setClaiming] = useState<boolean>(false)
   const [av, setAv] = useState<any>([])
-  const [avImgs, setAvImgs] = useState<any>([])
+  const [avImgs, setAvImgs] = useState<any>(null)
+  const [gifDataUrl, setGifDataUrl] = useState<string | null>(null)
   const [chosenNFT, setChosenNFT] = useState<any>(0)
   const [chosenImage, setChosenImage] = useState<any>('')
+  const [chosenName, setChosenName] = useState<any>('')
   const [shuffleID, setShuffleID] = useState<any>('')
   const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
   const buttonText5 = useColorModeValue('yellow','cyan')
@@ -68,14 +71,11 @@ const BVMShuffle: React.FC = () => {
       const signedTransactions = await signTransactions([encodedTransaction])
 
       toast.loading('Sending transaction...', { id: 'txn', duration: Infinity })
+      
+      const { txId } = await algodClient.sendRawTransaction(signedTransactions).do()
 
-      const waitRoundsToConfirm = 4
-
-      const { id } = await sendTransactions(signedTransactions, waitRoundsToConfirm)
-
-      console.log(`Shuffle Successful! TX ID: ${id}`)
-      handleShuffle1(id)
-      setShuffleID(id)
+      handleShuffle1(txId)
+      setShuffleID(txId)
       toast.success('Shuffle Successful!', {
         id: 'txn',
         duration: 5000
@@ -87,7 +87,6 @@ const BVMShuffle: React.FC = () => {
   }
 
   const handleClaim = async () => {
-    setClaiming(true)
     try {
       if (!activeAddress) {
         throw new Error('Wallet Not Connected!')
@@ -119,19 +118,6 @@ const BVMShuffle: React.FC = () => {
 
       await handleSendNFT()
 
-      onOpen()
-      
-      localStorage.removeItem("bvmshuffle")
-
-      setClaiming(false)
-
-      console.log(`Successfully Claimed!`)
-
-      toast.success(`Shuffle Claim Successful!`, {
-        id: 'txn',
-        duration: 5000
-      })
-
     } catch (error) {
       console.error(error)
       toast.error('Oops! Opt In Failed!', { id: 'txn' })
@@ -151,55 +137,103 @@ const BVMShuffle: React.FC = () => {
             setAv(available_nfts)
 
             const randomFour = pickFourRandomEntries(available_nfts)
+            let images: any = []
             for (const random  of randomFour) {
               const assetInfo = await algodIndexer.lookupAssetByID(random).do()
-              console.log(assetInfo)
-
-              const multihashBuffer = algosdk.decodeAddress(assetInfo.asset.params.reserve).publicKey
+              const cid = getIpfsFromAddress(assetInfo.asset.params)
+              if (cid) {
+                const response = await fetch(`https://ipfs.algonode.xyz/ipfs/${cid}`)
+                if (!response.ok) {
+                  throw new Error(`Failed to fetch data from IPFS: ${response.status} ${response.statusText}`)
+                }
+                if (assetInfo.asset.params.url.includes('template')) {
+                  const textData = await response.text()
+                  images.push('https://ipfs.algonode.xyz/ipfs/' + JSON.parse(textData).image.substring(7))
+                } else {
+                  images.push('https://ipfs.algonode.xyz/ipfs/' + cid)
+                }
+              }
             }
-            
+            setAvImgs(images)
+            const createGif = () => {
+              createGifFromImages(images, (dataUrl) => {
+                if (dataUrl) {
+                  setGifDataUrl(dataUrl)
+                }
+              })
+            }
+            createGif()
+
         } catch (error: any) {
             console.log(error.message)
         } finally {
-            setLoading(false)
+          setLoading(false)
         }
     }
 
     async function handleSendNFT() {
+      setClaiming(true)
         try{
-            const data = await getBVMShuffle2([activeAddress, chosenNFT, shuffleID], activeAddress)
-            if (data && data.includes("Error")) {
+            const data = await getBVMShuffle2(activeAddress, [chosenNFT, shuffleID])
+            if (data && data.message) {
                 console.log(data)
+                onOpen()
+                localStorage.removeItem("bvmshuffle")
+          
+                toast.success(`Shuffle Claim Successful!`, {
+                  id: 'txn',
+                  duration: 5000
+                })
+            } else {
+              console.log(data)
             }
         } catch (error: any) {
             console.log(error.message)
         } finally {
-            setLoading(false)
+          setClaiming(false)
         }
     }
 
-    async function handleShuffle1(id: any) {
-            try{
-                const data = await getBVMShuffle1(activeAddress, id)
-                console.log(data)
-                if (data && data.token && data.chosen_nft) {
-                    localStorage.setItem("bvmshuffle", data.token)
-                    setChosenNFT(data.chosen_nft)
-                    const nftInfo = await algodClient.getAssetByID(data.chosen_nft).do()
-                    setChosenImage('https://cloudflare-ipfs.com/ipfs/' + nftInfo.params.url.substring(7))
-                }
-            } catch (error: any) {
-                console.log(error.message)
-            } finally {
-                setLoading(false)
-            }
-        }
+    async function handleClose() {
+      setChosenNFT(0)
+      setChosenName('')
+      setChosenImage('')
+      onClose()
+  }
 
-    const controls = useAnimation()
+    async function handleShuffle1(id: any) {
+      setClaiming(true)
+      try{
+          const data = await getBVMShuffle1(activeAddress, id)
+          if (data && data.token && data.chosen_nft) {
+              localStorage.setItem("bvmshuffle", data.token)
+              const assetInfo = await algodIndexer.lookupAssetByID(data.chosen_nft).do()
+              const cid = getIpfsFromAddress(assetInfo.asset.params)
+              if (cid) {
+                const response = await fetch(`https://ipfs.algonode.xyz/ipfs/${cid}`)
+                if (!response.ok) {
+                  throw new Error(`Failed to fetch data from IPFS: ${response.status} ${response.statusText}`)
+                }
+                if (assetInfo.asset.params.url.includes('template')) {
+                    const textData = await response.text()
+                    setChosenImage('https://ipfs.algonode.xyz/ipfs/' + JSON.parse(textData).image.substring(7))
+                } else {
+                    setChosenImage('https://ipfs.algonode.xyz/ipfs/' + cid)
+                }
+                setChosenNFT(data.chosen_nft)
+                setChosenName(assetInfo.asset.params.name)
+              }
+          }
+      } catch (error: any) {
+          console.log(error.message)
+      } finally {
+        setClaiming(false)
+      }
+  }
 
     useEffect(() => {
-        getAvFO()
-        }, [loading])
+      getAvFO()
+    }, [loading])
 
   return (
     <>
@@ -210,21 +244,24 @@ const BVMShuffle: React.FC = () => {
             <>
                 {!chosenNFT ?
                 <>
-                    <Text mt='24px' textColor={lightColor} className='text-2xl'>Available:</Text>
-                    <Text textColor={xLightColor} className='text-lg whitespace-nowrap text-center'><strong className='text-xl'>{av.length}</strong>/{totalCount}</Text>
-                    <Image className={boxGlow} my='24px' boxSize='200px' borderRadius='12px' alt='Fallen Order - SHUFFLE!' src='/shuffleChars.gif' />
-                    <Text mt='-24px' mb='12px' textColor={lightColor} className='text-lg'>Cost: <strong className='text-xl'>{shuffle_cost}A</strong></Text>
-                    <FullGlowButton text='SHUFFLE!' onClick={() => shufflePayment(shuffle_cost)} />
+                  <HStack mt='24px'>
+                      <Text textColor={lightColor} className='text-xl'>Available:</Text>
+                      <Text textColor={xLightColor} className='text-xl whitespace-nowrap text-center'><strong className='text-2xl'>{av.length}</strong>/{totalCount}</Text>
+                    </HStack>
+                      <Image className={boxGlow} my='24px' boxSize='200px' borderRadius='12px' alt='Fallen Order - SHUFFLE!' src={gifDataUrl ? gifDataUrl : avImgs[0]} />
+                    <Text mt='-12px' mb='12px' textColor={lightColor} className='text-lg'>Cost: <strong className='text-xl'>{shuffle_cost}A</strong></Text>
+                    <FullGlowButton text={loading ? 'SHUFFLING...' : 'SHUFFLE!'} onClick={() => shufflePayment(shuffle_cost)} disabled={claiming} />
                 </>
                 :
                 <>
                     <motion.div
                     initial={{ opacity: 0, scale: 0 }}
-                    animate={controls}
+                    animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3 }}
                     >
-                        <Image mb='24px' className={boxGlow} boxSize='240px' borderRadius='16px' alt='Shuffled NFT' src={chosenImage} />
-                        <Center><FullGlowButton text={claiming? 'Claiming...' : 'CLAIM!'} onClick={handleClaim} /></Center>
+                        <Text mt='24px' textAlign='center' className={gradientText} fontSize='20px'>{chosenName}</Text>
+                        <Image my='24px' className={boxGlow} boxSize='240px' borderRadius='16px' alt='Shuffled NFT' src={chosenImage} />
+                        <Center><FullGlowButton text={claiming ? 'Claiming...' : 'CLAIM!'} onClick={handleClaim} disabled={claiming}/></Center>
                     </motion.div>
                 </>
                 }
@@ -246,13 +283,14 @@ const BVMShuffle: React.FC = () => {
     <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpen} onClose={onClose}>
     <ModalOverlay backdropFilter='blur(10px)'/>
     <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
-        <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Congratulations</ModalHeader>
+        <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Congratulations!</ModalHeader>
         <ModalBody>
-        <VStack m={1} alignItems='center' justifyContent='center' spacing='10px'>
-            <Text fontSize='14px' textAlign='center' textColor={buttonText4}>You shuffled {chosenNFT}!</Text>
-            <Image my='24px' boxSize='200px' borderRadius='16px' alt='Fallen Order' src={chosenImage} />
+        <VStack m={2} alignItems='center' justifyContent='center' spacing='10px'>
+            <Text fontSize='14px' textAlign='center' textColor={buttonText4}>You shuffled...</Text>
+            <Text fontSize='20px' textAlign='center' className={gradientText}>{chosenName}</Text>
+            <a href={'https://www.nftexplorer.app/asset/' + chosenNFT} target='_blank' rel='noreferrer'><Image className={boxGlow} mb='24px' boxSize='200px' borderRadius='16px' alt='Fallen Order' src={chosenImage} /></a>
             <a href='https://discord.gg/DPUutJfgzq' target='_blank' rel='noreferrer'><FullGlowButton text='Join Discord!' /></a>
-            <FullGlowButton text='X' onClick={onClose} />
+            <FullGlowButton text='X' onClick={handleClose} />
         </VStack>
         </ModalBody>
     </ModalContent>

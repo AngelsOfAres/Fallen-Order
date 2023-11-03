@@ -21,7 +21,7 @@ export default function ShuffleBVM() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <Text mt='48px' className={`${gradientText} responsive-font`}>BVM SHUFFLE!</Text>
+      <Text mt='36px' className={`${gradientText} responsive-font`}>BVM SHUFFLE!</Text>
         {activeAddress ? 
           <>
             <Center>
