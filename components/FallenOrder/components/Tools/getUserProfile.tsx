@@ -215,7 +215,7 @@ export async function getListings(): Promise<any> {
               const listingData = listings.split('/').slice(1).map(async (listing: any) => {                
                 const listingID = parseInt(listing.split(',')[0])
                 const assetID = parseInt(listing.split(',')[1])
-                const price = listing.split(',')[2]
+                const price = parseFloat(listing.split(',')[2])
                 const expAccepted = parseInt(listing.split(',')[3])
                 const assetInfo = await algodIndexer.lookupAssetByID(assetID).do()
                 const assetName = assetInfo.asset.params['unit-name']
