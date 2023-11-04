@@ -81,7 +81,7 @@ export function MyListingCard(props: any) {
                     <Text fontSize='18px' className={gradientText}>{name}</Text>
                     <HStack textAlign='center' fontFamily='Orbitron' textColor={buttonText4} spacing='3px'>
                         <Tooltip py={1} px={2} borderWidth='1px' borderRadius='xl' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='10px' fontFamily='Orbitron' textAlign='center' hasArrow label={'$EXP Price: ' + (price*100).toFixed(0)} aria-label='Tooltip'>
-                            <Text textColor={buttonText4} fontSize='16px'>{price.replace(/(\.0*|0*)$/, '')}</Text>
+                            <Text textColor={buttonText4} fontSize='16px'>{price}</Text>
                         </Tooltip>
                         <Image boxSize='12px' alt={'Algorand'} src={'/algologo.png'} />
                         <div className='ml-4'><IconGlowButton icon={GiCycle}  onClick={onOpen} disabled={loading} /></div>

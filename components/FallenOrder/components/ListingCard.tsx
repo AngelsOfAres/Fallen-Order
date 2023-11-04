@@ -180,7 +180,7 @@ export function ListingCard(props: any) {
                 </Tooltip>
                 <HStack my={1} textAlign='center' fontFamily='Orbitron' textColor={buttonText4} spacing='3px'>
                     <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText5} fontSize='10px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Total including Fees + Royalties'} aria-label='Tooltip'>
-                        <Text className={gradientText} fontSize='16px'>{price.replace(/(\.0*|0*)$/, '')}</Text>
+                        <Text className={gradientText} fontSize='16px'>{price}</Text>
                     </Tooltip>
                     <Image boxSize='14px' alt={'Algorand'} src={'/algologo.png'} />
                 </HStack>
