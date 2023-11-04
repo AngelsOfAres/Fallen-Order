@@ -12,7 +12,7 @@ import { motion } from 'framer-motion'
 import { getIpfsFromAddress } from './components/Tools/getIPFS'
 import createGifFromImages from './components/Tools/makeGIF'
 
-const BVMShuffle: React.FC = () => {
+const TestShuffle: React.FC = () => {
   const { activeAddress, signTransactions } = useWallet()
   const xLightColor = useColorModeValue('orange.100','cyan.100')
   const lightColor = useColorModeValue('orange.300','cyan.300')
@@ -268,4 +268,4 @@ const BVMShuffle: React.FC = () => {
   )
 }
 
-export default BVMShuffle
+export default TestShuffle

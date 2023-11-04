@@ -6,7 +6,7 @@ import Footer from 'components/Footer'
 import React from 'react'
 import { useWallet } from '@txnlab/use-wallet'
 import Connect from 'components/MainTools/Connect'
-import BVMShuffle from 'components/FallenOrder/BVMShuffle'
+import TestShuffle from 'components/FallenOrder/TestShuffle'
 
 export default function ShuffleBVM() {
   const gradientText = useColorModeValue(styles2.textAnimatedGlowL, styles2.textAnimatedGlowD)
@@ -15,22 +15,22 @@ export default function ShuffleBVM() {
   return (
     <>
       <Head>
-        <title>Fallen Order - BVM Shuffle!</title>
+        <title>Fallen Order - Test Shuffle!</title>
         <meta name="description" content="Developed by Angels Of Ares" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <Text mt='36px' className={`${gradientText} responsive-font`}>BVM SHUFFLE!</Text>
+      <Text mt='36px' className={`${gradientText} responsive-font`}>TEST SHUFFLE!</Text>
         {activeAddress ? 
           <>
             <Center>
-              <BVMShuffle />
+              <TestShuffle />
             </Center>
           </>
           :
           <>
-            <Text my='40px' className={`${gradientText} responsive-font`}>Connect Wallet</Text>
+            <Text my='40px' fontSize='18px' className={gradientText}>Connect Wallet</Text>
             <Center><Connect /></Center>
           </>
         }
