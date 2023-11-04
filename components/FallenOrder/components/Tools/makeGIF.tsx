@@ -1,3 +1,4 @@
+// @ts-ignore
 import gifshot from 'gifshot'
 
 function createGifFromImages(imageUrls: string[], callback: (gifDataUrl: string | null) => void) {
