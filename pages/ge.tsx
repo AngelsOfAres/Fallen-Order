@@ -77,7 +77,7 @@ export default function MyFO() {
       setMyListings(myListings)
       setLoading(false)
     }
-  }, [activeAddress, listings, fetchListingsRun])
+  }, [activeAddress, listings])
 
   useEffect(() => {
     if (!fetchListingsRun.current) {
