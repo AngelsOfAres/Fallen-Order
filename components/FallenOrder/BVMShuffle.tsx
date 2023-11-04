@@ -36,6 +36,39 @@ const BVMShuffle: React.FC = () => {
   const shuffleEscrow = 'GCMHWUCQM75DQCEOV5UVEMR7Z2LYJERHLOKI355BNNNTCIHSASHAAFUO7I'
   const totalCount = 1000
 
+  const sendOptIn = async () => {
+    try {      
+        if (!activeAddress) {
+          throw new Error('Wallet Not Connected!')
+        }
+        const suggestedParams = await algodClient.getTransactionParams().do()
+        suggestedParams.fee = 1000
+        suggestedParams.flatFee = true
+        const note = Uint8Array.from('Fallen Order - SHUFFLE!\n\nSuccessfully Opted In!'.split("").map(x => x.charCodeAt(0)))
+    
+        const txn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+                    from: activeAddress,
+                    to: activeAddress,
+                    amount: 0,
+                    assetIndex: chosenNFT,
+                    suggestedParams,
+                    note,
+                    })
+    
+        const encodedTransaction = algosdk.encodeUnsignedTransaction(txn)
+    
+        const signedTransaction = await signTransactions([encodedTransaction])
+    
+        const { txID } = await algodClient.sendRawTransaction(signedTransaction).do()
+
+        return txID
+
+    } catch (error) {
+      console.error(error)
+      return null
+    }
+  }
+
   function pickFourRandomEntries(list: any) {
     if (list.length < 4) {
       throw new Error("List must contain at least 4 entries.")
@@ -76,10 +109,6 @@ const BVMShuffle: React.FC = () => {
 
       handleShuffle1(txId)
       setShuffleID(txId)
-      toast.success('Shuffle Successful!', {
-        id: 'txn',
-        duration: 5000
-      })
     } catch (error) {
       console.error(error)
       toast.error('Oops! Shuffle Payment Failed!', { id: 'txn' })
@@ -87,6 +116,7 @@ const BVMShuffle: React.FC = () => {
   }
 
   const handleClaim = async () => {
+    await sendOptIn()
     try {
       if (!activeAddress) {
         throw new Error('Wallet Not Connected!')
