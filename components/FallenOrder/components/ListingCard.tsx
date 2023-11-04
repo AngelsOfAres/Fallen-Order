@@ -87,10 +87,8 @@ export function ListingCard(props: any) {
                         for (const txn of data.unsignedGroup) {
                             finalGroup.push(new Uint8Array(Object.values(txn)))
                         }
-                        console.log(finalGroup)
                         try {
                             const signedTransactions = await signTransactions(finalGroup)
-                            console.log(signedTransactions)
                             
                             toast.loading(`Purchasing ${name}...`, { id: 'txn', duration: Infinity })
 

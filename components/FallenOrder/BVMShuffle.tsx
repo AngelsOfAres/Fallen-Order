@@ -36,39 +36,6 @@ const BVMShuffle: React.FC = () => {
   const shuffleEscrow = 'GCMHWUCQM75DQCEOV5UVEMR7Z2LYJERHLOKI355BNNNTCIHSASHAAFUO7I'
   const totalCount = 1000
 
-  const sendOptIn = async () => {
-    try {      
-        if (!activeAddress) {
-          throw new Error('Wallet Not Connected!')
-        }
-        const suggestedParams = await algodClient.getTransactionParams().do()
-        suggestedParams.fee = 1000
-        suggestedParams.flatFee = true
-        const note = Uint8Array.from('Fallen Order - SHUFFLE!\n\nSuccessfully Opted In!'.split("").map(x => x.charCodeAt(0)))
-    
-        const txn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-                    from: activeAddress,
-                    to: activeAddress,
-                    amount: 0,
-                    assetIndex: chosenNFT,
-                    suggestedParams,
-                    note,
-                    })
-    
-        const encodedTransaction = algosdk.encodeUnsignedTransaction(txn)
-    
-        const signedTransaction = await signTransactions([encodedTransaction])
-    
-        const { txID } = await algodClient.sendRawTransaction(signedTransaction).do()
-
-        return txID
-
-    } catch (error) {
-      console.error(error)
-      return null
-    }
-  }
-
   function pickFourRandomEntries(list: any) {
     if (list.length < 4) {
       throw new Error("List must contain at least 4 entries.")
@@ -101,119 +68,90 @@ const BVMShuffle: React.FC = () => {
 
       toast.loading('Awaiting Signature...', { id: 'txn', duration: Infinity })
 
-      const signedTransactions = await signTransactions([encodedTransaction])
+      const sTxn = await signTransactions([encodedTransaction])
 
-      toast.loading('Sending transaction...', { id: 'txn', duration: Infinity })
-      
-      const { txId } = await algodClient.sendRawTransaction(signedTransactions).do()
-
-      handleShuffle1(txId)
-      setShuffleID(txId)
+      handleShuffle1(sTxn[0])
     } catch (error) {
       console.error(error)
       toast.error('Oops! Shuffle Payment Failed!', { id: 'txn' })
     }
   }
-
-  const handleClaim = async () => {
-    await sendOptIn()
-    try {
-      if (!activeAddress) {
-        throw new Error('Wallet Not Connected!')
-      }
-  
-      const suggestedParams = await algodClient.getTransactionParams().do()
-      suggestedParams.fee = 1000
-      suggestedParams.flatFee = true
-      const note = Uint8Array.from('Fallen Order - SHUFFLE!\n\nSuccessfully Opted In!'.split("").map(x => x.charCodeAt(0)))
-  
-      const txn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-                  from: activeAddress,
-                  to: activeAddress,
-                  amount: 0,
-                  assetIndex: chosenNFT,
-                  suggestedParams,
-                  note,
-                })
-
-      const encodedTransaction = algosdk.encodeUnsignedTransaction(txn)
-
-      toast.loading('Awaiting Signature...', { id: 'txn', duration: Infinity })
-
-      const signedTransaction = await signTransactions([encodedTransaction])
-
-      toast.loading('Claiming Shuffle...', { id: 'txn', duration: Infinity })
-
-      algodClient.sendRawTransaction(signedTransaction).do()
-
-      await handleSendNFT()
-
-    } catch (error) {
-      console.error(error)
-      toast.error('Oops! Opt In Failed!', { id: 'txn' })
-    }
-  }
   
   async function getAvFO() {
-        try{
-            const shuffle_info = await algodIndexer.lookupAccountAssets(shuffleEscrow).do()
-            let available_nfts = []
-            for (const item of shuffle_info.assets) {
-                const assetID = item['asset-id']
-                if (item.amount > 0) {
-                    available_nfts.push(assetID)
-                }
+    try{
+        const shuffle_info = await algodIndexer.lookupAccountAssets(shuffleEscrow).do()
+        let available_nfts = []
+        for (const item of shuffle_info.assets) {
+            const assetID = item['asset-id']
+            if (item.amount > 0) {
+                available_nfts.push(assetID)
             }
-            setAv(available_nfts)
-
-            const randomFour = pickFourRandomEntries(available_nfts)
-            let images: any = []
-            for (const random  of randomFour) {
-              const assetInfo = await algodIndexer.lookupAssetByID(random).do()
-              const cid = getIpfsFromAddress(assetInfo.asset.params)
-              if (cid) {
-                const response = await fetch(`https://ipfs.algonode.xyz/ipfs/${cid}`)
-                if (!response.ok) {
-                  throw new Error(`Failed to fetch data from IPFS: ${response.status} ${response.statusText}`)
-                }
-                if (assetInfo.asset.params.url.includes('template')) {
-                  const textData = await response.text()
-                  images.push('https://ipfs.algonode.xyz/ipfs/' + JSON.parse(textData).image.substring(7))
-                } else {
-                  images.push('https://ipfs.algonode.xyz/ipfs/' + cid)
-                }
-              }
-            }
-            setAvImgs(images)
-            const createGif = () => {
-              createGifFromImages(images, (dataUrl) => {
-                if (dataUrl) {
-                  setGifDataUrl(dataUrl)
-                }
-              })
-            }
-            createGif()
-
-        } catch (error: any) {
-            console.log(error.message)
-        } finally {
-          setLoading(false)
         }
+        setAv(available_nfts)
+
+        const randomFour = pickFourRandomEntries(available_nfts)
+        let images: any = []
+        for (const random  of randomFour) {
+          const assetInfo = await algodIndexer.lookupAssetByID(random).do()
+          const cid = getIpfsFromAddress(assetInfo.asset.params)
+          if (cid) {
+            const response = await fetch(`https://ipfs.algonode.xyz/ipfs/${cid}`)
+            if (!response.ok) {
+              throw new Error(`Failed to fetch data from IPFS: ${response.status} ${response.statusText}`)
+            }
+            if (assetInfo.asset.params.url.includes('template')) {
+              const textData = await response.text()
+              images.push('https://ipfs.algonode.xyz/ipfs/' + JSON.parse(textData).image.substring(7))
+            } else {
+              images.push('https://ipfs.algonode.xyz/ipfs/' + cid)
+            }
+          }
+        }
+        setAvImgs(images)
+        const createGif = () => {
+          createGifFromImages(images, (dataUrl) => {
+            if (dataUrl) {
+              setGifDataUrl(dataUrl)
+            }
+          })
+        }
+        createGif()
+
+    } catch (error: any) {
+        console.log(error.message)
+    } finally {
+      setLoading(false)
     }
+  }
 
     async function handleSendNFT() {
       setClaiming(true)
         try{
             const data = await getBVMShuffle2(activeAddress, [chosenNFT, shuffleID])
-            if (data && data.message) {
+            if (data && data.message && data.unsignedGroup) {
                 console.log(data)
-                onOpen()
-                localStorage.removeItem("bvmshuffle")
-          
-                toast.success(`Shuffle Claim Successful!`, {
-                  id: 'txn',
-                  duration: 5000
-                })
+                let finalGroup = []
+                for (const txn of data.unsignedGroup) {
+                    finalGroup.push(new Uint8Array(Object.values(txn)))
+                }
+                try {
+                  toast.loading(`Claiming NFT...`, { id: 'txn', duration: Infinity })
+
+                  const signedTransactions = await signTransactions(finalGroup)
+
+                  await algodClient.sendRawTransaction(signedTransactions).do()
+
+                  onOpen()
+                  getAvFO()
+                  localStorage.removeItem("bvmshuffle")
+            
+                  toast.success(`Shuffle Claim Successful!`, {
+                    id: 'txn',
+                    duration: 5000
+                  })
+                } catch (error: any) {
+                  console.log(error)
+                }
             } else {
               console.log(data)
             }
@@ -231,10 +169,10 @@ const BVMShuffle: React.FC = () => {
       onClose()
   }
 
-    async function handleShuffle1(id: any) {
+    async function handleShuffle1(stxn: any) {
       setClaiming(true)
       try{
-          const data = await getBVMShuffle1(activeAddress, id)
+          const data = await getBVMShuffle1(activeAddress, JSON.stringify(stxn))
           if (data && data.token && data.chosen_nft) {
               localStorage.setItem("bvmshuffle", data.token)
               const assetInfo = await algodIndexer.lookupAssetByID(data.chosen_nft).do()
@@ -250,6 +188,7 @@ const BVMShuffle: React.FC = () => {
                 } else {
                     setChosenImage('https://ipfs.algonode.xyz/ipfs/' + cid)
                 }
+                setShuffleID(data.txId)
                 setChosenNFT(data.chosen_nft)
                 setChosenName(assetInfo.asset.params.name)
               }
@@ -263,7 +202,7 @@ const BVMShuffle: React.FC = () => {
 
     useEffect(() => {
       getAvFO()
-    }, [loading])
+    }, [loading, claiming, isOpen])
 
   return (
     <>
@@ -291,7 +230,7 @@ const BVMShuffle: React.FC = () => {
                     >
                         <Text mt='24px' textAlign='center' className={gradientText} fontSize='20px'>{chosenName}</Text>
                         <Image my='24px' className={boxGlow} boxSize='240px' borderRadius='16px' alt='Shuffled NFT' src={chosenImage} />
-                        <Center><FullGlowButton text={claiming ? 'Claiming...' : 'CLAIM!'} onClick={handleClaim} disabled={claiming}/></Center>
+                        <Center><FullGlowButton text={claiming ? 'Claiming...' : 'CLAIM!'} onClick={handleSendNFT} disabled={claiming}/></Center>
                     </motion.div>
                 </>
                 }
