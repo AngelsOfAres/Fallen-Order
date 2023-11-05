@@ -37,6 +37,7 @@ const TestShuffle: React.FC = () => {
   const shuffle_cost = 0.1
   const shuffleEscrow = 'GCMHWUCQM75DQCEOV5UVEMR7Z2LYJERHLOKI355BNNNTCIHSASHAAFUO7I'
   const totalCount = 1000
+  const claimToken = localStorage.getItem("bvmshuffle")
 
   function pickFourRandomEntries(list: any) {
     if (list.length < 4) {
@@ -129,20 +130,19 @@ const TestShuffle: React.FC = () => {
     async function handleSendNFT() {
       setClaiming(true)
         try{
-            const data = await getBVMShuffle2(activeAddress, [chosenNFT, shuffleID])
+            toast.loading(`Claiming NFT...`, { id: 'txn', duration: Infinity })
+            const data = await getBVMShuffle2(activeAddress)
             if (data && data.message && data.unsignedGroup) {
                 console.log(data)
                 let finalGroup = []
                 for (const txn of data.unsignedGroup) {
                     finalGroup.push(new Uint8Array(Object.values(txn)))
                 }
+
+                const signedTransactions = await signTransactions(finalGroup)
+
                 try {
-                  toast.loading(`Claiming NFT...`, { id: 'txn', duration: Infinity })
-
-                  const signedTransactions = await signTransactions(finalGroup)
-
                   await algodClient.sendRawTransaction(signedTransactions).do()
-
                   onOpen()
                   getAvFO()
                   localStorage.removeItem("bvmshuffle")
@@ -228,6 +228,14 @@ const TestShuffle: React.FC = () => {
         <>
             {activeAddress ?
             <>
+            {claimToken && !chosenNFT ?
+              <>
+                <Text mt='24px' textAlign='center' textColor={buttonText4} fontSize='20px'>Seems You Missed Something...</Text>
+                <Text mb='24px' textAlign='center' textColor={buttonText4} fontSize='20px'>Click To Claim!</Text>
+                <Center><FullGlowButton text={claiming ? 'Claiming...' : 'CLAIM!'} onClick={handleSendNFT} disabled={claiming}/></Center>
+              </>
+            :
+              <>
                 {!chosenNFT ?
                 <>
                   <HStack mt='24px'>
@@ -262,6 +270,8 @@ const TestShuffle: React.FC = () => {
                     </motion.div>
                 </>
                 }
+                </>
+              }
             </>
             :
             <Connect />

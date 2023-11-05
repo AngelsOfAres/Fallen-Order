@@ -269,13 +269,12 @@ export async function getBVMShuffle1(wallet: any, txn: any, amount: any) {
   }
 }
 
-export async function getBVMShuffle2(wallet: any, data: any) {
+export async function getBVMShuffle2(wallet: any) {
   try {
     const shuffleToken = localStorage.getItem('bvmshuffle')
     const requestBody = {
       wallet: wallet,
-      shuffleToken: shuffleToken,
-      data: data
+      shuffleToken: shuffleToken
     }
     const response = await fetchDataFromBackend('bvm/shuffle2', requestBody, wallet)
     return response
