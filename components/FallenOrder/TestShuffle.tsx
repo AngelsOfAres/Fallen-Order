@@ -1,5 +1,5 @@
-import { Text, useColorModeValue, Box, VStack, Image, Progress, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, HStack, Center } from '@chakra-ui/react'
-import { FullGlowButton } from 'components/Buttons'
+import { Text, useColorModeValue, Box, VStack, Image, Progress, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, HStack, Center, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Tooltip } from '@chakra-ui/react'
+import { FullGlowButton, IconGlowButton2 } from 'components/Buttons'
 import React, { useState, useEffect } from 'react'
 import { algodClient, algodIndexer } from 'lib/algodClient'
 import styles from '../../styles/glow.module.css'
@@ -11,6 +11,7 @@ import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { getIpfsFromAddress } from './components/Tools/getIPFS'
 import createGifFromImages from './components/Tools/makeGIF'
+import { GiRollingDices } from 'react-icons/gi'
 
 const TestShuffle: React.FC = () => {
   const { activeAddress, signTransactions } = useWallet()
@@ -20,10 +21,11 @@ const TestShuffle: React.FC = () => {
   const [claiming, setClaiming] = useState<boolean>(false)
   const [av, setAv] = useState<any>([])
   const [avImgs, setAvImgs] = useState<any>(null)
+  const [amount, setAmount] = useState<number>(1)
   const [gifDataUrl, setGifDataUrl] = useState<string | null>(null)
-  const [chosenNFT, setChosenNFT] = useState<any>(0)
-  const [chosenImage, setChosenImage] = useState<any>('')
-  const [chosenName, setChosenName] = useState<any>('')
+  const [chosenNFT, setChosenNFT] = useState<any>(null)
+  const [chosenImage, setChosenImage] = useState<any>(null)
+  const [chosenName, setChosenName] = useState<any>(null)
   const [shuffleID, setShuffleID] = useState<any>('')
   const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
   const buttonText5 = useColorModeValue('yellow','cyan')
@@ -59,7 +61,7 @@ const TestShuffle: React.FC = () => {
       const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
         from: activeAddress,
         to: shuffleEscrow,
-        amount: amt*1000000,
+        amount: amt*1000000*amount,
         suggestedParams,
         note
       })
@@ -172,26 +174,41 @@ const TestShuffle: React.FC = () => {
     async function handleShuffle1(stxn: any) {
       setClaiming(true)
       try{
-          const data = await getBVMShuffle1(activeAddress, JSON.stringify(stxn))
-          if (data && data.token && data.chosen_nft) {
+          const data = await getBVMShuffle1(activeAddress, JSON.stringify(stxn), amount)
+          if (data && data.token && data.chosen_nfts) {
               localStorage.setItem("bvmshuffle", data.token)
-              const assetInfo = await algodIndexer.lookupAssetByID(data.chosen_nft).do()
-              const cid = getIpfsFromAddress(assetInfo.asset.params)
-              if (cid) {
-                const response = await fetch(`https://ipfs.algonode.xyz/ipfs/${cid}`)
-                if (!response.ok) {
-                  throw new Error(`Failed to fetch data from IPFS: ${response.status} ${response.statusText}`)
+              let images: any = []
+              let names: any = ''
+              for (const choice of data.chosen_nfts) {
+                const assetInfo = await algodIndexer.lookupAssetByID(choice).do()
+                const cid = getIpfsFromAddress(assetInfo.asset.params)
+                if (cid) {
+                  const response = await fetch(`https://ipfs.algonode.xyz/ipfs/${cid}`)
+                  if (!response.ok) {
+                    throw new Error(`Failed to fetch data from IPFS: ${response.status} ${response.statusText}`)
+                  }
+                  if (assetInfo.asset.params.url.includes('template')) {
+                      const textData = await response.text()
+                      images.push('https://ipfs.algonode.xyz/ipfs/' + JSON.parse(textData).image.substring(7))
+                  } else {
+                      images.push('https://ipfs.algonode.xyz/ipfs/' + cid)
+                  }
                 }
-                if (assetInfo.asset.params.url.includes('template')) {
-                    const textData = await response.text()
-                    setChosenImage('https://ipfs.algonode.xyz/ipfs/' + JSON.parse(textData).image.substring(7))
-                } else {
-                    setChosenImage('https://ipfs.algonode.xyz/ipfs/' + cid)
-                }
-                setShuffleID(data.txId)
-                setChosenNFT(data.chosen_nft)
-                setChosenName(assetInfo.asset.params.name)
+                names += assetInfo.asset.params.name + '\n'
               }
+              setShuffleID(data.txId)
+              setChosenNFT(data.chosen_nfts)
+
+              const creatChosenGif = () => {
+                createGifFromImages(images, (dataUrl) => {
+                  if (dataUrl) {
+                    setChosenImage(dataUrl)
+                  }
+                })
+              }
+              creatChosenGif()
+
+              setChosenName(names)
           }
       } catch (error: any) {
           console.log(error.message)
@@ -219,7 +236,18 @@ const TestShuffle: React.FC = () => {
                     </HStack>
                       <Image className={boxGlow} my='24px' boxSize='200px' borderRadius='12px' alt='Fallen Order - SHUFFLE!' src={gifDataUrl ? gifDataUrl : avImgs[0]} />
                     <Text mt='-12px' mb='12px' textColor={lightColor} className='text-lg'>Cost: <strong className='text-xl'>{shuffle_cost}A</strong></Text>
-                    <FullGlowButton text={loading ? 'SHUFFLING...' : 'SHUFFLE!'} onClick={() => shufflePayment(shuffle_cost)} disabled={claiming} />
+                    <HStack mb={5} spacing='12px'>
+                      <NumberInput textAlign='center' w='50px' min={0} max={6} value={amount} onChange={(valueString) => setAmount(parseInt(valueString))} isInvalid={amount <= 0 || amount > 6}>
+                      <NumberInputField _hover={{ bgColor: 'black' }} _focus={{ borderColor: buttonText3 }} textColor={xLightColor} borderColor={buttonText3} className={`block rounded-none rounded-l-md bg-black sm:text-sm`}/>
+                      <NumberInputStepper>
+                          <NumberIncrementStepper _hover={{ textColor: buttonText3 }} textColor={lightColor} borderColor={buttonText3}/>
+                          <NumberDecrementStepper _hover={{ textColor: buttonText3 }} textColor={lightColor} borderColor={buttonText3}/>
+                      </NumberInputStepper>
+                      </NumberInput>
+                      <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={`${amount}X SHUFFLE!`} aria-label='Tooltip'>
+                        <div><IconGlowButton2 icon={GiRollingDices} onClick={() => shufflePayment(shuffle_cost)} disabled={claiming} /></div>
+                      </Tooltip>
+                    </HStack>
                 </>
                 :
                 <>
@@ -229,7 +257,7 @@ const TestShuffle: React.FC = () => {
                     transition={{ duration: 0.3 }}
                     >
                         <Text mt='24px' textAlign='center' className={gradientText} fontSize='20px'>{chosenName}</Text>
-                        <Image my='24px' className={boxGlow} boxSize='240px' borderRadius='16px' alt='Shuffled NFT' src={chosenImage} />
+                        <Center><Image my='24px' className={boxGlow} boxSize='240px' borderRadius='16px' alt='Shuffled NFTs' src={chosenImage} /></Center>
                         <Center><FullGlowButton text={claiming ? 'Claiming...' : 'CLAIM!'} onClick={handleSendNFT} disabled={claiming}/></Center>
                     </motion.div>
                 </>

@@ -254,11 +254,12 @@ export async function unfreezeAsset(wallet: any, assetID: any) {
 
 
 
-export async function getBVMShuffle1(wallet: any, txn: any) {
+export async function getBVMShuffle1(wallet: any, txn: any, amount: any) {
   try {
     const requestBody = {
       wallet: wallet,
-      txn: txn
+      txn: txn,
+      amount: amount
     }
 
     const response = await fetchDataFromBackend('bvm/shuffle1', requestBody, wallet)
