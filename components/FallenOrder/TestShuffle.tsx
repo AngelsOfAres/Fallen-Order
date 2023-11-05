@@ -293,11 +293,22 @@ const TestShuffle: React.FC = () => {
         <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Congratulations!</ModalHeader>
         <ModalBody>
         <VStack m={2} alignItems='center' justifyContent='center' spacing='10px'>
-            <Text fontSize='14px' textAlign='center' textColor={buttonText4}>You shuffled...</Text>
-            <Text fontSize='20px' textAlign='center' className={gradientText}>{chosenName}</Text>
-            <a href={'https://www.nftexplorer.app/asset/' + chosenNFT} target='_blank' rel='noreferrer'><Image className={boxGlow} mb='24px' boxSize='200px' borderRadius='16px' alt='Fallen Order' src={chosenImage} /></a>
-            <a href='https://discord.gg/DPUutJfgzq' target='_blank' rel='noreferrer'><FullGlowButton text='Join Discord!' /></a>
-            <FullGlowButton text='X' onClick={handleClose} />
+          {!chosenImage ?
+            <>
+              <Text fontSize='14px' textAlign='center' textColor={buttonText4}>You shuffled...</Text>
+              <Text fontSize='20px' textAlign='center' className={gradientText}>{chosenName}</Text>
+              <a href={'https://www.nftexplorer.app/asset/' + chosenNFT} target='_blank' rel='noreferrer'><Image className={boxGlow} mb='24px' boxSize='200px' borderRadius='16px' alt='Fallen Order' src={chosenImage} /></a>
+              <a href='https://discord.gg/DPUutJfgzq' target='_blank' rel='noreferrer'><FullGlowButton text='Join Discord!' /></a>
+              <FullGlowButton text='X' onClick={handleClose} />
+            </>
+            :
+            <>
+              <Text fontSize='14px' textAlign='center' textColor={buttonText4}>Shuffle Claimed</Text>
+              <a href={'https://www.nftexplorer.app/asset/' + chosenNFT} target='_blank' rel='noreferrer'><Image className={boxGlow} mb='24px' boxSize='200px' borderRadius='16px' alt='Fallen Order' src={chosenImage} /></a>
+              <a href='https://discord.gg/DPUutJfgzq' target='_blank' rel='noreferrer'><FullGlowButton text='Join Discord!' /></a>
+              <FullGlowButton text='X' onClick={handleClose} />
+            </>
+          }
         </VStack>
         </ModalBody>
     </ModalContent>
