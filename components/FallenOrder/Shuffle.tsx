@@ -1,30 +1,34 @@
-import { Text, useColorModeValue, Box, VStack, Image, Flex, Progress, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, HStack, ModalFooter, Center } from '@chakra-ui/react'
-import { FullGlowButton } from 'components/Buttons'
+import { Text, useColorModeValue, Box, VStack, Image, Progress, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, HStack, Center, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Tooltip } from '@chakra-ui/react'
+import { FullGlowButton, IconGlowButton2 } from 'components/Buttons'
 import React, { useState, useEffect } from 'react'
 import { algodClient, algodIndexer } from 'lib/algodClient'
 import styles from '../../styles/glow.module.css'
 import { getShuffle1, getShuffle2 } from 'api/backend'
 import { useWallet } from '@txnlab/use-wallet'
 import Connect from 'components/MainTools/Connect'
-import { Rank1, Rank2, Rank3, Rank4 } from '../Whitelists/FOChars'
 import algosdk from 'algosdk'
 import toast from 'react-hot-toast'
-import { motion, useAnimation } from 'framer-motion'
-
+import { motion } from 'framer-motion'
+import { Rank1, Rank2, Rank3, Rank4 } from '../Whitelists/FOChars'
+import { getIpfsFromAddress } from './components/Tools/getIPFS'
+import createGifFromImages from './components/Tools/makeGIF'
+import { GiRollingDices } from 'react-icons/gi'
 
 const Shuffle: React.FC = () => {
-  const { activeAddress, signTransactions, sendTransactions } = useWallet()
+  const { activeAddress, signTransactions } = useWallet()
   const xLightColor = useColorModeValue('orange.100','cyan.100')
   const lightColor = useColorModeValue('orange.300','cyan.300')
   const [loading, setLoading] = useState<boolean>(true)
   const [claiming, setClaiming] = useState<boolean>(false)
+  const [av, setAv] = useState<any>([])
   const [avFO, setAvFO] = useState<any>([])
-  const [chosenFO, setChosenFO] = useState<any>(0)
-  const [chosenFOImage, setChosenFOImage] = useState<any>('')
-  const [charInfo, setCharInfo] = useState<any>([])
+  const [avImgs, setAvImgs] = useState<any>(null)
+  const [amount, setAmount] = useState<number>(1)
+  const [gifDataUrl, setGifDataUrl] = useState<string | null>(null)
+  const [chosenNFT, setChosenNFT] = useState<any>(null)
+  const [chosenImage, setChosenImage] = useState<any>(null)
+  const [chosenName, setChosenName] = useState<any>(null)
   const [shuffleID, setShuffleID] = useState<any>('')
-  const [FOList, setFOList] = useState<any>([])
-  const [FOImages, setFOImages] = useState<any>([])
   const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
   const buttonText5 = useColorModeValue('yellow','cyan')
   const buttonText3 = useColorModeValue('orange.500', 'cyan.500')
@@ -33,7 +37,20 @@ const Shuffle: React.FC = () => {
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const shuffle_cost = 250
-  const reshuffle_cost = 50
+  const shuffleEscrow = 'GOT2KEIKQHXVTS5WMIWVCTC4K5HPAYSX6D5FTK5QOEOSVDUYJLHEVYYMYE'
+  const totalCount = 792
+  const claimToken = localStorage.getItem("shuffle")
+
+  function pickFourRandomEntries(list: any) {
+    if (list.length < 4) {
+      throw new Error("List must contain at least 4 entries.")
+    }
+    for (let i = list.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [list[i], list[j]] = [list[j], list[i]]
+    }
+    return list.slice(0, 4)
+  }
 
   const shufflePayment = async (amt: any) => {
     try {
@@ -46,8 +63,8 @@ const Shuffle: React.FC = () => {
       suggestedParams.flatFee = true
       const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
         from: activeAddress,
-        to: 'CHARX2GZKNZZORNV2WROPUTSB5QBVRIC62QXXLABFCKA2QALEA3OHVIDYA',
-        amount: amt*1000000,
+        to: shuffleEscrow,
+        amount: amt*1000000*amount,
         suggestedParams,
         note
       })
@@ -56,193 +73,170 @@ const Shuffle: React.FC = () => {
 
       toast.loading('Awaiting Signature...', { id: 'txn', duration: Infinity })
 
-      const signedTransactions = await signTransactions([encodedTransaction])
+      const sTxn = await signTransactions([encodedTransaction])
 
-      toast.loading('Sending transaction...', { id: 'txn', duration: Infinity })
-
-      const waitRoundsToConfirm = 4
-
-      const { id } = await sendTransactions(signedTransactions, waitRoundsToConfirm)
-
-      console.log(`Shuffle Successful! TX ID: ${id}`)
-      handleShuffle1(id)
-      setShuffleID(id)
-      toast.success('Shuffle Successful!', {
-        id: 'txn',
-        duration: 5000
-      })
+      handleShuffle1(sTxn[0])
     } catch (error) {
       console.error(error)
       toast.error('Oops! Shuffle Payment Failed!', { id: 'txn' })
     }
   }
-
-  const handleClaim = async () => {
-    setClaiming(true)
-    try {
-      if (!activeAddress) {
-        throw new Error('Wallet Not Connected!')
-      }
-  
-      const suggestedParams = await algodClient.getTransactionParams().do()
-      suggestedParams.fee = 1000
-      suggestedParams.flatFee = true
-      const note = Uint8Array.from('Fallen Order - SHUFFLE!\n\nSuccessfully Opted In!'.split("").map(x => x.charCodeAt(0)))
-  
-      const txn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-                  from: activeAddress,
-                  to: activeAddress,
-                  amount: 0,
-                  assetIndex: chosenFO,
-                  suggestedParams,
-                  note,
-                })
-
-      const encodedTransaction = algosdk.encodeUnsignedTransaction(txn)
-
-      toast.loading('Awaiting Signature...', { id: 'txn', duration: Infinity })
-
-      const signedTransaction = await signTransactions([encodedTransaction])
-
-      toast.loading('Claiming Shuffle...', { id: 'txn', duration: Infinity })
-
-      algodClient.sendRawTransaction(signedTransaction).do()
-
-      await handleSendNFT()
-
-      onOpen()
-      
-      localStorage.removeItem("shuffle")
-
-      setClaiming(false)
-
-      console.log(`Successfully Claimed!`)
-
-      toast.success(`Shuffle Claim Successful!`, {
-        id: 'txn',
-        duration: 5000
-      })
-
-    } catch (error) {
-      console.error(error)
-      toast.error('Oops! Opt In Failed!', { id: 'txn' })
-    }
-  }
   
   async function getAvFO() {
-        try{
-            const shuffle_info = await algodIndexer.lookupAccountAssets('GOT2KEIKQHXVTS5WMIWVCTC4K5HPAYSX6D5FTK5QOEOSVDUYJLHEVYYMYE').do()
-            let ranks: any = [[], [], [], []]
-            for (const item of shuffle_info.assets) {
-                const assetID = item['asset-id']
-                if (item.amount > 0) {
-                    if (Rank1.includes(assetID)) {
-                        ranks[0].push(assetID)
-                    }
-                    if (Rank2.includes(assetID)) {
-                        ranks[1].push(assetID)
-                    }
-                    if (Rank3.includes(assetID)) {
-                        ranks[2].push(assetID)
-                    }
-                    if (Rank4.includes(assetID)) {
-                        ranks[3].push(assetID)
-                    }
+    try{
+        const shuffle_info = await algodIndexer.lookupAccountAssets(shuffleEscrow).do()
+        let available_nfts = []
+        let ranks: any = [[], [], [], []]
+        for (const item of shuffle_info.assets) {
+            const assetID = item['asset-id']
+            if (item.amount > 0) {
+                available_nfts.push(assetID)
+
+                if (Rank1.includes(assetID)) {
+                    ranks[0].push(assetID)
+                }
+                if (Rank2.includes(assetID)) {
+                    ranks[1].push(assetID)
+                }
+                if (Rank3.includes(assetID)) {
+                    ranks[2].push(assetID)
+                }
+                if (Rank4.includes(assetID)) {
+                    ranks[3].push(assetID)
                 }
             }
-            setAvFO([ranks[0], ranks[1], ranks[2], ranks[3]])
-        } catch (error: any) {
-            console.log(error.message)
-        } finally {
-            setLoading(false)
         }
+        setAv(available_nfts)
+        setAvFO([ranks[0], ranks[1], ranks[2], ranks[3]])
+
+        const randomFour = pickFourRandomEntries(available_nfts)
+        let images: any = []
+        for (const random  of randomFour) {
+          const assetInfo = await algodIndexer.lookupAssetByID(random).do()
+          const cid = getIpfsFromAddress(assetInfo.asset.params)
+          if (cid) {
+            const response = await fetch(`https://ipfs.algonode.xyz/ipfs/${cid}`)
+            if (!response.ok) {
+              throw new Error(`Failed to fetch data from IPFS: ${response.status} ${response.statusText}`)
+            }
+            if (assetInfo.asset.params.url.includes('template')) {
+              const textData = await response.text()
+              images.push('https://ipfs.algonode.xyz/ipfs/' + JSON.parse(textData).image.substring(7))
+            } else {
+              images.push('https://ipfs.algonode.xyz/ipfs/' + cid)
+            }
+          }
+        }
+        setAvImgs(images)
+        const createGif = () => {
+          createGifFromImages(images, (dataUrl) => {
+            if (dataUrl) {
+              setGifDataUrl(dataUrl)
+            }
+          })
+        }
+        createGif()
+
+    } catch (error: any) {
+        console.log(error.message)
+    } finally {
+      setLoading(false)
     }
+  }
 
     async function handleSendNFT() {
+      setClaiming(true)
         try{
-            const data = await getShuffle2([activeAddress, chosenFO, shuffleID], activeAddress)
-            if (data && data.includes("Error")) {
+            toast.loading(`Claiming NFT...`, { id: 'txn', duration: Infinity })
+            const data = await getShuffle2(activeAddress)
+            if (data && data.message && data.unsignedGroup) {
                 console.log(data)
+                let finalGroup = []
+                for (const txn of data.unsignedGroup) {
+                    finalGroup.push(new Uint8Array(Object.values(txn)))
+                }
+
+                const signedTransactions = await signTransactions(finalGroup)
+
+                try {
+                  await algodClient.sendRawTransaction(signedTransactions).do()
+                  onOpen()
+                  getAvFO()
+                  localStorage.removeItem("shuffle")
+            
+                  toast.success(`Shuffle Claim Successful!`, {
+                    id: 'txn',
+                    duration: 5000
+                  })
+                } catch (error: any) {
+                  console.log(error)
+                }
+            } else {
+              console.log(data)
             }
         } catch (error: any) {
             console.log(error.message)
         } finally {
-            setLoading(false)
+          setClaiming(false)
         }
     }
 
-    async function handleShuffle1(id: any) {
-            try{
-                const data = await getShuffle1([activeAddress, id], activeAddress)
-                if (data && data.includes("Error")) {
-                    console.log(data)
-                } else {
-                    localStorage.setItem("shuffle", data.token)
-                    setFOList(data.chosen_fo)
-                    let images = []
-                    for (const fo in data.chosen_fo) {
-                        const foInfo = await algodClient.getAssetByID(parseInt(fo)).do()
-                        images.push('https://cloudflare-ipfs.com/ipfs/' + foInfo.params.url.substring(7))
-                    }
-                    setFOImages(images)
+    async function handleClose() {
+      setChosenNFT(0)
+      setChosenName('')
+      setChosenImage('')
+      onClose()
+  }
+
+    async function handleShuffle1(stxn: any) {
+      setClaiming(true)
+      try{
+          const data = await getShuffle1(activeAddress, JSON.stringify(stxn), amount)
+          if (data && data.token && data.chosen_nfts) {
+              localStorage.setItem("shuffle", data.token)
+              let images: any = []
+              let names: any = ''
+              for (const choice of data.chosen_nfts) {
+                const assetInfo = await algodIndexer.lookupAssetByID(choice).do()
+                const cid = getIpfsFromAddress(assetInfo.asset.params)
+                if (cid) {
+                  const response = await fetch(`https://ipfs.algonode.xyz/ipfs/${cid}`)
+                  if (!response.ok) {
+                    throw new Error(`Failed to fetch data from IPFS: ${response.status} ${response.statusText}`)
+                  }
+                  if (assetInfo.asset.params.url.includes('template')) {
+                      const textData = await response.text()
+                      images.push('https://ipfs.algonode.xyz/ipfs/' + JSON.parse(textData).image.substring(7))
+                  } else {
+                      images.push('https://ipfs.algonode.xyz/ipfs/' + cid)
+                  }
                 }
-            } catch (error: any) {
-                console.log(error.message)
-            } finally {
-                setLoading(false)
-            }
-        }
+                names += assetInfo.asset.params.name + '\n'
+              }
+              setShuffleID(data.txId)
+              setChosenNFT(data.chosen_nfts)
 
-    async function handleReshuffle(id: any) {
-        try{
-            const data = await getShuffle1([activeAddress, id, shuffleID, FOList, localStorage.getItem('shuffle')], activeAddress)
-            if (data && data.includes("Error")) {
-                console.log(data)
-            } else {
-                setFOList(data.chosen_fo)
-                let images = []
-                for (const fo in data.chosen_fo) {
-                    const foInfo = await algodClient.getAssetByID(parseInt(fo)).do()
-                    images.push('https://cloudflare-ipfs.com/ipfs/' + foInfo.params.url.substring(7))
-                }
-                setFOImages(images)
-            }
-        } catch (error: any) {
-            console.log(error.message)
-        } finally {
-            setLoading(false)
-        }
-    }
+              const creatChosenGif = () => {
+                createGifFromImages(images, (dataUrl) => {
+                  if (dataUrl) {
+                    setChosenImage(dataUrl)
+                  }
+                })
+              }
+              creatChosenGif()
 
-    async function fetchChar (index: any) {
-        try {
-            const foInfo = await algodClient.getAssetByID(FOList[index]).do()
-            setCharInfo([foInfo.params['unit-name'], 'https://cloudflare-ipfs.com/ipfs/' + foInfo.params.url.substring(7)])
-        } catch (error: any) {
-            console.log(error.message)
-        }
-    }
-
-    const controls = useAnimation()
-
-    const handleSelect = (index: any) => {
-        controls.start({ opacity: 0, scale: 0 })
-        setTimeout(() => {
-            if (index === 999) {
-                setChosenFO(0)
-                setChosenFOImage('')
-            } else {
-                setChosenFO(FOList[index])
-                setChosenFOImage(FOImages[index])
-                fetchChar(FOList[index])
-            }
-            controls.start({ opacity: 1, scale: 1 })
-        }, 300)
-    }
+              setChosenName(names)
+          }
+      } catch (error: any) {
+          console.log(error.message)
+      } finally {
+        setClaiming(false)
+      }
+  }
 
     useEffect(() => {
-        getAvFO()
-        }, [loading])
+      getAvFO()
+    }, [loading, claiming, isOpen])
 
   return (
     <>
@@ -251,51 +245,51 @@ const Shuffle: React.FC = () => {
         <>
             {activeAddress ?
             <>
-                {FOList.length === 0 ?
+            {claimToken && !chosenNFT ?
+              <>
+                <Text mt='24px' textAlign='center' textColor={buttonText4} fontSize='20px'>Seems You Missed Something...</Text>
+                <Text mb='24px' textAlign='center' textColor={buttonText4} fontSize='20px'>Click To Claim!</Text>
+                <Center><FullGlowButton text={claiming ? 'Claiming...' : 'CLAIM!'} onClick={handleSendNFT} disabled={claiming}/></Center>
+              </>
+            :
+              <>
+                {!chosenNFT ?
                 <>
-                    <Text mt='24px' textColor={lightColor} className='text-2xl'>Available:</Text>
+                  <HStack mt='24px'>
+                      <Text textColor={lightColor} className='text-xl'>Available:</Text>
+                      <Text textColor={xLightColor} className='text-xl whitespace-nowrap text-center'><strong className='text-2xl'>{av.length}</strong></Text>
+                    </HStack>
                     <Text textColor={xLightColor} className='text-lg whitespace-nowrap text-center'>R1: <strong className='text-xl'>{avFO[0].length}</strong> | R2: <strong className='text-xl'>{avFO[1].length}</strong> | R3: <strong className='text-xl'>{avFO[2].length}</strong> | R4: <strong className='text-xl'>{avFO[3].length}</strong></Text>
-                    <Image className={boxGlow} my='24px' boxSize='200px' borderRadius='12px' alt='Fallen Order - SHUFFLE!' src='/shuffleChars.gif' />
-                    <Text mt='-24px' mb='12px' textColor={lightColor} className='text-lg'>Cost: <strong className='text-xl'>{shuffle_cost}A</strong></Text>
-                    <FullGlowButton text='SHUFFLE!' onClick={() => shufflePayment(shuffle_cost)} />
+                      <Image className={boxGlow} my='24px' boxSize='200px' borderRadius='12px' alt='Fallen Order - SHUFFLE!' src={gifDataUrl ? gifDataUrl : avImgs[0]} />
+                    <Text mt='-12px' mb='12px' textColor={lightColor} className='text-lg'>Cost: <strong className='text-xl'>{shuffle_cost}A</strong></Text>
+                    <HStack mb={5} spacing='12px'>
+                      <NumberInput textAlign='center' w='75px' min={0} max={6} value={amount} onChange={(valueString) => setAmount(parseInt(valueString))} isInvalid={amount <= 0 || amount > 6}>
+                      <NumberInputField _hover={{ bgColor: 'black' }} _focus={{ borderColor: buttonText3 }} textColor={xLightColor} borderColor={buttonText3} className={`block rounded-none rounded-l-md bg-black sm:text-sm`}/>
+                      <NumberInputStepper>
+                          <NumberIncrementStepper _hover={{ textColor: buttonText3 }} textColor={lightColor} borderColor={buttonText3}/>
+                          <NumberDecrementStepper _hover={{ textColor: buttonText3 }} textColor={lightColor} borderColor={buttonText3}/>
+                      </NumberInputStepper>
+                      </NumberInput>
+                      <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={`${amount}X SHUFFLE!`} aria-label='Tooltip'>
+                        <div><IconGlowButton2 icon={GiRollingDices} onClick={() => shufflePayment(shuffle_cost)} disabled={claiming} /></div>
+                      </Tooltip>
+                    </HStack>
                 </>
                 :
                 <>
-                    {chosenFO === 0 ?
-                    <>
-                        <Text my='24px' textColor={lightColor} className='text-2xl'>Pick A Character</Text>
                     <motion.div
-                      initial={{ opacity: 1, scale: 1 }}
-                      animate={controls}
-                      transition={{ duration: 0.3 }}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
                     >
-                        <Flex mb='24px' flexDirection="row" flexWrap="wrap" justifyContent='center' gap='24px'>
-                            <Image className={boxGlow} boxSize='120px' borderRadius='12px' alt='Character 1' src={FOImages[0]} onClick={() => handleSelect(0)}/>
-                            <Image className={boxGlow} boxSize='120px' borderRadius='12px' alt='Character 2' src={FOImages[1]} onClick={() => handleSelect(1)}/>
-                        </Flex>
-                        <Flex my='24px' flexDirection="row" flexWrap="wrap" justifyContent='center' gap='24px'>
-                            <Image className={boxGlow} boxSize='120px' borderRadius='12px' alt='Character 3' src={FOImages[2]} onClick={() => handleSelect(2)}/>
-                            <Image className={boxGlow} boxSize='120px' borderRadius='12px' alt='Character 4' src={FOImages[3]} onClick={() => handleSelect(3)}/>
-                        </Flex>
-                        <Text my='12px' textAlign='center' textColor={lightColor} className='text-lg'>Select Character or RESHUFFLE!</Text>
-                        <Center><FullGlowButton text='RESHUFFLE! (50A)' onClick={() => handleReshuffle(reshuffle_cost)} /></Center>
+                        <Text mt='24px' textAlign='center' className={gradientText} fontSize='20px'>{chosenName}</Text>
+                        <Center><Image my='24px' className={boxGlow} boxSize='240px' borderRadius='16px' alt='Shuffled NFTs' src={chosenImage} /></Center>
+                        <Center><FullGlowButton text={claiming ? 'Claiming...' : 'CLAIM!'} onClick={handleSendNFT} disabled={claiming}/></Center>
                     </motion.div>
-                    </>
-                    :
-                    <>
-                        <Text my='24px' textColor={lightColor} className='text-2xl'>Click Character To Deselect...</Text>
-                        <motion.div
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={controls}
-                        transition={{ duration: 0.3 }}
-                        >
-                            <Image mb='24px' className={boxGlow} boxSize='240px' borderRadius='16px' alt='Selected Character' src={chosenFOImage} onClick={() => handleSelect(999)}/>
-                            <Center><FullGlowButton text={claiming? 'Claiming...' : 'CLAIM!'} onClick={handleClaim} /></Center>
-                        </motion.div>
-                    </>
-                    }
                 </>
                 }
+                </>
+              }
             </>
             :
             <Connect />
@@ -314,14 +308,25 @@ const Shuffle: React.FC = () => {
     <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpen} onClose={onClose}>
     <ModalOverlay backdropFilter='blur(10px)'/>
     <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
-        <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Congratulations</ModalHeader>
+        <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Congratulations!</ModalHeader>
         <ModalBody>
-        <VStack m={1} alignItems='center' justifyContent='center' spacing='10px'>
-            <Text fontSize='14px' textAlign='center' textColor={buttonText4}>Welcome to the Fallen Order!</Text>
-            <Text fontSize='14px' textAlign='center' textColor={buttonText4}>You shuffled {charInfo[0]}!</Text>
-            <Image my='24px' boxSize='200px' borderRadius='16px' alt='Fallen Order' src={charInfo[1]} />
-            <a href='https://discord.gg/DPUutJfgzq' target='_blank' rel='noreferrer'><FullGlowButton text='Join Discord!' /></a>
-            <FullGlowButton text='X' onClick={onClose} />
+        <VStack m={2} alignItems='center' justifyContent='center' spacing='10px'>
+          {!chosenImage ?
+            <>
+              <Text fontSize='14px' textAlign='center' textColor={buttonText4}>You shuffled...</Text>
+              <Text fontSize='20px' textAlign='center' className={gradientText}>{chosenName}</Text>
+              <a href={'https://www.nftexplorer.app/asset/' + chosenNFT} target='_blank' rel='noreferrer'><Image className={boxGlow} mb='24px' boxSize='200px' borderRadius='16px' alt='Fallen Order' src={chosenImage} /></a>
+              <a href='https://discord.gg/DPUutJfgzq' target='_blank' rel='noreferrer'><FullGlowButton text='Join Discord!' /></a>
+              <FullGlowButton text='X' onClick={handleClose} />
+            </>
+            :
+            <>
+              <Text fontSize='14px' textAlign='center' textColor={buttonText4}>Shuffle Claimed</Text>
+              <a href={'https://www.nftexplorer.app/asset/' + chosenNFT} target='_blank' rel='noreferrer'><Image className={boxGlow} mb='24px' boxSize='200px' borderRadius='16px' alt='Fallen Order' src={chosenImage} /></a>
+              <a href='https://discord.gg/DPUutJfgzq' target='_blank' rel='noreferrer'><FullGlowButton text='Join Discord!' /></a>
+              <FullGlowButton text='X' onClick={handleClose} />
+            </>
+          }
         </VStack>
         </ModalBody>
     </ModalContent>

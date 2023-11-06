@@ -56,35 +56,6 @@ export async function getAuth(decSTxn: any, wallet: any) {
   }
 }
 
-export async function getShuffle1(data: any, wallet: any) {
-  try {
-    const requestBody = {
-      data: data,
-      wallet: wallet
-    }
-
-    const response = await fetchDataFromBackend('shuffle/shuffle1', requestBody, wallet)
-    return response
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-export async function getShuffle2(data: any, wallet: any) {
-  try {
-    const requestBody = {
-      shuffleToken: localStorage.getItem('shuffle'),
-      data: data,
-      wallet: wallet
-    }
-
-    const response = await fetchDataFromBackend('shuffle/shuffle2', requestBody, wallet)
-    return response
-  } catch (error) {
-    console.error(error)
-  }
-}
-
 export async function createProfile(wallet: any, userid: any) {
   try {
     const requestBody = {
@@ -254,7 +225,7 @@ export async function unfreezeAsset(wallet: any, assetID: any) {
 
 
 
-export async function getBVMShuffle1(wallet: any, txn: any, amount: any) {
+export async function getShuffle1(wallet: any, txn: any, amount: any) {
   try {
     const requestBody = {
       wallet: wallet,
@@ -262,21 +233,21 @@ export async function getBVMShuffle1(wallet: any, txn: any, amount: any) {
       amount: amount
     }
 
-    const response = await fetchDataFromBackend('bvm/shuffle1', requestBody, wallet)
+    const response = await fetchDataFromBackend('shuffle/shuffle1', requestBody, wallet)
     return response
   } catch (error) {
     console.error(error)
   }
 }
 
-export async function getBVMShuffle2(wallet: any) {
+export async function getShuffle2(wallet: any) {
   try {
-    const shuffleToken = localStorage.getItem('bvmshuffle')
+    const shuffleToken = localStorage.getItem('shuffle')
     const requestBody = {
       wallet: wallet,
       shuffleToken: shuffleToken
     }
-    const response = await fetchDataFromBackend('bvm/shuffle2', requestBody, wallet)
+    const response = await fetchDataFromBackend('shuffle/shuffle2', requestBody, wallet)
     return response
   } catch (error) {
     console.error(error)
