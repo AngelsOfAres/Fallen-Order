@@ -77,9 +77,6 @@ export default function Home() {
                     <Link href='/shuffle'><FullGlowButton fontsize='16px' text='SHUFFLE' /></Link>
                     <Link href='/ge'><FullGlowButton fontsize='16px' text='GRAND EXCHANGE' /></Link>
                     <a href="https://www.nftexplorer.app/collection/fallen-order" rel='noreferrer' target='_blank'><FullGlowButton text='COLLECTION' /></a>
-                    <Link href='/guide'><FullGlowButton text='GUIDE' /></Link>
-                </Flex>
-                <Flex maxW='800px' pb={4} flexDirection="row" flexWrap="wrap" justifyContent='center' gap='12px'>
                     <Link href='/onboard'><FullGlowButton fontsize='16px' text='ONBOARD' /></Link>
                     <Link href='/tools'><FullGlowButton fontsize='16px' text='TOOLS' /></Link>
                     <Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W SEARCH' /></Link>
