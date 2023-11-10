@@ -160,32 +160,38 @@ export default function Home() {
                                 </VStack>
                             </TabPanel>
                             <TabPanel mt={1}>
-                              <HStack my={4} alignItems='center' justifyContent='space-evenly'>
-                              <VStack fontSize='10px' fontWeight='bold' textColor={buttonText4} alignItems='center'>
-                                <Text className={gradientText} mb={2} fontSize='14px'>#</Text>
-                                <Text>5</Text>
-                                <Text>4</Text>
-                                <Text>3</Text>
-                                <Text>2</Text>
-                                <Text>1</Text>
+                              <VStack w='100%' my={4} alignItems='center' justifyContent='space-evenly'>
+                                <HStack w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
+                                  <Text className={gradientText} fontSize='14px'>#</Text>
+                                  <Text className={gradientText} fontSize='14px'>Gems</Text>
+                                  <Text className={gradientText} fontSize='14px'>Name</Text>
+                                </HStack>
+                                <HStack w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
+                                  <Text>5</Text>
+                                  <Image src="/rank5.png" alt="Rank 5 - Immortal"></Image>
+                                  <Text>Immortal</Text>
+                                </HStack>
+                                <HStack w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
+                                  <Text>4</Text>
+                                  <Image src="/rank4.png" alt="Rank 4 - Empyreal"></Image>
+                                  <Text>Empyreal</Text>
+                                </HStack>
+                                <HStack w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
+                                  <Text>3</Text>
+                                  <Image src="/rank3.png" alt="Rank 3 - Ethereal"></Image>
+                                  <Text>Ethereal</Text>
+                                </HStack>
+                                <HStack w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
+                                  <Text>2</Text>
+                                  <Image src="/rank2.png" alt="Rank 2 - Celestial"></Image>
+                                  <Text>Celestial</Text>
+                                </HStack>
+                                <HStack w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
+                                  <Text>1</Text>
+                                  <Image src="/rank1.png" alt="Rank 1 - Angel"></Image>
+                                  <Text>Angel</Text>
+                                </HStack>
                               </VStack>
-                              <VStack fontSize='10px' fontWeight='bold' textColor={buttonText4} alignItems='center' spacing='5px'>
-                                <Text className={gradientText} mb={1} fontSize='14px'>Gems</Text>
-                                <Image src="/rank5.png" alt="Rank 5 - Immortal"></Image>
-                                <Image src="/rank4.png" alt="Rank 4 - Empyreal"></Image>
-                                <Image src="/rank3.png" alt="Rank 3 - Ethereal"></Image>
-                                <Image src="/rank2.png" alt="Rank 2 - Celestial"></Image>
-                                <Image src="/rank1.png" alt="Rank 1 - Angel"></Image>
-                              </VStack>
-                              <VStack fontSize='10px' textColor={buttonText4} alignItems='center'>
-                                <Text className={gradientText} mb={2} fontSize='14px'>Name</Text>
-                                <Text>Immortal</Text>
-                                <Text>Empyreal</Text>
-                                <Text>Ethereal</Text>
-                                <Text>Celestial</Text>
-                                <Text>Angel</Text>
-                              </VStack>
-                            </HStack>
                             </TabPanel>
                             <TabPanel>
                                 <Center textAlign='center' my={5} fontSize={'14px'} className={gradientText}>
