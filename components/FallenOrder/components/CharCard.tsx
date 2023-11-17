@@ -19,6 +19,8 @@ import { MdKeyboardDoubleArrowUp, MdOutlineStar } from 'react-icons/md'
 import toast from 'react-hot-toast'
 import { XMarkIcon } from '@heroicons/react/20/solid'
 import { combineImages } from './Tools/combineImages'
+import { GiPotionBall } from 'react-icons/gi'
+import { AbsorbPop } from './Popups/AbsorbPop'
 
 export function CharCard(props: any) {
     const { activeAddress } = useWallet()
@@ -70,6 +72,7 @@ export function CharCard(props: any) {
     const { isOpen: isBoostConfirmOpen, onOpen: onBoostConfirmOpen, onClose: onBoostConfirmClose } = useDisclosure()
     const { isOpen: isEquipOpen, onOpen: onEquipOpen, onClose: onEquipClose } = useDisclosure()
     const { isOpen: isMainOpen, onOpen: onMainOpen, onClose: onMainClose } = useDisclosure()
+    const { isOpen: isAbsorbOpen, onOpen: onAbsorbOpen, onClose: onAbsorbClose } = useDisclosure()
     const { isOpen, onToggle } = useDisclosure()
     const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
@@ -209,6 +212,21 @@ export function CharCard(props: any) {
 
     return (
         <Box w={isOpen ? 'auto' : '100px'} h={isOpen ? 'auto' : '100px'} className={boxGlow} bgGradient={bgCardOn} borderColor={buttonText3} m={4} borderWidth='2px' borderRadius='16px'>
+            
+            {isOpen ?
+                <HStack mb='-80px' p={4} justifyContent='space-between'>
+                    {userProfile ?
+                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' textAlign='center' hasArrow label={userProfile.main_character === asset_id ? 'Remove Main' : 'Assign Main!'} aria-label='Tooltip'>
+                            <div><IconGlowButton icon={userProfile.main_character === asset_id ? XMarkIcon : MdOutlineStar} onClick={() => userProfile.main_character === asset_id ? handleMainSelect('remove') : onMainOpen()} disabled={loading} /></div>
+                        </Tooltip>
+                    : null}
+
+                    <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' textAlign='center' hasArrow label={'Absorb Kinship/Skills!'} aria-label='Tooltip'>
+                        <div><IconGlowButton icon={GiPotionBall} onClick={onAbsorbOpen} disabled={loading} /></div>
+                    </Tooltip>
+                </HStack>
+            : null}
+
             <Container pb={0} pt={0} pl={0} pr={0} centerContent>
                 <Image position={isOpen ? undefined : 'absolute'} zIndex={2} mt={isOpen ? '24px' : '-1px'} w={isOpen ? '150px' : '99px'} onClick={onToggle} borderRadius='15.5px' alt={unitName} src={finalImage} />
                 {isOpen ?
@@ -216,13 +234,9 @@ export function CharCard(props: any) {
                     <Text className={gradientText} fontSize='12px'>{metadata.Name ? metadata.Name : unitName}</Text>
                 </Box> : null}
             </Container>
+
             {isOpen ?
             <>
-                {userProfile ?
-                    <Tooltip ml={4} py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={userProfile.main_character === asset_id ? 'Remove Main' : 'Assign Main!'} aria-label='Tooltip'>
-                        <div className='absolute pl-4 pt--50'><IconGlowButton icon={userProfile.main_character === asset_id ? XMarkIcon : MdOutlineStar} onClick={() => userProfile.main_character === asset_id ? handleMainSelect('remove') : onMainOpen()} disabled={loading} /></div>
-                    </Tooltip>
-                : null}
                 <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isMainOpen} onClose={onMainClose}>
                 <ModalOverlay backdropFilter='blur(10px)'/>
                 <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
@@ -235,6 +249,9 @@ export function CharCard(props: any) {
                     </ModalFooter>
                 </ModalContent>
                 </Modal>
+
+                <AbsorbPop asset_id={asset_id} kinship={metadata.Kinship} isOpen={isAbsorbOpen} onClose={onAbsorbClose} />
+
             <AnimatePresence>
             <motion.div
               initial={{ opacity: 0, height: '100px', width: '100px' }}
@@ -242,7 +259,7 @@ export function CharCard(props: any) {
               exit={{ opacity: 0, height: '100px', width: '100px' }}
               transition={{ duration: 0.2 }}
             >
-            <Flex mt={6} mx={3} textColor={buttonText3} fontFamily="Orbitron" alignItems='center' justifyContent='center'>
+            <Flex mt={2} mx={3} textColor={buttonText3} fontFamily="Orbitron" alignItems='center' justifyContent='center'>
                 <VStack mx={2} alignItems='center' spacing='2px'>                    
                     <HStack spacing='0px'>
                         {LVLUp ?
@@ -260,7 +277,7 @@ export function CharCard(props: any) {
                     </HStack>
                 <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                     <Center>
-                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Level | Wisdom'} aria-label='Tooltip'>
+                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' textAlign='center' hasArrow label={'Level | Wisdom'} aria-label='Tooltip'>
                             <Text fontSize='xs'>{level} | {formatAssetBalance(wisdom, 0, true, true, 3)}</Text>
                         </Tooltip>
                     </Center>
@@ -270,7 +287,7 @@ export function CharCard(props: any) {
                 <Text className={gradientText} fontSize='12px'>HP</Text>
                 <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                     <Center>
-                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Health Points'} aria-label='Tooltip'>
+                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' textAlign='center' hasArrow label={'Health Points'} aria-label='Tooltip'>
                             <Text fontSize='xs'>{metadata.HP}</Text>
                         </Tooltip>
                     </Center>
@@ -282,7 +299,7 @@ export function CharCard(props: any) {
                     <Text className={gradientText} fontSize='12px'>ATK</Text>
                     <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                         <Center>
-                            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Attack'} aria-label='Tooltip'>
+                            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' textAlign='center' hasArrow label={'Attack'} aria-label='Tooltip'>
                                 <Text fontSize='xs'>{metadata.ATK}</Text>
                             </Tooltip>
                         </Center>
@@ -292,7 +309,7 @@ export function CharCard(props: any) {
                     <Text className={gradientText} fontSize='12px'>DEF</Text>
                     <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                         <Center>
-                            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Defense'} aria-label='Tooltip'>
+                            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' textAlign='center' hasArrow label={'Defense'} aria-label='Tooltip'>
                                 <Text fontSize='xs'>{metadata.DEF}</Text>
                             </Tooltip>
                         </Center>
@@ -302,7 +319,7 @@ export function CharCard(props: any) {
                     <Text className={gradientText} fontSize='12px'> AP </Text>
                     <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                         <Center>
-                            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Ability Power'} aria-label='Tooltip'>
+                            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' textAlign='center' hasArrow label={'Ability Power'} aria-label='Tooltip'>
                                 <Text fontSize='xs'>{metadata.AP}</Text>
                             </Tooltip>
                         </Center>
@@ -312,7 +329,7 @@ export function CharCard(props: any) {
                     <Text className={gradientText} fontSize='12px'>Points</Text>
                     <Box textColor={buttonText4} width='100%' mx={2} py={1} px={1.5} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='xl'>
                         <Center>
-                            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Battle Points'} aria-label='Tooltip'>
+                            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' textAlign='center' hasArrow label={'Battle Points'} aria-label='Tooltip'>
                                 <Text fontSize='xs'>{metadata.Points}</Text>
                             </Tooltip>
                         </Center>
@@ -327,7 +344,7 @@ export function CharCard(props: any) {
                         {!loading ?
                         <Box textColor={buttonText4} p={2} borderColor={buttonText3} bgGradient={bgCardOff} borderWidth='1px' borderRadius='lg'>
                             <Center minW='20px'>
-                                <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Kinship'} aria-label='Tooltip'>
+                                <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' textAlign='center' hasArrow label={'Kinship'} aria-label='Tooltip'>
                                     <Text fontSize='12px'>{metadata.Kinship}</Text>
                                 </Tooltip>
                             </Center>
@@ -386,10 +403,10 @@ export function CharCard(props: any) {
                         <FullGlowButton text='Rename' onClick={() => setComponentToRender('rename')} disabled={componentToRender === 'rename'}/>
                         <FullGlowButton text='Stats'  onClick={() => setComponentToRender('stats')} disabled={componentToRender === 'stats'}/>
                         <FullGlowButton text='Abilities'  onClick={() => setComponentToRender('abilities')} disabled={componentToRender === 'abilities'}/>
-                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={`Available Boosters: ${boostBal}`} aria-label='Tooltip'>                  
+                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' textAlign='center' hasArrow label={`Available Boosters: ${boostBal}`} aria-label='Tooltip'>                  
                             <div><FullGlowButton text={loading ? 'Boosting...' : 'Boost'} onClick={onBoostConfirmOpen}  disabled={boostBal <= 0 || boostBal === 'Not Opted!'}/></div>
                         </Tooltip>
-                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={levelTooltip} aria-label='Tooltip'>                      
+                        <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' textAlign='center' hasArrow label={levelTooltip} aria-label='Tooltip'>                      
                         <motion.div
                             animate={{ scale: LVLUp ? [1, 1.07, 1] : 1 }}
                             transition={{

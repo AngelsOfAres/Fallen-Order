@@ -150,7 +150,7 @@ export default function MyBalances() {
                         <Text fontSize='16px' textColor={buttonText4}>Clay Ore</Text>
                         <Text fontSize='20px' textColor={buttonText5}>{clayOreBalOpt}</Text>
                     </HStack>
-                    {expBal !== -1 || orderBal === -1 || boostBal === -1 || oakLogsBal === -1 || clayOreBal === -1 ?
+                    {expBal === -1 || orderBal === -1 || boostBal === -1 || oakLogsBal === -1 || clayOreBal === -1 ?
                     <>
                       <Divider my='8px' w='75%' borderColor={buttonText5}/>
                       <FullGlowButton text={loading ? 'Opting In...' : 'Mass Opt In'} disabled={loading} onClick={() => sendMassOptIn()}/>

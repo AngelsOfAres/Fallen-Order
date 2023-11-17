@@ -26,7 +26,7 @@ import { MyListingCard } from 'components/FallenOrder/components/MyListingCard'
 import CreateUserProfile from 'components/FallenOrder/components/CreateUserProfile'
 import { TbPlugConnectedX } from 'react-icons/tb'
 
-export default function MyFO() {
+export default function GrandExchange() {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
   const allAccessories = [...hatchets, ...pickaxes, ...skillPotions, ...kinshipPotions]
   const allChars = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5]

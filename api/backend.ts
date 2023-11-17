@@ -253,3 +253,17 @@ export async function getShuffle2(wallet: any) {
     console.error(error)
   }
 }
+
+export async function sendThriftling(wallet: any, asset_id: any, price: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      asset_id: asset_id,
+      price: price
+    }
+    const response = await fetchDataFromBackend('thrift/sendThriftling', requestBody, wallet)
+    return response
+  } catch (error) {
+    console.error(error)
+  }
+}
