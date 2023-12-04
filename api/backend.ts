@@ -267,3 +267,16 @@ export async function sendThriftling(wallet: any, asset_id: any, price: any) {
     console.error(error)
   }
 }
+
+export async function enterNothing(wallet: any, txId: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      txId: txId
+    }
+    const response = await fetchDataFromBackend('misc/addEntry', requestBody, wallet)
+    return response
+  } catch (error) {
+    console.error(error)
+  }
+}
