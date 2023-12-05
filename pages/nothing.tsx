@@ -89,8 +89,8 @@ export default function YouGetNothing() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <Text my='60px' className={`${gradientText} responsive-font`}>YOU GET ABSOLUTELY NOTHING!</Text>
-      <Text my='10px' fontSize='14px' className={gradientText}>ONE entry per wallet. You will get nothing</Text>
+      <Text my='60px' className={`${gradientText} responsive-font`}>Nothing to see here...</Text>
+      {/* <Text my='10px' fontSize='14px' className={gradientText}>ONE entry per wallet. You will get nothing</Text>
         {activeAddress ? 
           <>
             {!step1 ?
@@ -99,7 +99,7 @@ export default function YouGetNothing() {
                 </Center>
             :
                 <Center>
-                    <FullGlowButton text='I WILL PAY 10A TO GET NOTHING' isLoading={loading} onClick={sendNothing} disabled={loading} />
+                    <FullGlowButton text='I WILL PAY 10A TO GET NOTHING' isLoading={loading} disabled={loading} />
                 </Center>
             }
           </>
@@ -109,7 +109,7 @@ export default function YouGetNothing() {
             <Center><Connect /></Center>
           </>
         }
-    <Text my='60px' fontSize='14px' className={gradientText}>*This app will opt you into a random asset and will charge you 10A while giving you absolutely nothing*</Text>
+        <Text my='60px' fontSize='14px' className={gradientText}>*This app will opt you into a random asset and will charge you 10A while giving you absolutely nothing*</Text> */}
     </>
   )
 }
