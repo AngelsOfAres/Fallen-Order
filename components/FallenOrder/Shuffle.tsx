@@ -234,6 +234,11 @@ const Shuffle: React.FC = () => {
       }
   }
 
+  const clearToken = async () => {
+    localStorage.removeItem("shuffle")
+    location.reload()
+  }
+
     useEffect(() => {
       getAvFO()
     }, [loading, claiming, isOpen])
@@ -250,6 +255,8 @@ const Shuffle: React.FC = () => {
                 <Text mt='24px' textAlign='center' textColor={buttonText4} fontSize='20px'>Seems You Missed Something...</Text>
                 <Text mb='24px' textAlign='center' textColor={buttonText4} fontSize='20px'>Click To Claim!</Text>
                 <Center><FullGlowButton text={claiming ? 'Claiming...' : 'CLAIM!'} onClick={handleSendNFT} disabled={claiming}/></Center>
+                <Text mt='60px' textAlign='center' textColor={buttonText4} fontSize='20px'>Click below to clear and return to shuffle. ONLY use this if you have already claimed your assets!</Text>
+                <Center my='12px'><FullGlowButton text={'CLEAR'} onClick={clearToken} /></Center>
               </>
             :
               <>
