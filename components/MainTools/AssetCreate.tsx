@@ -69,14 +69,14 @@ export default function AssetCreate() {
         total,
         decimals,
         suggestedParams,
-        freeze: freeze == '' ? undefined : freeze,
-        clawback: clawback == '' ? undefined : clawback,
+        freeze: freeze == '' || freeze == null ? undefined : freeze,
+        clawback: clawback == '' || clawback == null ? undefined : clawback,
         unitName,
         assetURL,
         assetName,
         defaultFrozen,
-        manager: manager == '' ? undefined : manager,
-        reserve: reserve == '' ? undefined : reserve,
+        manager: manager == '' || manager == null ? undefined : manager,
+        reserve: reserve == '' || reserve == null ? undefined : reserve,
         note
       });
       
