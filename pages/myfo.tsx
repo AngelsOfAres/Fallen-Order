@@ -114,7 +114,7 @@ export default function MyFO() {
             duration: 5000
           })
           setPopTitle('Success')
-          setPopMessage(`Item Melted (Unfrozen)!`)
+          setPopMessage(`Item Melted Unfrozen! ID: ${assetID}`)
           onSuccessOpen()
           return
         }
