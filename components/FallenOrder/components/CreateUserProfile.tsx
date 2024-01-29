@@ -60,14 +60,13 @@ export default function CreateUserProfile(props: any) {
             <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Create New Profile!</ModalHeader>
             <ModalBody>
             <VStack mx={4} alignItems='center' justifyContent='center'>
-            <Text pb={4} fontSize='16px' textAlign='center' textColor={buttonText4}>Please join our Discord to create a new profile!</Text>
-            <a href='https://discord.gg/DPUutJfgzq' target='_blank' rel='noreferrer'><FullGlowButton text='Join Discord!' /></a>
-                {/* <Text pb={4} fontSize='16px' textAlign='center' textColor={buttonText4}>This will create a new on chain user profile for your account.<br />Profiles are used to track your stats, timers, gameplay, and more.<br />They essentially act as our database, except it&apos;s on chain!</Text>
-                <Input type="text" name="userid" id="userid" maxLength={19} textAlign='center' _hover={{ bgColor: 'black' }} _focus={{ borderColor: medColor }}
-                    textColor={xLightColor} borderColor={medColor} borderRadius='lg' className={`block w-full bg-black sm:text-sm`} value={userID}
-                    onChange={(e) => setUserID(e.target.value)} placeholder="Discord User ID" />
-                    <Text pb={4} fontSize='12px' textAlign='center' textColor={buttonText5}>*You may attach a Discord User ID later*</Text>
-                <FullGlowButton text={loading ? 'Creating Profile...' : `Let's Go!`} onClick={createUserProfile} /> */}
+              <Text pb={4} fontSize='16px' textAlign='center' textColor={buttonText4}>This will create a new on chain user profile for your account.<br />Profiles are used to track your stats, timers, gameplay, and more.<br />They essentially act as our database, except it&apos;s on chain!</Text>
+              <Input type="text" name="userid" id="userid" maxLength={19} textAlign='center' _hover={{ bgColor: 'black' }} _focus={{ borderColor: medColor }}
+                  textColor={xLightColor} borderColor={medColor} borderRadius='lg' className={`block w-full bg-black sm:text-sm`} value={userID}
+                  onChange={(e) => setUserID(e.target.value)} placeholder="Discord User ID" />
+                  <a href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-" target="_blank" rel="noreferrer"><FullGlowButton text={`Find my Discord ID`} /></a>
+                  <Text pb={4} fontSize='12px' textAlign='center' textColor={buttonText5}>*You may attach a Discord User ID later*</Text>
+              <FullGlowButton text={loading ? 'Creating Profile...' : `Create!`} onClick={createUserProfile} />
             </VStack>
             </ModalBody>
             <ModalFooter>

@@ -60,7 +60,7 @@ export async function createProfile(wallet: any, userid: any) {
   try {
     const requestBody = {
       wallet: wallet,
-      userid: userid && userid !== 0 ? userid : '00000000000000000'
+      userid: userid
     }
 
     const response = await fetchDataFromBackend('users/createprofile', requestBody, wallet)
