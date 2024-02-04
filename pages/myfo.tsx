@@ -95,7 +95,7 @@ export default function MyFO() {
     })
     setTimeout(() => {
       fetchProfile()
-    }, 3000)
+    }, 8000)
   }
 
   const handleUnfreezeAsset = async (assetID: any) => {
@@ -297,7 +297,7 @@ export default function MyFO() {
         onSuccessOpen()
         setTimeout(() => {
           fetchProfile()
-        }, 3000)
+        }, 8000)
     }
 
     const handleKinshipSub = async () => {
@@ -338,7 +338,7 @@ export default function MyFO() {
       onSuccessOpen()
       setTimeout(() => {
         fetchProfile()
-      }, 3000)
+      }, 8000)
   }
   
   return (
