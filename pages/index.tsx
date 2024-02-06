@@ -22,12 +22,12 @@ export default function Home() {
   const bodyText5b = 'Build your character up to the top ranks of The Order!'
   const kinshipText1 = 'Kinship describes the relationship between master and character'
   const kinshipText2 = 'Higher kinship means the character is well taken care of over time'
-  const kinshipText3 = 'Players may interact with a character once every 24 hours to gain +1 kinship applied to on-chain metadata'
+  const kinshipText3 = 'Players may interact with a character once every 24 hours to gain +1 kinship'
   const kinshipText4 = 'Kinship may be Absorbed using Kinship Potions to freely trade or use on other characters'
   const head1 ='The Fallen Order are divine pixelated beings.'
   const head2 = 'Civil war has torn them into factions of Light and Dark.'
   const head3 = 'However, their fury could not be contained within their sacred realm...'
-  const head4 = 'The Fallen have arrived...bringing their chaos to Algorand!'
+  const head4 = 'The Fallen have arrived...bringing their chaos to the mortal dimension!'
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
 
@@ -84,14 +84,14 @@ export default function Home() {
 
                 <Divider w='60%' maxWidth='350px' borderColor={divider}/>
                   <VStack className='responsive-text'  w='80%' maxW='800px' p={2}>
-                    <Center><Text fontSize='20px' className={gradientText}>Unique Utility</Text></Center>
+                    <Center><Text fontSize='20px' className={gradientText}>Unique Experience</Text></Center>
                       <Divider w='5%' minW='80px' my={0.5} borderColor={divider}/>
                     <Center><Text align='center' color={buttonText4}>{bodyText2a}</Text></Center>
                     <Center><Text align='center' color={buttonText4}>{bodyText2b}</Text></Center>
                     <Center><Text align='center' color={buttonText4}>{bodyText2c}</Text></Center>
                   </VStack>
                   <VStack className='responsive-text' w='80%' maxW='800px' p={2}>
-                    <Center><Text fontSize='20px' className={gradientText}>Unique NFTs</Text></Center>
+                    <Center><Text fontSize='20px' className={gradientText}>Dynamic Characters</Text></Center>
                       <Divider w='5%' minW='80px' my={0.5} borderColor={divider}/>
                     <Center><Text align='center' color={buttonText4}>{bodyText4}</Text></Center>
                     <Center><Text align='center' color={buttonText4}>{bodyText5}</Text></Center>
@@ -161,38 +161,39 @@ export default function Home() {
                             </TabPanel>
                             <TabPanel mt={1}>
                               <VStack w='100%' my={4} alignItems='center' justifyContent='space-evenly'>
-                                <HStack w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
-                                  <Text className={gradientText} fontSize='14px'>#</Text>
-                                  <Text className={gradientText} fontSize='14px'>Gems</Text>
-                                  <Text className={gradientText} fontSize='14px'>Name</Text>
+                                <HStack textAlign='center' w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
+                                  <Text w='33.33%' className={gradientText} fontSize='14px'>#</Text>
+                                  <Text w='33.33%' className={gradientText} fontSize='14px'>Gems</Text>
+                                  <Text w='33.33%' className={gradientText} fontSize='14px'>Name</Text>
                                 </HStack>
-                                <HStack w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
-                                  <Text>5</Text>
-                                  <Image src="/rank5.png" alt="Rank 5 - Immortal"></Image>
-                                  <Text>Immortal</Text>
+                                <HStack textAlign='center' w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
+                                  <Text w='33.33%'>5</Text>
+                                  <Image w='33.33%' src="/rank5.png" alt="Rank 5 - Immortal"></Image>
+                                  <Text w='33.33%'>Immortal</Text>
                                 </HStack>
-                                <HStack w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
-                                  <Text>4</Text>
-                                  <Image src="/rank4.png" alt="Rank 4 - Empyreal"></Image>
-                                  <Text>Empyreal</Text>
+                                <HStack textAlign='center' w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
+                                  <Text w='33.33%'>4</Text>
+                                  <Image w='33.33%' src="/rank4.png" alt="Rank 4 - Empyreal"></Image>
+                                  <Text w='33.33%'>Empyreal</Text>
                                 </HStack>
-                                <HStack w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
-                                  <Text>3</Text>
-                                  <Image src="/rank3.png" alt="Rank 3 - Ethereal"></Image>
-                                  <Text>Ethereal</Text>
+                                <HStack textAlign='center' w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
+                                  <Text w='33.33%'>3</Text>
+                                  <Image w='33.33%' src="/rank3.png" alt="Rank 3 - Ethereal"></Image>
+                                  <Text w='33.33%'>Ethereal</Text>
                                 </HStack>
-                                <HStack w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
-                                  <Text>2</Text>
-                                  <Image src="/rank2.png" alt="Rank 2 - Celestial"></Image>
-                                  <Text>Celestial</Text>
+                                <HStack textAlign='center' w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
+                                  <Text w='33.33%'>2</Text>
+                                  <Image w='33.33%' src="/rank2.png" alt="Rank 2 - Celestial"></Image>
+                                  <Text w='33.33%'>Celestial</Text>
                                 </HStack>
-                                <HStack w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
-                                  <Text>1</Text>
-                                  <Image src="/rank1.png" alt="Rank 1 - Angel"></Image>
-                                  <Text>Angel</Text>
+                                <HStack textAlign='center' w='100%' fontSize='10px' fontWeight='bold' textColor={buttonText4} justifyContent='space-between'>
+                                  <Text w='33.33%'>1</Text>
+                                  <Image w='33.33%' src="/rank1.png" alt="Rank 1 - Angel"></Image>
+                                  <Text w='33.33%'>Angel</Text>
                                 </HStack>
                               </VStack>
                             </TabPanel>
+
                             <TabPanel>
                                 <Center textAlign='center' my={5} fontSize={'14px'} className={gradientText}>
                                 <Text>Each character has four battle stats:</Text>
@@ -212,9 +213,6 @@ export default function Home() {
                                   <Box className={boxGlow} borderWidth='0.5px' borderRadius='lg' borderColor={buttonText3} p={2}><Text>Kinship</Text></Box>
                                   <Box className={boxGlow} borderWidth='0.5px' borderRadius='lg' borderColor={buttonText3} p={2}><Text>Skill*</Text></Box>
                                 </HStack>
-                                <Center textAlign='center' my={6} fontSize={'12px'} textColor={buttonText4}>
-                                  *Each Skill is reflected as its own trait. For example, Woodcutting and Mining.
-                                </Center>
                             </TabPanel>
                             <TabPanel>
                               <Center textAlign='center' my={3} mt={5} textColor={buttonText4}>
@@ -234,27 +232,27 @@ export default function Home() {
                         </Tabs>
                         </TabPanel>
                         <TabPanel>
-                            <VStack w='stretch'>
-                            <HStack w='stretch' mt={5} mb={2} fontSize={'14px'} className={gradientText} alignItems='center' justifyContent='space-between'>
-                            <Text fontSize='14px'>Asset</Text>
-                            <Text fontSize='14px'>Description:</Text>
-                            </HStack>
-                            <HStack w='stretch' textAlign='right' my={4} fontSize={'12px'} textColor={buttonText4} alignItems='center' justifyContent='space-between'>
-                            <Box mx={1} textAlign='left' w='30%'><Link href='https://explorer.perawallet.app/assets/811718424/'>$ORDER</Link></Box>
-                            <Text fontSize='9px'>Voting vehicle for holders of Fallen Order, various uses within the ecosystem. Soulbound token.</Text>
-                            </HStack>
-                            <HStack w='stretch' textAlign='right' my={4} fontSize={'12px'} textColor={buttonText4} alignItems='center' justifyContent='space-between'>
-                            <Box mx={1} textAlign='left' w='30%'><Link href='https://explorer.perawallet.app/assets/811721471'>$EXP</Link></Box>
-                            <Text fontSize='9px'>Experience token used for leveling characters, betting, and battling. Freely traded on the open market.</Text>
-                            </HStack>
-                            <HStack w='stretch' textAlign='right' my={4} fontSize={'12px'} textColor={buttonText4} alignItems='center' justifyContent='space-between'>
-                            <Box mx={1} textAlign='left' w='30%'><Link href='https://explorer.perawallet.app/assets/815766197'>$RAFFLE</Link></Box>
-                            <Text fontSize='9px'>Raffle Tickets. Used to enter raffles for various prizes. Freely traded on the open market.</Text>
-                            </HStack>
-                            <HStack w='stretch' textAlign='right' my={4} fontSize={'12px'} textColor={buttonText4} alignItems='center' justifyContent='space-between'>
-                            <Box mx={1} textAlign='left' w='30%'><Link href='https://explorer.perawallet.app/assets/815771120'>$BOOST</Link></Box>
-                            <Text fontSize='9px'>Stat Booster. Used to boost any battle stat by +1. Freely traded on the open market.</Text>
-                            </HStack>
+                            <VStack w='100%'>
+                              <HStack w='100%' mt={5} mb={2} fontSize={'16px'} className={gradientText} alignItems='center' justifyContent='space-between'>
+                                <Text w='35%'>Game Currency</Text>
+                                <Text w='65%'>Description</Text>
+                              </HStack>
+                              <HStack w='100%' textAlign='right' my={4} textColor={buttonText4} alignItems='center' justifyContent='space-between'>
+                                <Box w='35%' mx={1} textAlign='center'><Link href='https://explorer.perawallet.app/assets/811718424/'>$ORDER</Link></Box>
+                                <Text w='65%' textAlign='center' fontSize='12px'>Voting vehicle for holders of Fallen Order, various uses within the ecosystem. Soulbound token.</Text>
+                              </HStack>
+                              <HStack w='100%' textAlign='right' my={4} textColor={buttonText4} alignItems='center' justifyContent='space-between'>
+                                <Box w='35%' mx={1} textAlign='center'><Link href='https://explorer.perawallet.app/assets/811721471'>$EXP</Link></Box>
+                                <Text w='65%' textAlign='center' fontSize='12px'>Experience token used for leveling characters, betting, and battling. Freely traded on the open market.</Text>
+                              </HStack>
+                              <HStack w='100%' textAlign='right' my={4} textColor={buttonText4} alignItems='center' justifyContent='space-between'>
+                                <Box w='35%' mx={1} textAlign='center'><Link href='https://explorer.perawallet.app/assets/815766197'>$RAFFLE</Link></Box>
+                                <Text w='65%' textAlign='center' fontSize='12px'>Raffle Tickets. Used to enter raffles for various prizes. Freely traded on the open market.</Text>
+                              </HStack>
+                              <HStack w='100%' textAlign='right' my={4} textColor={buttonText4} alignItems='center' justifyContent='space-between'>
+                                <Box w='35%' mx={1} textAlign='center'><Link href='https://explorer.perawallet.app/assets/815771120'>$BOOST</Link></Box>
+                                <Text w='65%' textAlign='center' fontSize='12px'>Stat Booster. Used to boost any battle stat by +1. Freely traded on the open market.</Text>
+                              </HStack>
                             </VStack>
                         </TabPanel>
                       </TabPanels>
