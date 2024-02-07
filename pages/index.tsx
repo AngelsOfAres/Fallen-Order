@@ -13,7 +13,7 @@ export default function Home() {
   const buttonText3 = useColorModeValue('orange.500','cyan.500')
   const buttonText4 = useColorModeValue('orange.100','cyan.100')
   const divider = useColorModeValue('orange.500','cyan.400')
-  const bodyText2a = 'Fallen Order is an onchain RPG'
+  const bodyText2a = 'Fallen Order is a nostalgic immersive MMORPG with an extensive in-game economy, player-guided lore, and career gameplay'
   const bodyText2b = 'Get a character and start your journey with The Order!'
   const bodyText2c = 'Equip your character with various equipment, adjust your stats, swap abilities, complete quests for soulbound achievements and rewards, battle bosses and PvP for glory in The Thunderdome, grind your skills in The Wilderness, level up and much more.'
   const bodyText4 = "Form endless variations of characters with equippable backgrounds and wearables."
