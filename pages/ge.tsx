@@ -56,9 +56,6 @@ export default function GrandExchange() {
       try {
         const profile = await getProfile(activeAddress)
         setUserProfile(profile || null)
-        if (!profile) {
-          onOpen1()
-        }
       } catch (error) {
         console.error("Error fetching profile:", error)
       }
@@ -84,7 +81,7 @@ export default function GrandExchange() {
       fetchProfile()
       fetchListings()
     }
-  }, [assetList, fetchListings, fetchProfile])
+  }, [assetList, authUser, fetchListings, fetchProfile])
 
   function handleLogout() {
     localStorage.removeItem('token_' + activeAddress)
@@ -116,24 +113,26 @@ export default function GrandExchange() {
         <>
           {listings ?
             <>
-              <HStack className='w-full p-8' justifyContent='space-between'>
-                  {userProfile ?
-                    <CreateListing />
-                  :
-                  <>
-                    <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Create Profile!'} aria-label='Tooltip'>
-                        <div><IconGlowButton2 icon={PiUserCirclePlusFill} onClick={onOpen1} /></div>
-                    </Tooltip>
-                    <CreateUserProfile isOpen={isOpen1} onClose={onClose1} />
-                  </>
-                  }
-                  
-                  <MyBalances />
+              <Center m={6}>
+                <HStack spacing='16px'>
+                    {userProfile ?
+                      <CreateListing />
+                    :
+                    <>
+                      <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Create Profile!'} aria-label='Tooltip'>
+                          <div><IconGlowButton2 icon={PiUserCirclePlusFill} onClick={onOpen1} /></div>
+                      </Tooltip>
+                      <CreateUserProfile isOpen={isOpen1} onClose={onClose1} />
+                    </>
+                    }
+                    
+                    <MyBalances />
 
-                  <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Log Out'} aria-label='Tooltip'>
-                    <div><IconGlowButton2 icon={TbPlugConnectedX} onClick={handleLogout} /></div>
-                  </Tooltip>
-              </HStack>
+                    <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Log Out'} aria-label='Tooltip'>
+                      <div><IconGlowButton2 icon={TbPlugConnectedX} onClick={handleLogout} /></div>
+                    </Tooltip>
+                </HStack>
+              </Center>
             </>
             : null}
             <Text mt={!listings ? '36px' : '0px'} mb='36px' className={`${gradientText} responsive-font`}>Grand Exchange</Text>

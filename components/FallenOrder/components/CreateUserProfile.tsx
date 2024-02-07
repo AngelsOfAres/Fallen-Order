@@ -57,16 +57,15 @@ export default function CreateUserProfile(props: any) {
         <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay backdropFilter='blur(10px)'/>
         <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
-            <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Create New Profile!</ModalHeader>
+            <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Create New Account!</ModalHeader>
             <ModalBody>
             <VStack mx={4} alignItems='center' justifyContent='center'>
-              <Text pb={4} fontSize='16px' textAlign='center' textColor={buttonText4}>This will create a new on chain user profile for your account.<br />Profiles are used to track your stats, timers, gameplay, and more.<br />They essentially act as our database, except it&apos;s on chain!</Text>
               <Input type="text" name="userid" id="userid" maxLength={19} textAlign='center' _hover={{ bgColor: 'black' }} _focus={{ borderColor: medColor }}
                   textColor={xLightColor} borderColor={medColor} borderRadius='lg' className={`block w-full bg-black sm:text-sm`} value={userID}
                   onChange={(e) => setUserID(e.target.value)} placeholder="Discord User ID" />
-                  <a href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-" target="_blank" rel="noreferrer"><FullGlowButton text={`Find my Discord ID`} /></a>
-                  <Text pb={4} fontSize='12px' textAlign='center' textColor={buttonText5}>*You may attach a Discord User ID later*</Text>
-              <FullGlowButton text={loading ? 'Creating Profile...' : `Create!`} onClick={createUserProfile} />
+                  <Text pb={1} fontSize='12px' textAlign='center' textColor={buttonText5}>*You may attach a Discord User ID later*</Text>
+                  <div className="pb-4"><a href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-" target="_blank" rel="noreferrer"><FullGlowButton text={`Find My User ID`} /></a></div>
+              <FullGlowButton text={loading ? 'Creating Account...' : `Create Account!`} onClick={createUserProfile} />
             </VStack>
             </ModalBody>
             <ModalFooter>

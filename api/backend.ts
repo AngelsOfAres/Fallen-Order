@@ -83,6 +83,34 @@ export async function getDrip(wallet: any) {
   }
 }
 
+export async function swapORDERtoEXP(wallet: any, amount: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      amount: amount
+    }
+
+    const response = await fetchDataFromBackend('misc/swapordertoexp', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}
+
+export async function swapALGOtoEXP(wallet: any, amount: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      amount: amount
+    }
+
+    const response = await fetchDataFromBackend('misc/swapalgotoexp', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}
+
 export async function switchMain(wallet: any, data: any) {
   try {
     const requestBody = {
