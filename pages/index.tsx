@@ -70,11 +70,11 @@ export default function Home() {
                   <Text fontSize={'20px'}>{head2}</Text>
                   <Text fontSize={'20px'}>{head3}</Text>
                   <Text fontSize={'20px'}>{head4}</Text>
+                  <Link href='https://algoxnft.com/shuffle/2467'><FullGlowButton fontsize='16px' text='JOIN THE ORDER!' /></Link>
                 </VStack>
 
                 <Flex maxW='800px' pt={4} flexDirection="row" flexWrap="wrap" justifyContent='center' gap='12px'>
                     <Link href='/myfo'><FullGlowButton fontsize='16px' text='MY FO' /></Link>
-                    <Link href='https://algoxnft.com/shuffle/2467'><FullGlowButton fontsize='16px' text='SHUFFLE' /></Link>
                     <Link href='/ge'><FullGlowButton fontsize='16px' text='GRAND EXCHANGE' /></Link>
                     <a href="https://www.nftexplorer.app/collection/fallen-order" rel='noreferrer' target='_blank'><FullGlowButton text='COLLECTION' /></a>
                     <Link href='/onboard'><FullGlowButton fontsize='16px' text='ONBOARD' /></Link>
