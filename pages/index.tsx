@@ -70,16 +70,15 @@ export default function Home() {
                   <Text fontSize={'20px'}>{head2}</Text>
                   <Text fontSize={'20px'}>{head3}</Text>
                   <Text fontSize={'20px'}>{head4}</Text>
-                  <Link href='https://algoxnft.com/shuffle/2467'><FullGlowButton fontsize='16px' text='JOIN THE ORDER!' /></Link>
                 </VStack>
+                  <Link href='https://algoxnft.com/shuffle/2467'><FullGlowButton fontsize='16px' text='JOIN THE ORDER!' /></Link>
 
-                <Flex maxW='800px' pt={4} flexDirection="row" flexWrap="wrap" justifyContent='center' gap='12px'>
+                <Flex w='80%' maxW='700px' pt={4} flexDirection="row" flexWrap="wrap" justifyContent='center' gap='12px'>
                     <Link href='/myfo'><FullGlowButton fontsize='16px' text='MY FO' /></Link>
                     <Link href='/ge'><FullGlowButton fontsize='16px' text='GRAND EXCHANGE' /></Link>
                     <a href="https://www.nftexplorer.app/collection/fallen-order" rel='noreferrer' target='_blank'><FullGlowButton text='COLLECTION' /></a>
                     <Link href='/onboard'><FullGlowButton fontsize='16px' text='ONBOARD' /></Link>
                     <Link href='/tools'><FullGlowButton fontsize='16px' text='TOOLS' /></Link>
-                    <Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W SEARCH' /></Link>
                 </Flex>
 
                 <Divider w='60%' maxWidth='350px' borderColor={divider}/>

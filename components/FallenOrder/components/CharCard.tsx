@@ -196,7 +196,7 @@ export function CharCard(props: any) {
       }
 
     return (
-        <Box w={isOpen ? 'auto' : '100px'} h={isOpen ? 'auto' : '100px'} className={boxGlow} bgGradient={bgCardOn} borderColor={buttonText3} m={4} borderWidth='2px' borderRadius='16px'>
+        <Box w={isOpen ? 'auto' : '100px'} h={isOpen ? 'auto' : '100px'} minWidth={isOpen ? '250px' : '100px'} className={boxGlow} bgGradient={bgCardOn} borderColor={buttonText3} m={4} borderWidth='2px' borderRadius='16px'>
             
             {isOpen ?
                 <HStack mb='-80px' p={4} justifyContent='space-between'>
@@ -226,8 +226,8 @@ export function CharCard(props: any) {
                 </HStack>
             : null}
 
-            <Container pb={0} pt={0} pl={0} pr={0} centerContent>
-                <Image position={isOpen ? undefined : 'absolute'} zIndex={2} mt={isOpen ? '24px' : '-1px'} w={isOpen ? '150px' : '99px'} onClick={onToggle} borderRadius='15.5px' alt={unitName} src={image} />
+            <Container mt={isOpen ? '20px' : 0} centerContent>
+                <Image position={isOpen ? undefined : 'absolute'} zIndex={2} mt={isOpen ? '24px' : '-1px'} w={isOpen ? '140px' : '99px'} onClick={onToggle} borderRadius='15.5px' alt={unitName} src={image} />
                 {isOpen ?
                 <Box mt={-0.3} position="relative" py={0.5} px={2} bgGradient={bgCardOn} borderColor={buttonText3} borderTopWidth='0px' borderBottomWidth='0.5px' borderLeftWidth='0.5px' borderRightWidth='0.5px' borderBottomRadius='xl' borderTopRadius='sm'>
                     <Text className={gradientText} fontSize='12px'>{metadata.Name ? metadata.Name : unitName}</Text>

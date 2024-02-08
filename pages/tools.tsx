@@ -21,6 +21,7 @@ import MintCollection from 'components/MainTools/MintCollection'
 import MassNFDSearch from 'components/MainTools/MassNFDSearch'
 import MassClawback from 'components/MainTools/MassClawback'
 import Notify from 'components/MainTools/Notify'
+import Link from 'next/link'
 
 export default function Tools() {
   const { isActive } = useWallet()
@@ -56,7 +57,10 @@ export default function Tools() {
           <Connect />
         </Center>
       )}
-      <Center my='48px'>
+      <Center my={6}>
+        <Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link>
+      </Center>
+      <Center mb='48px'>
         <SimpleGrid w='95%' minChildWidth='360px' spacing='24px' justifyItems='center'>
           {isActive ? (
             <>
