@@ -9,6 +9,7 @@ import axios from 'axios'
 import { rateLimiter } from 'lib/ratelimiter'
 import { useWallet } from '@txnlab/use-wallet'
 import { getProfile } from './components/Tools/getUserProfile'
+import { combineImages } from './components/Tools/combineImages'
 
 const ManageCharacter: React.FC = () => {
   const xLightColor = useColorModeValue('orange.100','cyan.100')
@@ -72,7 +73,16 @@ async function getKinship(asset_id: any): Promise<number> {
   }
   return 0
 }
-  
+const getFinalImage = async (image: any, bg_image: any) => {
+  try {
+    const finalImageDataURL = await combineImages(image, bg_image)
+    return finalImageDataURL
+  } catch (error) {
+    console.error('Error combining images:', error)
+    return image
+  }
+}
+
 const process_asset = useCallback(async (assets: any, profile: any) => {
     const processedAssets = []
   
@@ -91,15 +101,17 @@ const process_asset = useCallback(async (assets: any, profile: any) => {
           const metadata_decoded_asset = JSON.parse(Buffer.from(atob(note), 'utf-8').toString('utf-8'))
           let bg_image = '-'
           let bg_name = '-'
+          let finalImage = assetImage
           if (metadata_decoded_asset.properties.Background && metadata_decoded_asset.properties.Background !== '-') {
             const bgInfo = await rateLimiter(
               () => algodClient.getAssetByID(metadata_decoded_asset.properties.Background).do()
             )
             bg_image = 'https://cloudflare-ipfs.com/ipfs/' + bgInfo.params.url.substring(7)
             bg_name = bgInfo.params['name']
+            finalImage = await getFinalImage(assetImage, bg_image)
           }
           const kinship_seconds = await getKinship(singleAsset['asset-id'])
-          processedAssets.push([metadata_decoded_asset.properties, singleAsset['asset-id'], assetInfo.params['name'], assetInfo.params['unit-name'], assetImage, bg_image, bg_name, kinship_seconds, profile])
+          processedAssets.push([metadata_decoded_asset.properties, singleAsset['asset-id'], assetInfo.params['name'], assetInfo.params['unit-name'], finalImage, bg_image, bg_name, kinship_seconds, profile])
         } else {
           console.log('Error fetching data from API for asset ID', singleAsset['asset-id'])
         }
