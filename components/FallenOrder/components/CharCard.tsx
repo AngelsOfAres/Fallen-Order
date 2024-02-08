@@ -15,7 +15,7 @@ import { formatAssetBalance } from 'utils'
 import { useEffect, useCallback } from 'react'
 import EquipCharacter from './ManageChar/EquipChar'
 import { formatDuration } from 'utils/formatTimer'
-import { MdKeyboardDoubleArrowUp, MdOutlineStar } from 'react-icons/md'
+import { MdKeyboardDoubleArrowUp, MdOutlineStar, MdPersonOff } from 'react-icons/md'
 import toast from 'react-hot-toast'
 import { XMarkIcon } from '@heroicons/react/20/solid'
 import { combineImages } from './Tools/combineImages'
@@ -70,6 +70,7 @@ export function CharCard(props: any) {
     const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
     const { isOpen: isLevelConfirmOpen, onOpen: onLevelConfirmOpen, onClose: onLevelConfirmClose } = useDisclosure()
     const { isOpen: isBoostConfirmOpen, onOpen: onBoostConfirmOpen, onClose: onBoostConfirmClose } = useDisclosure()
+    const { isOpen: isMainRemoveOpen, onOpen: onMainRemoveOpen, onClose: onMainRemoveClose } = useDisclosure()
     const { isOpen: isEquipOpen, onOpen: onEquipOpen, onClose: onEquipClose } = useDisclosure()
     const { isOpen: isMainOpen, onOpen: onMainOpen, onClose: onMainClose } = useDisclosure()
     const { isOpen: isAbsorbOpen, onOpen: onAbsorbOpen, onClose: onAbsorbClose } = useDisclosure()
@@ -175,6 +176,7 @@ export function CharCard(props: any) {
     const handleMainSelect = async (type: any) => {
         setLoading(true)
         onMainClose()
+        onMainRemoveClose()
         try {
           if (!activeAddress) {
             throw new Error('Log In First Please!!')
@@ -201,12 +203,12 @@ export function CharCard(props: any) {
           toast.error('Oops! Main Character Assign Failed!', { id: 'txn' })
           return
         }
-        toast.success(`Main Character Assigned!`, {
+        toast.success(`Main Character ${type == 'add' ? 'Assigned' : 'Removed'}!`, {
           id: 'txn',
           duration: 5000
         })
         setPopTitle('Success')
-        setPopMessage('Main Character Assigned!')
+        setPopMessage(`Main Character ${type == 'add' ? 'Assigned' : 'Removed'}!`)
         onSuccessOpen()
       }
 
@@ -216,9 +218,23 @@ export function CharCard(props: any) {
             {isOpen ?
                 <HStack mb='-80px' p={4} justifyContent='space-between'>
                     {userProfile ?
+                    <>
                         <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' textAlign='center' hasArrow label={userProfile.main_character === asset_id ? 'Remove Main' : 'Assign Main!'} aria-label='Tooltip'>
-                            <div><IconGlowButton icon={userProfile.main_character === asset_id ? XMarkIcon : MdOutlineStar} onClick={() => userProfile.main_character === asset_id ? handleMainSelect('remove') : onMainOpen()} disabled={loading} /></div>
+                            <div><IconGlowButton icon={userProfile.main_character === asset_id ? MdPersonOff : MdOutlineStar} onClick={() => userProfile.main_character === asset_id ? onMainRemoveOpen() : onMainOpen()} disabled={loading} /></div>
                         </Tooltip>
+                        <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isMainRemoveOpen} onClose={onMainRemoveClose}>
+                        <ModalOverlay backdropFilter='blur(10px)'/>
+                        <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
+                            <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Remove Main Character</ModalHeader>
+                            <ModalBody>
+                                <Text textAlign='center' textColor={buttonText4} fontSize='12px'>5 $EXP will be clawed back from your account</Text>
+                            </ModalBody>
+                            <ModalFooter mb={2}>
+                                <FullGlowButton text='Confirm!' onClick={() => handleMainSelect('remove')} />
+                            </ModalFooter>
+                        </ModalContent>
+                        </Modal>
+                    </>
                     : null}
 
                     <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='12px' textAlign='center' hasArrow label={'Absorb Kinship/Skills!'} aria-label='Tooltip'>
