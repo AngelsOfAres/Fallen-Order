@@ -51,9 +51,9 @@ export default function Guide() {
                   </Box>
                 </HStack>
                 <Center>
-                <Text mt={3} mb={2} fontSize='24px' className={gradientText}>
-                  Deep Dive!
-                </Text>
+                  <Text mt={3} mb={2} fontSize='24px' className={gradientText}>
+                    Deep Dive!
+                  </Text>
                 </Center>
                 <Tabs w='90%' isFitted size='xs' variant='enclosed' borderColor={colorText2}>
                   <TabList fontWeight='bold' className={gradientText}>

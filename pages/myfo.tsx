@@ -148,9 +148,7 @@ export default function MyFO() {
       try {
         const profile = await getProfile(activeAddress)
         setUserProfile(profile || null)
-        if (!profile) {
-          onOpen1()
-        } else {
+        if (profile) {
           setFinalImage(profile.mainImage)
           getFinalImage(profile.mainImage, profile.bgImage)
         }
@@ -159,7 +157,7 @@ export default function MyFO() {
         console.error("Error fetching profile:", error)
       }
     }
-  }, [onOpen1, activeAddress, getFinalImage])
+  }, [activeAddress, getFinalImage])
 
   useEffect(() => {
     if (assetList && assetList.length > 0) {
