@@ -49,10 +49,8 @@ import { BiMessageRounded } from 'react-icons/bi'
               >
               <Icon boxSize={6} as={BiMessageRounded} />
             </MenuButton>
-            <MenuList 
-      position="fixed"
-      top="0"
-      right="-152px" w='340px' className={boxGlow} zIndex={999} pb={-2} mr={3} mt={6} borderRadius='20px' background='black' borderColor={buttonText3}>
+            <MenuList position="fixed" top="0" right="-152px" w='340px' className={boxGlow} zIndex={999} pb={-2} mr={3} mt={6} borderRadius='20px'
+              background='black' borderColor={buttonText3}>
               <Center><ForumPopup /></Center>
             </MenuList>
           </Menu>

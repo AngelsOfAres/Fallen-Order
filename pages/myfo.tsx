@@ -56,7 +56,20 @@ export default function MyFO() {
   const { isOpen: isOpen3, onOpen: onOpen3, onClose: onClose3 } = useDisclosure()
   const { isOpen: isOpen4, onOpen: onOpen4, onClose: onClose4 } = useDisclosure()
   const { isOpen: isOpenFrozen, onOpen: onOpenFrozen, onClose: onCloseFrozen } = useDisclosure()
-  const { isOpen: isOpenFrozenPopup, onOpen: onOpenFrozenPopup, onClose: onCloseFrozenPopup } = useDisclosure()
+  const [isOpenFrozenPopup, setIsOpenFrozenPopup] = useState(Array(frozen.length).fill(false));
+
+  const onOpenFrozenPopup = (index: any) => {
+    const newIsOpenFrozenPopup = [...isOpenFrozenPopup]
+    newIsOpenFrozenPopup[index] = true
+    setIsOpenFrozenPopup(newIsOpenFrozenPopup)
+  }
+
+  const onCloseFrozenPopup = (index: any) => {
+    const newIsOpenFrozenPopup = [...isOpenFrozenPopup]
+    newIsOpenFrozenPopup[index] = false
+    setIsOpenFrozenPopup(newIsOpenFrozenPopup)
+  }
+
   const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
   const buttonText3 = useColorModeValue('orange.500','cyan.500')
   const buttonText4 = useColorModeValue('orange.200','cyan.100')
@@ -99,7 +112,9 @@ export default function MyFO() {
     }, 8000)
   }
 
-  const handleUnfreezeAsset = async (assetID: any) => {
+  const handleUnfreezeAsset = async (index: any, assetID: any) => {
+    console.log(assetID)
+    return
     setLoading(true)
     if (!activeAddress || !authUser) {
       throw new Error('Log In First Please!!')
@@ -124,7 +139,7 @@ export default function MyFO() {
         return
     } finally {
       setLoading(false)
-      onCloseFrozenPopup()
+      onCloseFrozenPopup(index)
     }
   }
 
@@ -409,23 +424,23 @@ export default function MyFO() {
                         {frozen.map((asset: any, index: any) => (
                               <VStack key={index} justifyContent='center'>
                                 <Image _hover={{ boxSize: '24' }} className={boxGlow} boxSize='20' borderRadius='8px' alt={asset.asset.params.name}
-                                  src={'https://cloudflare-ipfs.com/ipfs/' + asset.asset.params.url.substring(7)} onClick={onOpenFrozenPopup} />
+                                  src={'https://cloudflare-ipfs.com/ipfs/' + asset.asset.params.url.substring(7)} onClick={() => onOpenFrozenPopup(index)} />
                                 <Text fontSize='12px' textColor={buttonText4}>
                                 {asset.asset.params['unit-name']}
                                 </Text>
 
-                                <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpenFrozenPopup} onClose={onCloseFrozenPopup}>
+                                <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpenFrozenPopup[index]} onClose={() => onCloseFrozenPopup(index)}>
                                 <ModalOverlay backdropFilter='blur(10px)'/>
                                 <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
                                     <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Confirm Melt!</ModalHeader>
                                     <ModalBody>
                                       <VStack mx={4} alignItems='center' justifyContent='center'>
                                         <Text pb={4} fontSize='16px' textAlign='center' textColor={buttonText4}>This will unfreeze the asset from your account.<br />Be aware that any listings and equips involving this asset will be cleared.</Text>
-                                        <FullGlowButton text={loading ? 'Melting...' : 'Melt!'} onClick={() => handleUnfreezeAsset(asset.asset.index)} disabled={loading} />
+                                        <FullGlowButton text={loading ? 'Melting...' : 'Melt!'} onClick={() => handleUnfreezeAsset(index, asset.asset.index)} disabled={loading} />
                                       </VStack>
                                     </ModalBody>
                                     <ModalFooter>
-                                        <FullGlowButton text='X' onClick={onCloseFrozenPopup} />
+                                        <FullGlowButton text='X' onClick={() => onCloseFrozenPopup(index)} />
                                     </ModalFooter>
                                 </ModalContent>
                                 </Modal>
