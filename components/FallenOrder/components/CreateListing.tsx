@@ -50,7 +50,7 @@ export function CreateListing() {
               setLoading(false)
             })
         }
-      }, [assetList])
+      }, [assetList, activeAddress])
 
       const openListingPopup = (index: any) => {
         setOpenPopupIndex(index)

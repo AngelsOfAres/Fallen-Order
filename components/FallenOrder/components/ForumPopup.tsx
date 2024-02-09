@@ -25,16 +25,16 @@ export default function ForumPopup() {
   const { activeAddress } = useWallet()
   const { expBal } = useWalletBalance()
   const [message, setMessage] = useState<any>('')
+  const [currentRound, setCurrentRound] = useState<number>(0)
   const apiUrl = 'https://mainnet-idx.algonode.cloud/v2/transactions?tx-type=axfer&asset-id=811721471&address=FQA75PMGC6WD24GGGBKZQVBXPBPYPBNWVI3WAOA7EX26LFDFUPPPI636LM'
   const [data, setData] = useState<any>([])
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   useEffect(() => {
-    const fetchDataAndSetState = async () => {
-      const newData = await fetchData()
-      setData(newData)
-    };
-    fetchDataAndSetState()
+    fetchData()
+    const intervalId = setInterval(fetchPeriodically, 5000)
+    
+    return () => clearInterval(intervalId)
   }, [])
 
   const removeExtraLineBreaks = (text: any) => {
@@ -47,10 +47,10 @@ export default function ForumPopup() {
   }
   const cleanedNote = atob(note)
   return cleanedNote
-  };
+  }
 
   const loadNextPage = async () => {
-    const nextPageData = await fetchNextPage(currentPage)
+    const nextPageData = await fetchNextPage()
     if (nextPageData !== null) {
       setData((prevData: any) => [...prevData, ...nextPageData])
       setCurrentPage(prevPage => prevPage + 1)
@@ -59,25 +59,49 @@ export default function ForumPopup() {
     }
   }
 
-  const fetchData = async (): Promise<any> => {
+  const fetchData = async () => {
     try {
       const response = await fetch(apiUrl)
       if (!response.ok) {
-        return null
+        throw new Error('Failed to fetch data')
       }
-      const data = await response.json()
-      return data.transactions
+      const responseData = await response.json()
+      const transactions = responseData.transactions
+      if (transactions.length > 0) {
+        setCurrentRound(transactions[0]['confirmed-round'])
+        setData(transactions)
+      }
     } catch (error) {
       console.error('Error fetching data:', error)
-      return []
     }
-  }
+  };
 
-  const fetchNextPage = async (currentPage: number): Promise<any> => {
+  const fetchPeriodically = async () => {
     try {
-      const response = await fetch(apiUrl + `?next=${currentPage + 1}`)
-      const data = await response.json()
-      return data
+      const response = await fetch(apiUrl)
+      if (!response.ok) {
+        throw new Error('Failed to fetch data')
+      }
+      const responseData = await response.json()
+      const transactions = responseData.transactions
+      if (transactions.length > 0 && transactions[0]['confirmed-round'] > currentRound) {
+        setCurrentRound(transactions[0]['confirmed-round'])
+        setData((data: any) => [...transactions.filter((transaction: any) => transaction['confirmed-round'] > currentRound), ...data])
+      }
+    } catch (error) {
+      console.error('Error fetching data periodically:', error)
+    }
+  };
+
+  const fetchNextPage = async (): Promise<any[]> => {
+    try {
+      const response = await fetch(`${apiUrl}?next=${currentPage + 1}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch next page data')
+      }
+      const responseData = await response.json()
+      setCurrentPage((prevPage) => prevPage + 1)
+      return responseData.transactions;
     } catch (error) {
       console.error('Error fetching next page data:', error)
       return []
