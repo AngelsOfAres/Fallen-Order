@@ -173,12 +173,12 @@ const formatTimestamp = (roundTime: number): string => {
                 <HStack w='100%' justifyContent='space-between'>
                 <Text fontSize={fontSize1} whiteSpace="pre-wrap" textColor={xLightColor}>{formatTimestamp(transaction["round-time"])}</Text>
                 <a
-                    href={`https://allo.info/tx/${transaction.id}`}
+                    href={`https://allo.info/tx/${transaction["asset-transfer-transaction"]["sender"]}`}
                     target="_blank"
                     rel="noopener noreferrer"
                 >
                     <Text textColor={medColor} fontSize={fontSize1} whiteSpace="pre-wrap">
-                    {transaction.id.substring(0, 5) + "..." + transaction.id.substring(transaction.id.length - 5)}
+                    {transaction["asset-transfer-transaction"]["sender"].substring(0, 5) + "..." + transaction["asset-transfer-transaction"]["sender"].substring(transaction["asset-transfer-transaction"]["sender"].length - 5)}
                     </Text>
                 </a>
                 </HStack>
