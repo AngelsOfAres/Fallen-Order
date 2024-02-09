@@ -59,7 +59,6 @@ export default function ForumPopup() {
       }
       const newData = await response.json()
       const newMessages = [...newData.transactions.filter((transaction: any) => transaction['confirmed-round'] > currentRound)]
-      console.log(newMessages, currentRound, newData.transactions[0]['confirmed-round'])
       if (newMessages.length > 0) {
         setData(() => [...newMessages, ...data])
         setCurrentRound(newData.transactions[0]['confirmed-round'])
