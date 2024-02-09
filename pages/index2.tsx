@@ -46,8 +46,9 @@ export default function FOWelcome() {
 
                 <Text mb='24px' className={gradientText} fontSize={'32px'}>FALLEN ORDER</Text>
 
-                <Center><Link href='/join'><FullGlowButton fontsize='36px' text='Tutorial' /></Link></Center>
+                <Center><Link href='/join'><FullGlowButton fontsize='36px' text='Join The Order' /></Link></Center>
                 <Center><Link href='/home'><FullGlowButton fontsize='36px' text='Home Page' /></Link></Center>
+                <Center><Link href='/onboard'><FullGlowButton fontsize='36px' text='Get Algorand Wallet' /></Link></Center>
 
             </VStack>
             </Flex>

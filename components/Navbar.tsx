@@ -13,42 +13,65 @@ import {
     MenuDivider,
     useColorModeValue,
     useColorMode,
+    Icon,
   } from '@chakra-ui/react';
   import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon, InfoIcon, UpDownIcon } from '@chakra-ui/icons'
   import styles from '../styles/glow.module.css'
 import Connect from './MainTools/Connect'
+import ForumPopup from './FallenOrder/components/ForumPopup'
+import { BiMessageRounded } from 'react-icons/bi'
 
   export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode()
   const navBG = useColorModeValue(styles.navglowL, styles.navglowD)
+  const buttonText3 = useColorModeValue('orange.500','cyan.500')
 
     return (
       <>
     <Flex className={navBG} w="100%" h="64px" alignItems="center" justifyContent="space-between">
-        <Button ml={2} _hover={{textColor:'white'}} _active={{bgColor:'transparent'}} textColor='black' fontSize='14px' fontFamily="Orbitron" size='md' bgColor='transparent' onClick={toggleColorMode}>
-                  {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-            </Button>
         <Link href='/'>
         <Image
           src="/logo.svg"
           alt="Fallen Order"
           w="60px"
+          ml={4}
         />
         </Link>
-        <Menu>
-          <MenuButton
-            _hover={{textColor:'white'}} _active={{bgColor:'transparent'}} textColor='black' fontSize='14px' fontFamily="Orbitron" size='md' bgColor='transparent' 
-            as={Button}
-            cursor={'pointer'}
-            minW={0}
-            mr={2}
-            >
-            <HamburgerIcon />
-          </MenuButton>
-          <MenuList zIndex={999} p={0} m={3} borderRadius='20px'>
-            <Connect />
-          </MenuList>
-        </Menu>
+        
+        <HStack w='100%' justifyContent='flex-end'>
+          <Menu>
+            <MenuButton
+              _hover={{textColor:'white'}} _active={{bgColor:'transparent'}} textColor='black' fontSize='14px' fontFamily="Orbitron" size='md' bgColor='transparent' 
+              as={Button}
+              cursor={'pointer'}
+              minW={0}
+              >
+              <Icon boxSize={6} as={BiMessageRounded} />
+            </MenuButton>
+            <MenuList zIndex={999} px={4} pb={4} mr={3} mt={6} borderRadius='20px' background='black' borderColor={buttonText3}>
+              <Center><ForumPopup /></Center>
+            </MenuList>
+          </Menu>
+
+          <Button ml={2} _hover={{textColor:'white'}} _active={{bgColor:'transparent'}} textColor='black' fontSize='14px' fontFamily="Orbitron" size='md' bgColor='transparent' onClick={toggleColorMode}>
+            {colorMode === 'light' ? <MoonIcon boxSize={6}/> : <SunIcon boxSize={6} />}
+          </Button>
+
+          <Menu>
+            <MenuButton
+              _hover={{textColor:'white'}} _active={{bgColor:'transparent'}} textColor='black' fontSize='14px' fontFamily="Orbitron" size='md' bgColor='transparent' 
+              as={Button}
+              cursor={'pointer'}
+              minW={0}
+              mr={2}
+              >
+              <HamburgerIcon boxSize={6}/>
+            </MenuButton>
+            <MenuList zIndex={999} p={0} m={6} borderRadius='20px'>
+              <Connect />
+            </MenuList>
+          </Menu>
+        </HStack>
     </Flex>
       </>
     )

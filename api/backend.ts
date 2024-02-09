@@ -308,3 +308,17 @@ export async function enterNothing(wallet: any, txId: any) {
     console.error(error)
   }
 }
+
+export async function sendForumMessage(wallet: any, message: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      message: message
+    }
+
+    const response = await fetchDataFromBackend('misc/sendforummessage', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}

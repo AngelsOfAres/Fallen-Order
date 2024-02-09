@@ -34,6 +34,7 @@ import Link from 'next/link'
 import { BsShop } from 'react-icons/bs'
 import { GiMeltingIceCube } from 'react-icons/gi'
 import { PiUserCirclePlusFill } from 'react-icons/pi'
+import MyBalancesTab from 'components/FallenOrder/components/MyBalancesTab'
 
 export default function MyFO() {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
@@ -357,7 +358,8 @@ export default function MyFO() {
           </>
         :
         <>
-            <Flex pt={6} flexDirection="row" flexWrap="wrap" justifyContent='center' gap='16px'>
+          <Center mt={6}><MyBalancesTab /></Center>
+            <Flex flexDirection="row" flexWrap="wrap" justifyContent='center' gap='16px'>
               {!loading ?
               <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={userProfile ? 'My Profile' : 'Create Profile!'} aria-label='Tooltip'>
                 <motion.div
@@ -383,7 +385,6 @@ export default function MyFO() {
               
               <CreateListing />
               
-              <MyBalances />
 
               <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Log Out'} aria-label='Tooltip'>
                 <div><IconGlowButton2 icon={TbPlugConnectedX} onClick={handleLogout} /></div>
@@ -402,6 +403,8 @@ export default function MyFO() {
                 <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Melt Item</ModalHeader>
                 <ModalBody>
                   <VStack m={1} alignItems='center' justifyContent='center' spacing='10px'>
+                      <Text pb={4} fontSize='14px' textAlign='center' textColor={buttonText4}>Melting an item will unplug it from the Fallen Order ecosystem</Text>
+                      <Text pb={4} fontSize='14px' textAlign='center' textColor={'red'}>Only use this function if you intend to manually transfer your assets!</Text>
                       <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
                         {frozen.map((asset: any, index: any) => (
                               <VStack key={index} justifyContent='center'>
