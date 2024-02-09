@@ -30,13 +30,6 @@ export default function ForumPopup() {
   const [data, setData] = useState<any>([])
   const [currentPage, setCurrentPage] = useState<number>(1)
 
-  useEffect(() => {
-    fetchData()
-    const intervalId = setInterval(fetchPeriodically, 5000)
-    
-    return () => clearInterval(intervalId)
-  }, [])
-
   const removeExtraLineBreaks = (text: any) => {
     return text.replace(/\n{2,}/g, '\n')
   }
@@ -49,62 +42,52 @@ export default function ForumPopup() {
   return cleanedNote
   }
 
+  useEffect(() => {
+    const intervalId = setInterval(fetchData, 5000)
+    return () => clearInterval(intervalId)
+  }, [])
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  const fetchData = async (): Promise<any> => {
+    try {
+      const response = await fetch(apiUrl)
+      if (!response.ok) {
+        return null
+      }
+      const newData = await response.json()
+      const newMessages = [...newData.transactions.filter((transaction: any) => transaction['confirmed-round'] > currentRound)]
+      console.log(newMessages, currentRound, newData.transactions[0]['confirmed-round'])
+      if (newMessages.length > 0) {
+        setData(() => [...newMessages, ...data])
+        setCurrentRound(newData.transactions[0]['confirmed-round'])
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error)
+      return []
+    }
+  }
+
+  const fetchNextPage = async (currentPage: number): Promise<any> => {
+    try {
+      const response = await fetch(apiUrl + `?next=${currentPage + 1}`)
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching next page data:', error)
+      return []
+    }
+  }
+
   const loadNextPage = async () => {
-    const nextPageData = await fetchNextPage()
+    const nextPageData = await fetchNextPage(currentPage)
     if (nextPageData !== null) {
       setData((prevData: any) => [...prevData, ...nextPageData])
       setCurrentPage(prevPage => prevPage + 1)
     } else {
       console.log('No more data to fetch')
-    }
-  }
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch(apiUrl)
-      if (!response.ok) {
-        throw new Error('Failed to fetch data')
-      }
-      const responseData = await response.json()
-      const transactions = responseData.transactions
-      if (transactions.length > 0) {
-        setCurrentRound(transactions[0]['confirmed-round'])
-        setData(transactions)
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error)
-    }
-  };
-
-  const fetchPeriodically = async () => {
-    try {
-      const response = await fetch(apiUrl)
-      if (!response.ok) {
-        throw new Error('Failed to fetch data')
-      }
-      const responseData = await response.json()
-      const transactions = responseData.transactions
-      if (transactions.length > 0 && transactions[0]['confirmed-round'] > currentRound) {
-        setCurrentRound(transactions[0]['confirmed-round'])
-        setData((data: any) => [...transactions.filter((transaction: any) => transaction['confirmed-round'] > currentRound), ...data])
-      }
-    } catch (error) {
-      console.error('Error fetching data periodically:', error)
-    }
-  };
-
-  const fetchNextPage = async (): Promise<any[]> => {
-    try {
-      const response = await fetch(`${apiUrl}?next=${currentPage + 1}`)
-      if (!response.ok) {
-        throw new Error('Failed to fetch next page data')
-      }
-      const responseData = await response.json()
-      setCurrentPage((prevPage) => prevPage + 1)
-      return responseData.transactions;
-    } catch (error) {
-      console.error('Error fetching next page data:', error)
-      return []
     }
   }
 
