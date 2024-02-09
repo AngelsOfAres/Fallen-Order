@@ -132,15 +132,17 @@ const formatTimestamp = (roundTime: number): string => {
 
     return (
       <>
-        <Box justifyContent='center'>
-            <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5}
-            bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow
-            label={'$EXP Balance'} aria-label='Tooltip'>
-                <HStack mb={-6} spacing='2px' justifyContent='flex-start'>
-                    <Image boxSize='10px' alt='$EXP Balance' src='exp.png' />
-                    <Text fontSize='9px' textColor={buttonText5}>{expBal}</Text>
-                </HStack>
-            </Tooltip>
+        <Box px={4} h='300px' w='100%' justifyContent='center' overflow='scroll'
+        css={`
+            /* Hide scrollbar display */
+            ::-webkit-scrollbar {
+            display: none;
+            }
+        `}>
+            <HStack mb={-6} spacing='2px' justifyContent='flex-start'>
+                <Image boxSize='12px' alt='$EXP Balance' src='exp.png' />
+                <Text fontSize='11px' textColor={buttonText5}>{expBal}</Text>
+            </HStack>
             <HStack mt={6} w='100%' justifyContent='center'>
             <VStack w='full'>
                 <Textarea
@@ -168,7 +170,7 @@ const formatTimestamp = (roundTime: number): string => {
             {data
             .filter((transaction: any) => transaction['asset-transfer-transaction']['amount'] == 1)
             .map((transaction: any, index: any) => (
-            <Box key={index} className={boxGlow} mt={4} py={1} px={2} w='100%' borderColor={buttonText3} borderRadius='xl' borderWidth='1px'>
+            <Box key={index} className={boxGlow} my={2} py={1} px={2} w='100%' borderColor={buttonText3} borderRadius='xl' borderWidth='1px'>
 
                 <HStack w='100%' justifyContent='space-between'>
                 <Text fontSize={fontSize1} whiteSpace="pre-wrap" textColor={xLightColor}>{formatTimestamp(transaction["round-time"])}</Text>
@@ -189,7 +191,7 @@ const formatTimestamp = (roundTime: number): string => {
             ))}
         </Box>
         {data.length >= 1000 ?
-        <IconGlowButton icon={TfiMoreAlt} onClick={loadNextPage} />
+            <IconGlowButton icon={TfiMoreAlt} onClick={loadNextPage} />
         : null}
     </>
     );

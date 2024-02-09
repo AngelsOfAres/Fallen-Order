@@ -25,6 +25,7 @@ import { BiMessageRounded } from 'react-icons/bi'
   const { colorMode, toggleColorMode } = useColorMode()
   const navBG = useColorModeValue(styles.navglowL, styles.navglowD)
   const buttonText3 = useColorModeValue('orange.500','cyan.500')
+  const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
 
     return (
       <>
@@ -48,7 +49,10 @@ import { BiMessageRounded } from 'react-icons/bi'
               >
               <Icon boxSize={6} as={BiMessageRounded} />
             </MenuButton>
-            <MenuList zIndex={999} px={4} pb={4} mr={3} mt={6} borderRadius='20px' background='black' borderColor={buttonText3}>
+            <MenuList 
+      position="fixed"
+      top="0"
+      right="-152px" w='340px' className={boxGlow} zIndex={999} pb={-2} mr={3} mt={6} borderRadius='20px' background='black' borderColor={buttonText3}>
               <Center><ForumPopup /></Center>
             </MenuList>
           </Menu>
