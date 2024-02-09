@@ -92,6 +92,7 @@ export default function ForumPopup() {
 
   async function handleSendMessage() {
     setLoading(true)
+    setMessage('')
     toast.loading('Sending Message...', { id: 'txn', duration: Infinity })
     try{
         const data = await sendForumMessage(activeAddress, message)
