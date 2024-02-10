@@ -14,6 +14,7 @@ export default function ForumPopup() {
   const buttonText3 = useColorModeValue('orange.500','cyan.500')
   const buttonText4 = useColorModeValue('orange.200','cyan.100')
   const xLightColor = useColorModeValue('orange.100','cyan.100')
+  const mLightColor = useColorModeValue('orange.200','cyan.200')
   const medColor = useColorModeValue('orange.500','cyan.500')
   const buttonText5 = useColorModeValue('orange','cyan')
   const fontSize1 = useBreakpointValue({ base: '6px', sm: '8px', md: '9px', lg: '10px', xl: '11px' })
@@ -180,19 +181,19 @@ const formatTimestamp = (roundTime: number): string => {
             <Box key={index} className={boxGlow} my={2} py={1} px={2} w='100%' borderColor={buttonText3} borderRadius='xl' borderWidth='1px'>
 
                 <HStack w='100%' justifyContent='space-between'>
-                <Text fontSize={fontSize1} whiteSpace="pre-wrap" textColor={xLightColor}>{formatTimestamp(transaction["round-time"])}</Text>
+                <Text fontSize={fontSize1} whiteSpace="pre-wrap" textColor={mLightColor}>{formatTimestamp(transaction["round-time"])}</Text>
                 <a
-                    href={`https://allo.info/tx/${transaction["asset-transfer-transaction"]["sender"]}`}
+                    href={`https://allo.info/account/${transaction["asset-transfer-transaction"]["sender"]}`}
                     target="_blank"
                     rel="noopener noreferrer"
                 >
                     <Text textColor={medColor} fontSize={fontSize1} whiteSpace="pre-wrap">
-                    {transaction["asset-transfer-transaction"]["sender"].substring(0, 5) + "..." + transaction["asset-transfer-transaction"]["sender"].substring(transaction["asset-transfer-transaction"]["sender"].length - 5)}
+                      {transaction["asset-transfer-transaction"]["sender"].substring(0, 5) + "..." + transaction["asset-transfer-transaction"]["sender"].substring(transaction["asset-transfer-transaction"]["sender"].length - 5)}
                     </Text>
                 </a>
                 </HStack>
 
-                <Text fontSize={fontSize2} whiteSpace="pre-wrap" textColor={buttonText5}>{removeExtraLineBreaks(handleNote(transaction.note))}</Text>
+                <Text fontSize={fontSize2} whiteSpace="pre-wrap" textColor={xLightColor}>{removeExtraLineBreaks(handleNote(transaction.note))}</Text>
 
             </Box>
             ))}
