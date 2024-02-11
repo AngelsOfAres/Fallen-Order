@@ -28,6 +28,8 @@ import { TbPlugConnectedX } from 'react-icons/tb'
 import MyBalancesTab from 'components/FallenOrder/components/MyBalancesTab'
 import { HiSortDescending } from "react-icons/hi"
 import { LiaRandomSolid } from "react-icons/lia"
+import { IoMdSearch } from "react-icons/io"
+import { RxCross2 } from "react-icons/rx"
 
 export default function GrandExchange() {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
@@ -43,6 +45,8 @@ export default function GrandExchange() {
   const [ priceSort, setPriceSort ] = useState<boolean>(true)
   const [ expAccepted, setExpAccepted ] = useState<boolean>(false)
   const [popMessage, setPopMessage] = useState<any>('')
+  const [filterText, setFilterText] = useState<any>('')
+  const [filterOn, setFilterOn] = useState<any>(false)
   const [listings, setListings] = useState<any>(null)
   const [myListings, setMyListings] = useState<any>([])
   const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
@@ -97,6 +101,12 @@ export default function GrandExchange() {
     const token = await authenticate(activeAddress, signTransactions)
     setAuthUser(token)
   }
+
+  const handleFilterChange = async (e: any) => {
+    setFilterText(e.target.value.toLowerCase())
+  }
+
+  console.log(listings, filterText, filterOn)
   
   return (
     <>
@@ -126,14 +136,22 @@ export default function GrandExchange() {
             <div style={{ marginTop: '-40px' }}><MyBalancesTab /></div>
             </>
             : null}
-            <Text mt={!listings ? '36px' : '0px'} mb='16px' className={`${gradientText} responsive-font`}>Grand Exchange</Text>
+            <Text mt={!listings ? '36px' : '0px'} mb='24px' className={`${gradientText} responsive-font`}>Grand Exchange</Text>
             
             {listings && !loading ?
               <>
                 <Center>
                   <HStack pb={6} pr={8} w='100%' maxW='1200px' justifyContent='flex-end'>
+
+                    {filterOn ?
+                    <Input borderColor={buttonText3} borderRadius='lg' textAlign='center' textColor={buttonText4} fontSize='12px' fontFamily="Orbitron"
+                      size='sm' placeholder={'Filter by Wallet/Name/ID'} w='250px' onChange={(e) => handleFilterChange(e)} />
+                    : null}
+                    <IconGlowButton icon={filterOn ? RxCross2 : IoMdSearch} onClick={() => setFilterOn(!filterOn)} />
+
                     <IconGlowButton icon={priceSort ? LiaRandomSolid : HiSortDescending} onClick={() => setPriceSort(!priceSort)} />
                     <Image ml={4} boxSize={'22px'} alt={'Experience Token'} src={'/exp.png'} />
+
                     <Switch ml={-1} defaultChecked={expAccepted} onChange={() => setExpAccepted(!expAccepted)} size='md' colorScheme={buttonText5} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} />
                   </HStack>
                 </Center>
@@ -165,7 +183,15 @@ export default function GrandExchange() {
                       <TabPanel my={5} w='stretch'>
                           <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
                             {listings
-                            .filter((listing: any) => allChars.includes(listing.assetID) && (expAccepted ? listing.expAccepted == 1 : true))
+                            .filter((listing: any) => 
+                            allChars.includes(listing.assetID) &&
+                            (expAccepted ? listing.expAccepted == 1 : true) &&
+                            (filterOn ? 
+                              (listing.wallet.toLowerCase().includes(filterText) || 
+                               listing.assetFullname.toLowerCase().includes(filterText) || 
+                               listing.assetID.toString().includes(filterText)) 
+                              : true)
+                            )
                             .sort((a: any, b: any) => priceSort ? a.price - b.price : Math.random() - 0.5)
                             .map((listing: any, index: any) => (
                               <div key={index}>
@@ -178,7 +204,15 @@ export default function GrandExchange() {
                       <TabPanel my={5} w='stretch'>
                         <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
                             {listings
-                            .filter((listing: any) => allBGs.includes(listing.assetID) && (expAccepted ? listing.expAccepted == 1 : true))
+                            .filter((listing: any) => 
+                            allBGs.includes(listing.assetID) &&
+                            (expAccepted ? listing.expAccepted == 1 : true) &&
+                            (filterOn ? 
+                              (listing.wallet.toLowerCase().includes(filterText) || 
+                               listing.assetFullname.toLowerCase().includes(filterText) || 
+                               listing.assetID.toString().includes(filterText)) 
+                              : true)
+                            )
                             .sort((a: any, b: any) => priceSort ? a.price - b.price : Math.random() - 0.5)
                             .map((listing: any, index: any) => (
                               <div key={index}>
@@ -191,7 +225,15 @@ export default function GrandExchange() {
                       <TabPanel my={5} w='stretch'>
                         <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
                             {listings
-                            .filter((listing: any) => allAccessories.includes(listing.assetID) && (expAccepted ? listing.expAccepted == 1 : true))
+                            .filter((listing: any) => 
+                            allAccessories.includes(listing.assetID) &&
+                            (expAccepted ? listing.expAccepted == 1 : true) &&
+                            (filterOn ? 
+                              (listing.wallet.toLowerCase().includes(filterText) || 
+                               listing.assetFullname.toLowerCase().includes(filterText) || 
+                               listing.assetID.toString().includes(filterText)) 
+                              : true)
+                            )
                             .sort((a: any, b: any) => priceSort ? a.price - b.price : Math.random() - 0.5)
                             .map((listing: any, index: any) => (
                               <div key={index}>

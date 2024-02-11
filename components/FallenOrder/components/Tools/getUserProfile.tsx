@@ -219,8 +219,9 @@ export async function getListings(): Promise<any> {
                 const expAccepted = parseInt(listing.split(',')[3])
                 const assetInfo = await algodIndexer.lookupAssetByID(assetID).do()
                 const assetName = assetInfo.asset.params['unit-name']
+                const assetFullname = assetInfo.asset.params['name']
                 const assetImage = 'https://cloudflare-ipfs.com/ipfs/' + assetInfo.asset.params.url.substring(7)
-                return { wallet: asset.params.reserve, listingID, assetID, price, assetName, assetImage, expAccepted }
+                return { wallet: asset.params.reserve, listingID, assetID, price, assetName, assetImage, expAccepted, assetFullname }
               })
   
               const processedListings = await Promise.all(listingData)

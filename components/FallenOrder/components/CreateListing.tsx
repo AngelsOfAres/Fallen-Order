@@ -14,7 +14,7 @@ import { ListingPopup } from './Popups/ListingPop'
 import { TbReportMoney } from 'react-icons/tb'
 
 export function CreateListing() {
-    const [ allInfo, setAllInfo ] = useState<any>(null)
+    const [ allInfo, setAllInfo ] = useState<any>([])
     const [ loading, setLoading ] = useState<boolean>(true)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [openPopupIndex, setOpenPopupIndex] = useState(-1)
@@ -27,7 +27,9 @@ export function CreateListing() {
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
     const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
     const { assetList } = useWalletBalance()
-    const { activeAddress } = useWallet()
+    const { activeAddress }  = useWallet()
+
+    console.log(allInfo)
 
     useEffect(() => {
         if (assetList && assetList.length > 0) {
@@ -43,6 +45,7 @@ export function CreateListing() {
           Promise.all(FOInfo)
             .then((results) => {
               setAllInfo(results.reverse())
+              console.log(results.reverse())
               setLoading(false)
             })
             .catch((error) => {
@@ -50,7 +53,7 @@ export function CreateListing() {
               setLoading(false)
             })
         }
-      }, [assetList, activeAddress])
+      }, [assetList])
 
       const openListingPopup = (index: any) => {
         setOpenPopupIndex(index)
@@ -73,7 +76,7 @@ export function CreateListing() {
                 <VStack m={1} alignItems='center' justifyContent='center' spacing='10px'>
                   {!loading ?                      
                     <>
-                      {allInfo && allInfo.length > 0 ?
+                      {allInfo.length > 0 ?
                         <>
                           <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
                             {allInfo.map((asset: any, index: any) => (
