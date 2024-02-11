@@ -8,7 +8,7 @@ import { useWallet } from '@txnlab/use-wallet'
 import Connect from 'components/MainTools/Connect'
 import MyBalances from 'components/FallenOrder/components/MyBalances'
 import { authenticate } from 'utils/auth'
-import { FullGlowButton, IconGlowButton2 } from 'components/Buttons'
+import { FullGlowButton, IconGlowButton, IconGlowButton2 } from 'components/Buttons'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { getListings, getProfile } from 'components/FallenOrder/components/Tools/getUserProfile'
@@ -25,6 +25,9 @@ import { ListingCard } from 'components/FallenOrder/components/ListingCard'
 import { MyListingCard } from 'components/FallenOrder/components/MyListingCard'
 import CreateUserProfile from 'components/FallenOrder/components/CreateUserProfile'
 import { TbPlugConnectedX } from 'react-icons/tb'
+import MyBalancesTab from 'components/FallenOrder/components/MyBalancesTab'
+import { HiSortDescending } from "react-icons/hi"
+import { LiaRandomSolid } from "react-icons/lia"
 
 export default function GrandExchange() {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
@@ -37,6 +40,8 @@ export default function GrandExchange() {
   const [popTitle, setPopTitle] = useState<any>('')
   const [ userProfile, setUserProfile ] = useState<any>(null)
   const [ loading, setLoading ] = useState<boolean>(true)
+  const [ priceSort, setPriceSort ] = useState<boolean>(true)
+  const [ expAccepted, setExpAccepted ] = useState<boolean>(false)
   const [popMessage, setPopMessage] = useState<any>('')
   const [listings, setListings] = useState<any>(null)
   const [myListings, setMyListings] = useState<any>([])
@@ -113,32 +118,23 @@ export default function GrandExchange() {
         <>
           {listings ?
             <>
-              <Center m={6}>
-                <HStack spacing='16px'>
-                    {userProfile ?
-                      <CreateListing />
-                    :
-                    <>
-                      <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Create Profile!'} aria-label='Tooltip'>
-                          <div><IconGlowButton2 icon={PiUserCirclePlusFill} onClick={onOpen1} /></div>
-                      </Tooltip>
-                      <CreateUserProfile isOpen={isOpen1} onClose={onClose1} />
-                    </>
-                    }
-                    
-                    <MyBalances />
-
-                    <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Log Out'} aria-label='Tooltip'>
-                      <div><IconGlowButton2 icon={TbPlugConnectedX} onClick={handleLogout} /></div>
-                    </Tooltip>
-                </HStack>
-              </Center>
+            <div style={{ margin: 10, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+              <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Log Out'} aria-label='Tooltip'>
+                <div><IconGlowButton2 icon={TbPlugConnectedX} onClick={handleLogout} /></div>
+              </Tooltip>
+            </div>
+            <div style={{ marginTop: '-40px' }}><MyBalancesTab /></div>
             </>
             : null}
-            <Text mt={!listings ? '36px' : '0px'} mb='36px' className={`${gradientText} responsive-font`}>Grand Exchange</Text>
+            <Text mt={!listings ? '36px' : '0px'} mb='16px' className={`${gradientText} responsive-font`}>Grand Exchange</Text>
             
             {listings && !loading ?
               <>
+                <HStack pb={6} pr={8} w='100%' justifyContent='flex-end'>
+                  <IconGlowButton icon={priceSort ? LiaRandomSolid : HiSortDescending} onClick={() => setPriceSort(!priceSort)} />
+                  <Image ml={4} boxSize={'22px'} alt={'Experience Token'} src={'/exp.png'} />
+                  <Switch ml={-1} defaultChecked={expAccepted} onChange={() => setExpAccepted(!expAccepted)} size='md' colorScheme={buttonText5} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} />
+                </HStack>
                 <Center px='24px' w='100%'>
                   <Tabs w='100%' maxW='1200px' isFitted size='xs' variant='enclosed' borderColor={buttonText3}>
                     <TabList fontFamily="Orbitron" fontWeight='bold' textColor={buttonText4}>
@@ -167,7 +163,8 @@ export default function GrandExchange() {
                       <TabPanel my={5} w='stretch'>
                           <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
                             {listings
-                            .filter((listing: any) => allChars.includes(listing.assetID))
+                            .filter((listing: any) => allChars.includes(listing.assetID) && (expAccepted ? listing.expAccepted == 1 : true))
+                            .sort((a: any, b: any) => priceSort ? a.price - b.price : Math.random() - 0.5)
                             .map((listing: any, index: any) => (
                               <div key={index}>
                                 <ListingCard listing_wallet={listing.wallet} listingID={listing.listingID} assetID={listing.assetID} price={listing.price} name={listing.assetName} image={listing.assetImage} expAccepted={listing.expAccepted}  />
@@ -179,7 +176,8 @@ export default function GrandExchange() {
                       <TabPanel my={5} w='stretch'>
                         <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
                             {listings
-                            .filter((listing: any) => allBGs.includes(listing.assetID))
+                            .filter((listing: any) => allBGs.includes(listing.assetID) && (expAccepted ? listing.expAccepted == 1 : true))
+                            .sort((a: any, b: any) => priceSort ? a.price - b.price : Math.random() - 0.5)
                             .map((listing: any, index: any) => (
                               <div key={index}>
                                 <ListingCard listing_wallet={listing.wallet} listingID={listing.listingID} assetID={listing.assetID} price={listing.price} name={listing.assetName} image={listing.assetImage} expAccepted={listing.expAccepted}  />
@@ -191,7 +189,8 @@ export default function GrandExchange() {
                       <TabPanel my={5} w='stretch'>
                         <Flex mb={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
                             {listings
-                            .filter((listing: any) => allAccessories.includes(listing.assetID))
+                            .filter((listing: any) => allAccessories.includes(listing.assetID) && (expAccepted ? listing.expAccepted == 1 : true))
+                            .sort((a: any, b: any) => priceSort ? a.price - b.price : Math.random() - 0.5)
                             .map((listing: any, index: any) => (
                               <div key={index}>
                                 <ListingCard listing_wallet={listing.wallet} listingID={listing.listingID} assetID={listing.assetID} price={listing.price} name={listing.assetName} image={listing.assetImage} expAccepted={listing.expAccepted}  />
@@ -212,9 +211,21 @@ export default function GrandExchange() {
                                 ))}
                             </Flex>
                           :
+                          <>
+                            {userProfile ?
+                              <>
+                                <Text my={4} fontSize='14px' textAlign='center' textColor={buttonText5}>You Don&apos;t Have Any Listings!</Text>
+                                <Center><CreateListing /></Center>
+                              </>
+                            :
                             <>
-                              <Text mt={4} fontSize='14px' textAlign='center' textColor={buttonText5}>You Don&apos;t Have Any Listings!</Text>
+                              <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Create Profile!'} aria-label='Tooltip'>
+                                  <div><IconGlowButton2 icon={PiUserCirclePlusFill} onClick={onOpen1} /></div>
+                              </Tooltip>
+                              <CreateUserProfile isOpen={isOpen1} onClose={onClose1} />
                             </>
+                            }
+                          </>
                           }
                       </TabPanel>
 
