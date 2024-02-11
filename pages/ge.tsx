@@ -118,7 +118,7 @@ export default function GrandExchange() {
         <>
           {listings ?
             <>
-            <div style={{ margin: 10, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+            <div style={{ margin: 12, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
               <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='12px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Log Out'} aria-label='Tooltip'>
                 <div><IconGlowButton2 icon={TbPlugConnectedX} onClick={handleLogout} /></div>
               </Tooltip>
@@ -130,11 +130,13 @@ export default function GrandExchange() {
             
             {listings && !loading ?
               <>
-                <HStack pb={6} pr={8} w='100%' justifyContent='flex-end'>
-                  <IconGlowButton icon={priceSort ? LiaRandomSolid : HiSortDescending} onClick={() => setPriceSort(!priceSort)} />
-                  <Image ml={4} boxSize={'22px'} alt={'Experience Token'} src={'/exp.png'} />
-                  <Switch ml={-1} defaultChecked={expAccepted} onChange={() => setExpAccepted(!expAccepted)} size='md' colorScheme={buttonText5} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} />
-                </HStack>
+                <Center>
+                  <HStack pb={6} pr={8} w='100%' maxW='1200px' justifyContent='flex-end'>
+                    <IconGlowButton icon={priceSort ? LiaRandomSolid : HiSortDescending} onClick={() => setPriceSort(!priceSort)} />
+                    <Image ml={4} boxSize={'22px'} alt={'Experience Token'} src={'/exp.png'} />
+                    <Switch ml={-1} defaultChecked={expAccepted} onChange={() => setExpAccepted(!expAccepted)} size='md' colorScheme={buttonText5} css={{"& .chakra-switch__thumb": {backgroundColor: "black" }}} />
+                  </HStack>
+                </Center>
                 <Center px='24px' w='100%'>
                   <Tabs w='100%' maxW='1200px' isFitted size='xs' variant='enclosed' borderColor={buttonText3}>
                     <TabList fontFamily="Orbitron" fontWeight='bold' textColor={buttonText4}>
