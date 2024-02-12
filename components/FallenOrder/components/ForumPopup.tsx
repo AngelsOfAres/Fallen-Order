@@ -149,7 +149,7 @@ const formatTimestamp = (roundTime: number): string => {
         `}>
             <HStack mb={-6} spacing='2px' justifyContent='flex-start'>
                 <Image boxSize='12px' alt='$EXP Balance' src='exp.png' />
-                <Text fontSize='11px' textColor={buttonText5}>{expBal}</Text>
+                <Text fontSize='11px' textColor={buttonText5}>{expBal == -1 ? 0 : expBal}</Text>
             </HStack>
             <HStack mt={6} w='100%' justifyContent='center'>
             <VStack w='full'>
