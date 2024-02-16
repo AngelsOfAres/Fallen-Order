@@ -51,14 +51,14 @@ export default function Home() {
                           <Box p={2} px={5}>
                               <a href='https://fallenorder.xyz/' target='_blank' rel='noreferrer'><Image borderTopRadius='xl' borderBottomRadius='xl' alt='Fallen Order' src='fallenad1.png' /></a>
                           </Box>
+                          <Box p={2} px={5}>
+                              <a href='https://app.folks.finance/algo-liquid-governance?ref=aoa' target='_blank' rel='noreferrer'><Image borderTopRadius='xl' borderBottomRadius='xl' alt='Folks Finance' src='folksad.png' /></a>
+                          </Box>
                           <Box p={6} py={2}>
                               <a href='https://algoxnft.com/shuffle/1385' target='_blank' rel='noreferrer'><Image borderTopRadius='xl' borderBottomRadius='xl' alt='Join The Pards! - AlgoPard' src='algopardad1.png' /></a>
                           </Box>
                           <Box p={2} px={5}>
                               <a href='https://angelsofares.xyz/ghost' target='_blank' rel='noreferrer'><Image borderTopRadius='xl' borderBottomRadius='xl' alt='Ghosts Of Algo' src='ghost.png' /></a>
-                          </Box>
-                          <Box p={2} px={5}>
-                              <a href='https://www.algoleagues.com/' target='_blank' rel='noreferrer'><Image borderTopRadius='xl' borderBottomRadius='xl' alt='AlgoLeagues' src='alcad.png' /></a>
                           </Box>
                         </Carousel>
                     </Box>

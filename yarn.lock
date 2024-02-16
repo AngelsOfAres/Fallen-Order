@@ -916,6 +916,14 @@
     buffer "^6.0.3"
     qr-code-styling "^1.5.0"
 
+"@deflex/deflex-sdk-js@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@deflex/deflex-sdk-js/-/deflex-sdk-js-2.0.5.tgz#10489858c2fc5b2fa2a80227f0f46b1d2e60a5fd"
+  integrity sha512-nf+v8O3xEWlqSKS9AUJxcAQ29Ky1tZkubeUwuQFYg/hwcGzqsUHQFhSzkWI48E2BPsgAa6DpSEKj9PyCUxPUFA==
+  dependencies:
+    algosdk "2.6.0"
+    axios "^0.27.2"
+
 "@emotion/babel-plugin@^11.11.0":
   version "11.11.0"
   resolved "https://registry.npmjs.org/@emotion/babel-plugin/-/babel-plugin-11.11.0.tgz"
@@ -2426,6 +2434,22 @@ algosdk@2.4.0:
     tweetnacl "^1.0.3"
     vlq "^2.0.4"
 
+algosdk@2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/algosdk/-/algosdk-2.6.0.tgz#78794a632ec2c7be209db4951e2f706b2b7f27dc"
+  integrity sha512-xYSb2xPG4nLPlJvqjA4ebR0s++YrjZK1+UfaEV84u2HkIwuRhEUmryDPcAuLIfTp3eyY99v/FduOK02K2Hnu8Q==
+  dependencies:
+    algo-msgpack-with-bigint "^2.1.1"
+    buffer "^6.0.3"
+    cross-fetch "^4.0.0"
+    hi-base32 "^0.5.1"
+    js-sha256 "^0.9.0"
+    js-sha3 "^0.8.0"
+    js-sha512 "^0.8.0"
+    json-bigint "^1.0.0"
+    tweetnacl "^1.0.3"
+    vlq "^2.0.4"
+
 ansi-regex@^5.0.1:
   version "5.0.1"
   resolved "https://registry.npmjs.org/ansi-regex/-/ansi-regex-5.0.1.tgz"
@@ -2640,6 +2664,14 @@ axe-core@^4.6.2:
   version "4.8.2"
   resolved "https://registry.npmjs.org/axe-core/-/axe-core-4.8.2.tgz"
   integrity sha512-/dlp0fxyM3R8YW7MFzaHWXrf4zzbr0vaYb23VBFCl83R7nWNPg/yaQw2Dc8jzCMmDVLhSdzH8MjrsuIUuvX+6g==
+
+axios@^0.27.2:
+  version "0.27.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.27.2.tgz#207658cc8621606e586c85db4b41a750e756d972"
+  integrity sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==
+  dependencies:
+    follow-redirects "^1.14.9"
+    form-data "^4.0.0"
 
 axios@^1.2.2:
   version "1.5.1"
@@ -3039,6 +3071,13 @@ cross-fetch@^3.1.5:
   version "3.1.8"
   resolved "https://registry.npmjs.org/cross-fetch/-/cross-fetch-3.1.8.tgz"
   integrity sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==
+  dependencies:
+    node-fetch "^2.6.12"
+
+cross-fetch@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-4.0.0.tgz#f037aef1580bb3a1a35164ea2a848ba81b445983"
+  integrity sha512-e4a5N8lVvuLgAWgnCrLr2PP0YyDOTHa9H/Rj54dirp61qXnNq46m82bRhNqIA5VccJtWBvPTFRV3TtvHUKPB1g==
   dependencies:
     node-fetch "^2.6.12"
 
@@ -3824,6 +3863,11 @@ focus-lock@^0.11.6:
   integrity sha512-KSuV3ur4gf2KqMNoZx3nXNVhqCkn42GuTYCX4tXPEwf0MjpFQmNMiN6m7dXaUXgIoivL6/65agoUMg4RLS0Vbg==
   dependencies:
     tslib "^2.0.3"
+
+follow-redirects@^1.14.9:
+  version "1.15.5"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.5.tgz#54d4d6d062c0fa7d9d17feb008461550e3ba8020"
+  integrity sha512-vSFWUON1B+yAw1VN4xMfxgn5fTUiaOzAJCKBwIIgT/+7CuGy9+r+5gITvP62j3RmaD5Ph65UaERdOSRGUzZtgw==
 
 follow-redirects@^1.15.0:
   version "1.15.3"
