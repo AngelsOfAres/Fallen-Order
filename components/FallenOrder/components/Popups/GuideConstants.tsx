@@ -437,7 +437,7 @@ export const WelcomeBox = ({ index }: any) => {
                             7923750, 9134000, 10486250, 11993250, 13671000, 15537500,
                             17616500, 19918000, 22482000, 25333250, 28592500, 32089250...
                             <br /><br />
-                            Once your character reaches the required Wisdom to Level Up you may Level Up via My FO page. Your character will have an indicator to let you know it is ready to level up.
+                            Once your character reaches the required Wisdom you may Level Up via My FO page. Your character will have an indicator to let you know it is ready to level up.
                             <br /><br />
                             Level Up Costs:
                             <br /><br />

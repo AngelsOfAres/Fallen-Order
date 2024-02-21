@@ -37,7 +37,7 @@ export function AbsorbPop(props: any) {
         const assetInfo = await rateLimiter(
           () => algodClient.getAssetByID(singleAsset['asset-id']).do()
         );
-        const assetImage = 'https://cloudflare-ipfs.com/ipfs/' + assetInfo.params.url.substring(7)
+        const assetImage = 'https://ipfs.algonft.tools/ipfs/' + assetInfo.params.url.substring(7)
         
         processedAssets.push([singleAsset['asset-id'], assetInfo.params['name'], assetInfo.params['unit-name'], assetImage])
       } catch (error) {

@@ -93,7 +93,7 @@ const process_asset = useCallback(async (assets: any, profile: any) => {
         const assetInfo = await rateLimiter(
           () => algodClient.getAssetByID(singleAsset['asset-id']).do()
         )
-        const assetImage = 'https://cloudflare-ipfs.com/ipfs/' + assetInfo.params.url.substring(7)
+        const assetImage = 'https://ipfs.algonft.tools/ipfs/' + assetInfo.params.url.substring(7)
         const response = await axios.get(metadata_api)
         if (response.status === 200) {
           const data = response.data
@@ -106,7 +106,7 @@ const process_asset = useCallback(async (assets: any, profile: any) => {
             const bgInfo = await rateLimiter(
               () => algodClient.getAssetByID(metadata_decoded_asset.properties.Background).do()
             )
-            bg_image = 'https://cloudflare-ipfs.com/ipfs/' + bgInfo.params.url.substring(7)
+            bg_image = 'https://ipfs.algonft.tools/ipfs/' + bgInfo.params.url.substring(7)
             bg_name = bgInfo.params['name']
             finalImage = await getFinalImage(assetImage, bg_image)
           }

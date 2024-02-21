@@ -82,7 +82,7 @@ export function CreateListing() {
                             {allInfo.map((asset: any, index: any) => (
                                   <VStack key={index} justifyContent='center'>
                                     <Image _hover={{ boxSize: '24' }} className={boxGlow} boxSize='20' borderRadius='8px' alt={asset.asset.params.name}
-                                      src={'https://cloudflare-ipfs.com/ipfs/' + asset.asset.params.url.substring(7)} onClick={() => openListingPopup(index)} />
+                                      src={'https://ipfs.algonft.tools/ipfs/' + asset.asset.params.url.substring(7)} onClick={() => openListingPopup(index)} />
                                     <Text fontSize='12px' textColor={buttonText4}>
                                     {asset.asset.params['unit-name']}
                                     </Text>
@@ -90,7 +90,7 @@ export function CreateListing() {
                                       wallet={activeAddress}
                                       assetID={asset.asset.index}
                                       assetName={asset.asset.params.name}
-                                      assetImage={'https://cloudflare-ipfs.com/ipfs/' + asset.asset.params.url.substring(7)}
+                                      assetImage={'https://ipfs.algonft.tools/ipfs/' + asset.asset.params.url.substring(7)}
                                       isOpen={openPopupIndex === index}
                                       onClose={closeListingPopup}
                                       mainClose={onClose} />
