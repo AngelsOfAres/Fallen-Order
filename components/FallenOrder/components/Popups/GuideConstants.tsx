@@ -339,22 +339,24 @@ export const WelcomeBox = ({ index }: any) => {
                     <>
                         <Text fontSize={fontSize1} textAlign='center' textColor={xLightColor}>
                             Characters are all originally unequipped with gear.
-                            <br />
+                            <br /><br />
                             You may equip gear on to your character, and change its appearance/stats at any time.
-                            <br />
+                            <br /><br />
                             Gear includes backgrounds, weapons, headwear, eyewear, mouthwear, clothing, and a minion.
-                            <br />
+                            <br /><br />
                             Backgrounds are currently available in Ranks 1 to 3. The remaining Ranks 4 and 5 are in the art development process at the moment.
-                            <br />
+                            <br /><br />
                             You may craft a background of any available rank and you will receive a randomly chosen background of that tier.
-                            <br />
+                            <br /><br />
                             Crafting Cost:
-                            <br />
+                            <br /><br />
                             R1 - 100 $EXP + 5 Oak Logs + 5 Clay Ore
-                            <br />
+                            <br /><br />
                             R2 - 250 $EXP + 10 Oak Logs + 10 Clay Ore
-                            <br />
+                            <br /><br />
                             R3 - 1250 $EXP + 20 Oak Logs + 20 Clay Ore
+                            <br /><br />
+                            Head over to Discord and use /craft-background command to get started!
                             <br /><br />
                         </Text>
                     </>

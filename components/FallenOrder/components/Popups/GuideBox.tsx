@@ -52,7 +52,7 @@ export default function GuideBoxPopup() {
                     <Select
                         w='75%'
                         h='36px'
-                        fontSize='16px'
+                        fontSize='14px'
                         style={{ paddingBottom: '8px'}}
                         textAlign='center'
                         iconColor={LightColor}
@@ -66,7 +66,7 @@ export default function GuideBoxPopup() {
                         placeholder={guideOptions[0]}
                     >
                         {Object.entries(guideOptions).map(([key, value]: any) => (
-                            <option style={{ backgroundColor: 'black', fontSize: '16px' }} key={key} value={key}>
+                            <option style={{ backgroundColor: 'black', fontSize: '12px' }} key={key} value={key}>
                                 {value[0]}
                             </option>
                         ))}
