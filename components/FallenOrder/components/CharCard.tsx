@@ -348,7 +348,7 @@ export function CharCard(props: any) {
                         </Box> : null}
                         {kin_sec === 0 ?
                         <motion.div
-                            animate={{ scale: loading || kinshipClaimed ? [1, 1.07, 1] : 1 }}
+                            animate={{ scale: loading || kinshipClaimed ? 1 : [1, 1.07, 1] }}
                             transition={{
                             repeat: Infinity,
                             duration: 0.75,
