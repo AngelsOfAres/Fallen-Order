@@ -1,6 +1,6 @@
 import { Box, useColorModeValue, Text, Select, VStack } from '@chakra-ui/react'
 import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import styles from '../../../../styles/glow.module.css'
 import { WelcomeBox } from './GuideConstants'
 
@@ -17,7 +17,7 @@ export default function GuideBoxPopup() {
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
     const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
 
-    const guideOptions: any = {
+    const guideOptions: any = useMemo(() => ({
         1: ['Welcome!', <WelcomeBox key={1} index={1} />],
         2: ['$ORDER', <WelcomeBox key={2} index={2} />],
         3: ['$EXP', <WelcomeBox key={3} index={3} />],
@@ -32,7 +32,7 @@ export default function GuideBoxPopup() {
         12: ['Fusion', <WelcomeBox key={12} index={12} />],
         13: ['Absorb', <WelcomeBox key={13} index={13} />],
         14: ['Gear', <WelcomeBox key={14} index={14} />]
-    }
+    }), [])
 
     useEffect(() => {
         setSelectedOptionText(guideOptions[chosenOption][1])

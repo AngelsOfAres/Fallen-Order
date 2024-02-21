@@ -48,7 +48,7 @@ export default function CreateThriftling() {
   const hasSufficientBalance = useMemo(() => {
     const availableBalance = convertAlgosToMicroalgos(parseFloat(walletAvailableBalance || '0'))
     return availableBalance >= 1000000
-  }, [price, walletAvailableBalance])
+  }, [walletAvailableBalance])
 
   async function handleSubmit() {
     setLoading(true)
@@ -219,7 +219,6 @@ export default function CreateThriftling() {
   if (!activeAddress) {
     return null
   }
-  console.log(loading, price, tokenBal, hasSufficientBalance)
 
   return (
     <>

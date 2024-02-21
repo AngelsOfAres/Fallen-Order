@@ -241,7 +241,7 @@ const Shuffle: React.FC = () => {
 
     useEffect(() => {
       getAvFO()
-    }, [loading, claiming, isOpen])
+    }, [loading, claiming, isOpen, getAvFO])
 
   return (
     <>

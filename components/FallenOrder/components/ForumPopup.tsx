@@ -43,15 +43,6 @@ export default function ForumPopup() {
   return cleanedNote
   }
 
-  useEffect(() => {
-    const intervalId = setInterval(fetchData, 5000)
-    return () => clearInterval(intervalId)
-  }, [])
-
-  useEffect(() => {
-    fetchData()
-  }, [])
-
   const fetchData = async (): Promise<any> => {
     try {
       const response = await fetch(apiUrl)
@@ -69,6 +60,15 @@ export default function ForumPopup() {
       return []
     }
   }
+
+  useEffect(() => {
+    const intervalId = setInterval(fetchData, 5000)
+    return () => clearInterval(intervalId)
+  }, [fetchData])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   const fetchNextPage = async (currentPage: number): Promise<any> => {
     try {

@@ -69,7 +69,7 @@ export default function GrandExchange() {
         console.error("Error fetching profile:", error)
       }
     }
-  }, [activeAddress, onOpen1])
+  }, [activeAddress])
 
   const fetchListings = useCallback(async () => {
     if (typeof window !== 'undefined') {
