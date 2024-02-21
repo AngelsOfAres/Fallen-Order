@@ -29,6 +29,7 @@ export function CharCard(props: any) {
     const level = parseInt(levelFull[0])
     const wisdom = parseInt(levelFull[1])
     const [LVLUp, setLVLUp] = useState<boolean>(false)
+    const [kinshipClaimed, setKinshipClaimed] = useState<boolean>(false)
     const [finalImage, setFinalImage] = useState<any>(image)
     const [popTitle, setPopTitle] = useState<any>('')
     const [popMessage, setPopMessage] = useState<any>('')
@@ -141,6 +142,7 @@ export function CharCard(props: any) {
                 if (data) {
                     setPopTitle('Success!')
                     setPopMessage(success_msg_kin)
+                    setKinshipClaimed(true)
                 }
                 else {
                     setPopTitle('Woops!')
@@ -356,7 +358,7 @@ export function CharCard(props: any) {
                               duration: 0.75,
                               ease: "linear",
                             }}>
-                            <FullGlowButton text={loading ? 'Casting' : 'Cast!'} onClick={handleKinship} disabled={loading} />
+                            <FullGlowButton text={loading ? 'Casting' : 'Cast!'} onClick={handleKinship} disabled={loading || kinshipClaimed} />
                         </motion.div>
                         : null}
                     </HStack>
