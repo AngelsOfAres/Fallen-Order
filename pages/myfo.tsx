@@ -113,8 +113,6 @@ export default function MyFO() {
   }
 
   const handleUnfreezeAsset = async (index: any, assetID: any) => {
-    console.log(assetID)
-    return
     setLoading(true)
     if (!activeAddress || !authUser) {
       throw new Error('Log In First Please!!')
@@ -160,7 +158,7 @@ export default function MyFO() {
   const fetchProfile = useCallback(async () => {
     const storedAuthUser = localStorage.getItem('token_' + activeAddress)
     setAuthUser(storedAuthUser || null)
-    if (activeAddress && typeof window !== 'undefined') {        
+    if (activeAddress && typeof window !== 'undefined') {
       try {
         const profile = await getProfile(activeAddress)
         setUserProfile(profile || null)

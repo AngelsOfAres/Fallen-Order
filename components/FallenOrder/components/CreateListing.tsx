@@ -29,31 +29,41 @@ export function CreateListing() {
     const { assetList } = useWalletBalance()
     const { activeAddress }  = useWallet()
 
-    console.log(allInfo)
-
     useEffect(() => {
-        if (assetList && assetList.length > 0) {
-          const allFOAssets = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5, ...BGRank1, ...BGRank2, ...BGRank3, ...kinshipPotions, ...skillPotions, ...hatchets, ...pickaxes]
-          const FOInfo = assetList
-            .filter((item: any) => allFOAssets.includes(item['asset-id']))
-            .map((item: any) => item['asset-id'])
-            .map(async (id: any) => {
-              const assetInfo = await algodIndexer.lookupAssetByID(id).do()
-              return assetInfo
+      if (assetList && assetList.length > 0) {
+        const allFOAssets = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5,
+          ...BGRank1, ...BGRank2, ...BGRank3,
+          ...kinshipPotions, ...skillPotions,
+          ...hatchets, ...pickaxes]
+          
+        const FOInfo = assetList
+        .filter((item: any) => allFOAssets.includes(item['asset-id']))
+        .map((item: any) => 
+          Promise.resolve()
+            .then(async () => {
+              try {
+                const assetInfo = await algodIndexer.lookupAssetByID(item['asset-id']).do()
+                return assetInfo;
+              } catch (error) {
+                console.error('An error occurred while fetching asset info:', error)
+                return null
+              }
             })
+        )
+
+        Promise.all(FOInfo)
+          .then((results) => {
+            const validResults = results.filter((result) => result !== null)
+            setAllInfo(validResults.reverse())
+            setLoading(false)
+          })
+          .catch((error) => {
+            console.error('An error occurred:', error)
+            setLoading(false)
+          })
+      }
+    }, [assetList])
     
-          Promise.all(FOInfo)
-            .then((results) => {
-              setAllInfo(results.reverse())
-              console.log(results.reverse())
-              setLoading(false)
-            })
-            .catch((error) => {
-              console.error('An error occurred:', error)
-              setLoading(false)
-            })
-        }
-      }, [assetList])
 
       const openListingPopup = (index: any) => {
         setOpenPopupIndex(index)
