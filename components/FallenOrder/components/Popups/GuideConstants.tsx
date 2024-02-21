@@ -462,7 +462,11 @@ export const WelcomeBox = ({ index }: any) => {
                             <br /><br />
                             Quests:
                             <br />
-                            2500 General Quest 1 | 5000 General Quest 2 | 2000 WC Quest
+                            General Quest 1 - 2500
+                            <br />
+                            General Quest 2 - 5000
+                            <br />
+                            WC Quest - 2000
                             <br /><br />
                             Woodcutting | Mining:
                             <br />
