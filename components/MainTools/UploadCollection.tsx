@@ -218,7 +218,7 @@ export default function UploadCollection() {
                 <Text mb={2} textAlign='center' textColor={xLightColor} fontSize='16px'>Upload Successful!</Text>
                     <HStack my='12px'>
                       <FullGlowButton text="Upload More!" onClick={toggleNewSearch} />
-                      <a href={`https://ipfs.algonft.tools/ipfs/${CID}`} target='_blank' rel='noreferrer'>
+                      <a href={`https://cf-ipfs.com/ipfs/${CID}`} target='_blank' rel='noreferrer'>
                           <FullGlowButton text="View Files" />
                       </a>
                       <div className="rounded-md shadow-sm ml-3 sm:ml-4">

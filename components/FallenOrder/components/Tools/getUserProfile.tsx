@@ -86,7 +86,7 @@ export async function getProfile(wallet: string): Promise<any> {
                             if (main_character !== 0) {
                                 const charInfo = await algodIndexer.lookupAssetByID(main_character).do()
                                 mainName = charInfo.asset.params['unit-name']
-                                mainImage = 'https://ipfs.algonft.tools/ipfs/' + charInfo.asset.params.url.substring(7)
+                                mainImage = 'https://cf-ipfs.com/ipfs/' + charInfo.asset.params.url.substring(7)
                                 const metadata_api = `https://mainnet-idx.algonode.cloud/v2/transactions?tx-type=acfg&asset-id=${main_character}&address=CHARX2GZKNZZORNV2WROPUTSB5QBVRIC62QXXLABFCKA2QALEA3OHVIDYA`
                                 try {
                                     const response = await axios.get(metadata_api)
@@ -95,7 +95,7 @@ export async function getProfile(wallet: string): Promise<any> {
                                         const bgID = JSON.parse(atob(response.data.transactions[0].note)).properties["Background"] || null
                                         if (bgID && bgID !== '-') {
                                           const bgInfo = await algodIndexer.lookupAssetByID(bgID).do()
-                                          bgImage = 'https://ipfs.algonft.tools/ipfs/' + bgInfo.asset.params.url.substring(7)
+                                          bgImage = 'https://cf-ipfs.com/ipfs/' + bgInfo.asset.params.url.substring(7)
                                           bgName = bgInfo.asset.params['unit-name']
                                         }
 
@@ -113,7 +113,7 @@ export async function getProfile(wallet: string): Promise<any> {
                             if (equipped_tool !== 0) {
                                 const toolInfo = await algodIndexer.lookupAssetByID(equipped_tool).do()
                                 toolName = toolInfo.asset.params['unit-name']
-                                toolImage = 'https://ipfs.algonft.tools/ipfs/' + toolInfo.asset.params.url.substring(7)
+                                toolImage = 'https://cf-ipfs.com/ipfs/' + toolInfo.asset.params.url.substring(7)
                                 const metadata_api = `https://mainnet-idx.algonode.cloud/v2/transactions?tx-type=acfg&asset-id=${equipped_tool}&address=GIYNTAUO6M3KGAKHSQBXFUPT3TLFAAQBUYNBHOZUV6UKMTIZ44Z64KI7YM`
                                 try {
                                     const response = await axios.get(metadata_api)
@@ -140,7 +140,7 @@ export async function getProfile(wallet: string): Promise<any> {
                                     const expAccepted = parseInt(listing.split(',')[2])
                                     const assetInfo = await algodIndexer.lookupAssetByID(assetID).do()
                                     const assetName = assetInfo.asset.params['unit-name']
-                                    const assetImage = 'https://ipfs.algonft.tools/ipfs/' + assetInfo.asset.params.url.substring(7)
+                                    const assetImage = 'https://cf-ipfs.com/ipfs/' + assetInfo.asset.params.url.substring(7)
                                     return { wallet, listingID, assetID, price, assetName, assetImage, expAccepted }
                                 })
                             
@@ -220,7 +220,7 @@ export async function getListings(): Promise<any> {
                 const assetInfo = await algodIndexer.lookupAssetByID(assetID).do()
                 const assetName = assetInfo.asset.params['unit-name']
                 const assetFullname = assetInfo.asset.params['name']
-                const assetImage = 'https://ipfs.algonft.tools/ipfs/' + assetInfo.asset.params.url.substring(7)
+                const assetImage = 'https://cf-ipfs.com/ipfs/' + assetInfo.asset.params.url.substring(7)
                 return { wallet: asset.params.reserve, listingID, assetID, price, assetName, assetImage, expAccepted, assetFullname }
               })
   
