@@ -421,7 +421,9 @@ export const WelcomeBox = ({ index }: any) => {
                 return (
                     <>
                         <Text fontSize={fontSize1} textAlign='center' textColor={xLightColor}>
-                            Each character has a Level trait in the following form: X | Y
+                            Each character has a Level trait in the following form:
+                            <br />
+                            X | Y
                             <br /><br />
                             The X is Level and Y is Wisdom.
                             <br /><br />
