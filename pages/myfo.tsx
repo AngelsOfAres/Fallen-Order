@@ -42,6 +42,7 @@ export default function MyFO() {
   const { activeAddress, signTransactions } = useWallet()
   const [ authUser, setAuthUser ] = useState<any>(null)
   const [ loading, setLoading ] = useState<boolean>(true)
+  const [ dripClaimed, setDripClaimed ] = useState<boolean>(false)
   const [ userProfile, setUserProfile ] = useState<any>(null)
   const [finalImage, setFinalImage] = useState<any>(null)
   const [ frozen, setFrozen ] = useState<any>([])
@@ -91,6 +92,8 @@ export default function MyFO() {
           const data = await getDrip(activeAddress)
           if (data && data.includes("Error")) {
             console.log(data)
+          } else {
+            setDripClaimed(true)
           }
       } catch (error: any) {
           console.log(error.message)
@@ -109,7 +112,7 @@ export default function MyFO() {
     })
     setTimeout(() => {
       fetchProfile()
-    }, 8000)
+    }, 5000)
   }
 
   const handleUnfreezeAsset = async (index: any, assetID: any) => {
@@ -558,7 +561,7 @@ export default function MyFO() {
                             duration: 0.75,
                             ease: "linear",
                           }}>
-                            <FullGlowButton text={loading ? 'Dripping...' : 'DRIP!'} onClick={handleDrip} disabled={loading} />
+                            <FullGlowButton text={loading ? 'Dripping...' : 'DRIP!'} onClick={handleDrip} disabled={loading || dripClaimed} />
                           </motion.div>
                           :
                           <FullGlowButton text={loading ? 'Opting...' : 'Opt In!'} onClick={sendOptIn} disabled={loading} />
