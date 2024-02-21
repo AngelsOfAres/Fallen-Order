@@ -276,15 +276,3 @@ transform: scale(1.2);
           filter: alpha(opacity=100); }
     .carousel:hover .slide .legend {
       opacity: 1; }
-  
-.Select-control {
-  position: relative;
-}
-
-.Select-menu-outer {
-  top: 100%;
-  position: absolute;
-  left: 0;
-  right: 0;
-}
-    

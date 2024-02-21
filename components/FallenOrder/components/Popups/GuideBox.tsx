@@ -18,25 +18,25 @@ export default function GuideBoxPopup() {
     const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
 
     const guideOptions: any = {
-        1: ['Welcome!', <WelcomeBox index={1} />],
-        2: ['$ORDER', <WelcomeBox index={2} />],
-        3: ['$EXP', <WelcomeBox index={3} />],
-        4: ['Grand Exchange', <WelcomeBox index={4} />],
-        5: ['Kinship', <WelcomeBox index={5} />],
-        6: ['Battles', <WelcomeBox index={6} />],
-        7: ['Trading', <WelcomeBox index={7} />],
-        8: ['Skills', <WelcomeBox index={8} />],
-        9: ['Tribute Of Fortune', <WelcomeBox index={9} />],
-        10: ['Casino', <WelcomeBox index={10} />],
-        11: ['Lottery', <WelcomeBox index={11} />],
-        12: ['Fusion', <WelcomeBox index={12} />],
-        13: ['Absorb', <WelcomeBox index={13} />],
-        14: ['Gear', <WelcomeBox index={14} />]
+        1: ['Welcome!', <WelcomeBox key={1} index={1} />],
+        2: ['$ORDER', <WelcomeBox key={2} index={2} />],
+        3: ['$EXP', <WelcomeBox key={3} index={3} />],
+        4: ['Grand Exchange', <WelcomeBox key={4} index={4} />],
+        5: ['Kinship', <WelcomeBox key={5} index={5} />],
+        6: ['Battles', <WelcomeBox key={6} index={6} />],
+        7: ['Trading', <WelcomeBox key={7} index={7} />],
+        8: ['Skills', <WelcomeBox key={8} index={8} />],
+        9: ['Tribute Of Fortune', <WelcomeBox key={9} index={9} />],
+        10: ['Casino', <WelcomeBox key={10} index={10} />],
+        11: ['Lottery', <WelcomeBox key={11} index={11} />],
+        12: ['Fusion', <WelcomeBox key={12} index={12} />],
+        13: ['Absorb', <WelcomeBox key={13} index={13} />],
+        14: ['Gear', <WelcomeBox key={14} index={14} />]
     }
 
     useEffect(() => {
         setSelectedOptionText(guideOptions[chosenOption][1])
-    }, [chosenOption])
+    }, [chosenOption, guideOptions])
 
     return (
         <>
