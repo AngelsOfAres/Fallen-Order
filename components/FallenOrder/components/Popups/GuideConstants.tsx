@@ -416,6 +416,66 @@ export const WelcomeBox = ({ index }: any) => {
                     </>
                 )
 
+            case 17: // Leveling
+                return (
+                    <>
+                        <Text fontSize={fontSize1} textAlign='center' textColor={xLightColor}>
+                            Each character has a Level trait in the following form: X | Y
+                            <br /><br />
+                            The X is Level and Y is Wisdom.
+                            <br /><br />
+                            In order to Level Up to the next level, your character will need to first reach the required threshold of Wisdom required.
+                            <br /><br />
+                            Wisdom Required Per Level:
+                            <br /><br />
+                            20750, 64250, 133250, 230250, 358250, 520750,
+                            721000, 963250, 1251750, 1591250, 1986750, 2443750,
+                            2968000, 3565500, 4244750, 5011750, 5874250, 6841250,
+                            7923750, 9134000, 10486250, 11993250, 13671000, 15537500,
+                            17616500, 19918000, 22482000, 25333250, 28592500, 32089250...
+                            <br /><br />
+                            Once your character reaches the required Wisdom to Level Up you may Level Up via My FO page. Your character will have an indicator to let you know it is ready to level up.
+                            <br /><br />
+                            Level Up Costs:
+                            <br /><br />
+                            Oak Logs - 5, 10, 15, 20, 25...
+                            <br />
+                            Clay Ore - 5, 10, 15, 20, 25...
+                            <br />
+                            $EXP - 1000, 2000, 3000, 4000, 5000...
+                            <br /><br />
+                            Character can NOT exceed the max cap of Wisdom required per level, and will receive no further Wisdom until they Level Up to access the next Wisdom cap.
+                            <br /><br />
+                            Every Level Up grants 1 free $BOOST. You may use it, trade it, or keep it for future use.
+                            <br /><br />
+                            Most actions in the game yield Wisdom in varying degrees. Below is the current available Wisdom yielding features:
+                            <br /><br />
+                            Boss Battles (Loss | Win):
+                            <br />
+                            Collab 250 | 500
+                            <br />
+                            Azazel 350 | 700
+                            <br />
+                            Mordekai 400 | 800
+                            <br />
+                            Gorgax 450 | 900
+                            <br /><br />
+                            Quests:
+                            <br />
+                            2500 General Quest 1 | 5000 General Quest 2 | 2000 WC Quest
+                            <br /><br />
+                            Woodcutting | Mining:
+                            <br />
+                            100 Fail | 200 Success
+                            <br /><br />
+                            Kinship:
+                            <br />
+                            1000 per Character Level
+                            <br /><br />
+                        </Text>
+                    </>
+                )
+
             default:
                 return null
         }
