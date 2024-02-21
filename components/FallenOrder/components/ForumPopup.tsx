@@ -1,7 +1,7 @@
 import { Box, VStack, HStack, useColorModeValue, Text, Textarea, Tooltip, useBreakpointValue, Image, } from '@chakra-ui/react'
 import * as React from 'react'
 import styles from '../../../styles/glow.module.css'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { IconGlowButton } from 'components/Buttons'
 import { RiSendPlaneFill } from 'react-icons/ri'
 import { useWallet } from '@txnlab/use-wallet'
@@ -43,7 +43,7 @@ export default function ForumPopup() {
   return cleanedNote
   }
 
-  const fetchData = async (): Promise<any> => {
+  const fetchData = useCallback(async (): Promise<any> => {
     try {
       const response = await fetch(apiUrl)
       if (!response.ok) {
@@ -59,7 +59,7 @@ export default function ForumPopup() {
       console.error('Error fetching data:', error)
       return []
     }
-  }
+  }, [apiUrl, currentRound, data, setData, setCurrentRound])
 
   useEffect(() => {
     const intervalId = setInterval(fetchData, 5000)

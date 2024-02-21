@@ -1,6 +1,6 @@
 import { Text, useColorModeValue, Box, VStack, Image, Progress, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, HStack, Center, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Tooltip } from '@chakra-ui/react'
 import { FullGlowButton, IconGlowButton2 } from 'components/Buttons'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { algodClient, algodIndexer } from 'lib/algodClient'
 import styles from '../../styles/glow.module.css'
 import { getShuffle1, getShuffle2 } from 'api/backend'
@@ -82,7 +82,7 @@ const Shuffle: React.FC = () => {
     }
   }
   
-  async function getAvFO() {
+  const getAvFO = useCallback(async () => {
     try{
         const shuffle_info = await algodIndexer.lookupAccountAssets(shuffleEscrow).do()
         let available_nfts = []
@@ -142,7 +142,8 @@ const Shuffle: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [setAv, setAvFO, setLoading, pickFourRandomEntries, getIpfsFromAddress, algodIndexer, Rank1, Rank2, Rank3, Rank4])
+
 
     async function handleSendNFT() {
       setClaiming(true)
@@ -239,9 +240,9 @@ const Shuffle: React.FC = () => {
     location.reload()
   }
 
-    useEffect(() => {
-      getAvFO()
-    }, [loading, claiming, isOpen, getAvFO])
+  useEffect(() => {
+    getAvFO()
+  }, [loading, claiming, isOpen, getAvFO])
 
   return (
     <>

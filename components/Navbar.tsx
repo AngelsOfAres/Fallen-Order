@@ -52,7 +52,7 @@ import { GoPerson } from 'react-icons/go';
               cursor={'pointer'}
               minW={0}
               >
-              <Icon boxSize={6} as={IoColorWandOutline} />
+              <Icon boxSize={'18px'} as={IoColorWandOutline} />
             </MenuButton>
             <MenuList w='340px' className={boxGlow} zIndex={999} pb={-2} mr={3} mt={6} borderRadius='20px'
               background='black' borderColor={buttonText3}>
