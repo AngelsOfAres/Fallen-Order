@@ -31,7 +31,9 @@ export default function GuideBoxPopup() {
         11: ['Lottery', <WelcomeBox key={11} index={11} />],
         12: ['Fusion', <WelcomeBox key={12} index={12} />],
         13: ['Absorb', <WelcomeBox key={13} index={13} />],
-        14: ['Gear', <WelcomeBox key={14} index={14} />]
+        14: ['Gear', <WelcomeBox key={14} index={14} />],
+        15: ['Upgrades', <WelcomeBox key={15} index={15} />],
+        16: ['Quests', <WelcomeBox key={16} index={16} />]
     }), [])
 
     useEffect(() => {

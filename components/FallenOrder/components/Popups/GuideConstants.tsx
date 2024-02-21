@@ -28,7 +28,9 @@ export const WelcomeBox = ({ index }: any) => {
             // 11: ['Lottery', ''],
             // 12: ['Fusion', ''],
             // 13: ['Absorb', ''],
-            // 14: ['Gear', '']
+            // 14: ['Gear', ''],
+            // 15: ['Upgrades', ''],
+            // 16: ['Quests', '']
             
             case 1: // Welcome Box
                 return (
@@ -359,6 +361,56 @@ export const WelcomeBox = ({ index }: any) => {
                             R3 - 1250 $EXP + 20 Oak Logs + 20 Clay Ore
                             <br /><br />
                             Head over to Discord and use /craft-background command to get started!
+                            <br /><br />
+                        </Text>
+                    </>
+                )
+            
+            case 15: // Upgrades
+                return (
+                    <>
+                        <Text fontSize={fontSize1} textAlign='center' textColor={xLightColor}>
+                            Your character has various upgrades that can be tuned to the player&apos;s needs.
+                            <br /><br />
+                            These include Level, Kinship, Stats, Abilities, Gear, and Skills.
+                            <br /><br />
+                            Various actions within the game rewards your character with Level Wisdom, which enable Leveling Up upon reaching the threshold for required Wisdom for the next Level.
+                            <br /><br />
+                            Kinship can be gained daily by interacting with your character via casting a ritual.
+                            <br /><br />
+                            Stats consists of ATK, DEF, AP, HP, and Total Points. Total Points start at 1000 for every character, and are allocated towards the 3 battle stats, Attack, Defense, and HP.
+                            <br /><br />
+                            Upon leveling up your character, you will receive 1 $BOOST. This may be used to permanently add +50 Points to any character or may be freely traded on the market.
+                            <br /><br />
+                            HP is gained with Levels. LVL 0 characters begin at 10000 HP and gain +500 HP permanently for every Level advanced.
+                            <br /><br />
+                            Abilities consist of 3 Basic and 1 Ultimate. There is a 1-turn CD on Basics and a 5-turn cooldown on Ultimates. Use /abilities in Discord to view the current list.
+                            <br /><br />
+                            Gear may be equipped on to characters and dynamically changed at any time. Each piece of gear has a specific effect on boosting stats.
+                            <br /><br />
+                            Skills may be advanced by utilizing a tool and grinding in The Wilderness. Currently available Skills are Woodcutting and Mining. We plan to introduce a wide array of Skills, both Basic and Advanced.
+                            <br /><br />
+                        </Text>
+                    </>
+                )
+
+            case 16: // Quests
+                return (
+                    <>
+                        <Text fontSize={fontSize1} textAlign='center' textColor={xLightColor}>
+                            Complete various Quests to earn achievements and one-time rewards!
+                            <br /><br />
+                            Adeona awaits you in Discord to begin your journey. Use /quest to begin.
+                            <br /><br />
+                            Available Quests:
+                            <br /><br />
+                            Ramsay&apos;s Rampage | The Summoning | I&apos;m A Lumberjack!
+                            <br /><br />
+                            Each Quest has a set of prerequisites to enable access. Details on each are given upon starting the Quest.
+                            <br /><br />
+                            Achievements are time-based so the sooner you complete your quests, the earlier you are in the leaderboard of Quest Achievements! OG status is a flex.
+                            <br /><br />
+                            Rewards for quests vary and may include $EXP, $BOOST, Tools, Gear, Characters, or others.
                             <br /><br />
                         </Text>
                     </>
