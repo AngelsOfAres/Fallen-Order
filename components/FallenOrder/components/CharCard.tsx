@@ -348,11 +348,11 @@ export function CharCard(props: any) {
                         </Box> : null}
                         {kin_sec === 0 ?
                         <motion.div
-                            animate={{ scale: [1, 1.07, 1] }}
+                            animate={{ scale: loading || kinshipClaimed ? [1, 1.07, 1] : 1 }}
                             transition={{
-                              repeat: Infinity,
-                              duration: 0.75,
-                              ease: "linear",
+                            repeat: Infinity,
+                            duration: 0.75,
+                            ease: "linear",
                             }}>
                             <FullGlowButton text={loading ? 'Casting' : 'Cast!'} onClick={handleKinship} disabled={loading || kinshipClaimed} />
                         </motion.div>

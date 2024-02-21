@@ -555,7 +555,7 @@ export default function MyFO() {
                       <>
                         {expBal !== -1 ?
                           <motion.div
-                          animate={{ scale: [1, 1.07, 1] }}
+                          animate={{ scale: loading || dripClaimed ? [1, 1.07, 1] : 1 }}
                           transition={{
                             repeat: Infinity,
                             duration: 0.75,
