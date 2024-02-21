@@ -19,7 +19,11 @@ import {
   import styles from '../styles/glow.module.css'
 import Connect from './MainTools/Connect'
 import ForumPopup from './FallenOrder/components/ForumPopup'
-import { BiMessageRounded } from 'react-icons/bi'
+import { BiMessageRounded, BiWallet } from 'react-icons/bi'
+import { IoColorWandOutline } from 'react-icons/io5'
+import GuideBoxPopup from './FallenOrder/components/Popups/GuideBox'
+import { BsShop } from 'react-icons/bs';
+import { GoPerson } from 'react-icons/go';
 
   export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -40,6 +44,7 @@ import { BiMessageRounded } from 'react-icons/bi'
         </Link>
         
         <HStack w='100%' justifyContent='flex-end'>
+
           <Menu>
             <MenuButton
               _hover={{textColor:'white'}} _active={{bgColor:'transparent'}} textColor='black' fontSize='14px' fontFamily="Orbitron" size='md' bgColor='transparent' 
@@ -47,7 +52,48 @@ import { BiMessageRounded } from 'react-icons/bi'
               cursor={'pointer'}
               minW={0}
               >
-              <Icon boxSize={6} as={BiMessageRounded} />
+              <Icon boxSize={6} as={IoColorWandOutline} />
+            </MenuButton>
+            <MenuList w='340px' className={boxGlow} zIndex={999} pb={-2} mr={3} mt={6} borderRadius='20px'
+              background='black' borderColor={buttonText3}>
+              <Center><GuideBoxPopup /></Center>
+            </MenuList>
+          </Menu>
+
+          <Menu>
+            <Link href='/myfo'>
+              <MenuButton
+                _hover={{textColor:'white'}} _active={{bgColor:'transparent'}} textColor='black' fontSize='14px' fontFamily="Orbitron" size='md' bgColor='transparent' 
+                as={Button}
+                cursor={'pointer'}
+                minW={0}
+                >
+                  <Icon boxSize={'20px'} as={GoPerson} />
+              </MenuButton>
+            </Link>
+          </Menu>
+
+          <Menu>
+            <Link href='/ge'>
+              <MenuButton
+                _hover={{textColor:'white'}} _active={{bgColor:'transparent'}} textColor='black' fontSize='14px' fontFamily="Orbitron" size='md' bgColor='transparent' 
+                as={Button}
+                cursor={'pointer'}
+                minW={0}
+                >
+                <Icon boxSize={'17px'} as={BsShop} />
+              </MenuButton>
+            </Link>
+          </Menu>
+
+          <Menu>
+            <MenuButton
+              _hover={{textColor:'white'}} _active={{bgColor:'transparent'}} textColor='black' fontSize='14px' fontFamily="Orbitron" size='md' bgColor='transparent' 
+              as={Button}
+              cursor={'pointer'}
+              minW={0}
+              >
+              <Icon boxSize={'19px'} as={BiMessageRounded} />
             </MenuButton>
             <MenuList position="fixed" top="0" right="-152px" w='340px' className={boxGlow} zIndex={999} pb={-2} mr={3} mt={6} borderRadius='20px'
               background='black' borderColor={buttonText3}>
@@ -55,8 +101,8 @@ import { BiMessageRounded } from 'react-icons/bi'
             </MenuList>
           </Menu>
 
-          <Button ml={2} _hover={{textColor:'white'}} _active={{bgColor:'transparent'}} textColor='black' fontSize='14px' fontFamily="Orbitron" size='md' bgColor='transparent' onClick={toggleColorMode}>
-            {colorMode === 'light' ? <MoonIcon boxSize={6}/> : <SunIcon boxSize={6} />}
+          <Button _hover={{textColor:'white'}} _active={{bgColor:'transparent'}} textColor='black' fontSize='14px' fontFamily="Orbitron" size='md' bgColor='transparent' onClick={toggleColorMode}>
+            {colorMode === 'light' ? <MoonIcon boxSize={'16px'}/> : <SunIcon boxSize={'16px'} />}
           </Button>
 
           <Menu>
@@ -67,7 +113,7 @@ import { BiMessageRounded } from 'react-icons/bi'
               minW={0}
               mr={2}
               >
-              <HamburgerIcon boxSize={6}/>
+              <Icon boxSize={'20px'} as={BiWallet} />
             </MenuButton>
             <MenuList zIndex={999} p={0} m={6} borderRadius='20px'>
               <Connect />

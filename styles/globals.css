@@ -277,3 +277,14 @@ transform: scale(1.2);
     .carousel:hover .slide .legend {
       opacity: 1; }
   
+.Select-control {
+  position: relative;
+}
+
+.Select-menu-outer {
+  top: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+    

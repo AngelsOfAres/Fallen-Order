@@ -140,7 +140,7 @@ const formatTimestamp = (roundTime: number): string => {
 
     return (
       <>
-        <Box zIndex={999} px={4} h='300px' w='100%' justifyContent='center' overflow='scroll'
+        <Box zIndex={999} px={4} h='75vh' w='100%' justifyContent='center' overflow='scroll'
         css={`
             /* Hide scrollbar display */
             ::-webkit-scrollbar {
