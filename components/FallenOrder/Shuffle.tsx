@@ -41,7 +41,7 @@ const Shuffle: React.FC = () => {
   const totalCount = 792
   const claimToken = localStorage.getItem("shuffle")
 
-  function pickFourRandomEntries(list: any) {
+  const pickFourRandomEntries = useCallback((list: any) => {
     if (list.length < 4) {
       throw new Error("List must contain at least 4 entries.")
     }
@@ -50,7 +50,7 @@ const Shuffle: React.FC = () => {
       [list[i], list[j]] = [list[j], list[i]]
     }
     return list.slice(0, 4)
-  }
+  }, [])
 
   const shufflePayment = async (amt: any) => {
     try {
