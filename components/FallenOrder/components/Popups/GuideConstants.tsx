@@ -84,7 +84,9 @@ export const WelcomeBox = ({ index }: any) => {
                         <br /><br />
                         Essentially, an investor&apos;s oasis. If you hold any $EXP tokens that you do not intend to utilize or trade, it is most beneficial to add them to the liquidity pool to take advantage of the fee earnings given no risk of impermanent losses.
                         <br /><br />
-                        <Link href='https://algoxnft.com/shuffle/2467'><FullGlowButton fontsize='10px' text='ADD TO POOL!' /></Link>
+                        <a href='https://app.tinyman.org/#/pool/GVO4WI2OXKF7TXJH23DLME6FDBBKBIEXXSDY64K72R42LJZU5LFQ2PQ7W4/add-liquidity' target='_blank' rel='noreferrer'>
+                            <FullGlowButton fontsize='10px' text='ADD TO POOL!' />
+                        </a>
                         <br /><br />
                         $EXP is used extensively within the game. Uses include payments, rewards, subscriptions, microfees, and trading.
                         <br /><br />
