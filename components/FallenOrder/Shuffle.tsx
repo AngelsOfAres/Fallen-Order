@@ -142,7 +142,7 @@ const Shuffle: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }, [setAv, setAvFO, setLoading, pickFourRandomEntries, getIpfsFromAddress, algodIndexer, Rank1, Rank2, Rank3, Rank4])
+  }, [setAv, setAvFO, setLoading, pickFourRandomEntries])
 
 
     async function handleSendNFT() {
