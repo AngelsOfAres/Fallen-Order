@@ -108,9 +108,7 @@ export function CharCard(props: any) {
             if (data && data.includes("Error")) {
                 setPopTitle('Woops!')
                 setPopMessage(fail_msg_boost)
-            console.log(data)
             } else {
-            console.log(data)
             if (data) {
                 setPopTitle('Success!')
                 setPopMessage(success_msg_boost)
@@ -136,9 +134,7 @@ export function CharCard(props: any) {
             if (data && data.includes("Error")) {
                 setPopTitle('Woops!')
                 setPopMessage(fail_msg_kin)
-                console.log(data)
             } else {
-                console.log(data)
                 if (data) {
                     setPopTitle('Success!')
                     setPopMessage(success_msg_kin)
