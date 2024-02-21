@@ -30,7 +30,8 @@ export const WelcomeBox = ({ index }: any) => {
             // 13: ['Absorb', ''],
             // 14: ['Gear', ''],
             // 15: ['Upgrades', ''],
-            // 16: ['Quests', '']
+            // 16: ['Quests', ''],
+            // 17: ['Leveling', '']
             
             case 1: // Welcome Box
                 return (

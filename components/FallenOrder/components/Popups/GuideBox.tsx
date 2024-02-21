@@ -43,7 +43,7 @@ export default function GuideBoxPopup() {
 
     return (
         <>
-            <Box zIndex={999} pb={4} px={1} h='75vh' w='100%' justifyContent='center' overflow='scroll'
+            <Box zIndex={999} pb={4} px={1} maxH='400px' h='75vh' w='100%' justifyContent='center' overflow='scroll'
                 css={`
                     ::-webkit-scrollbar {
                         display: none;
