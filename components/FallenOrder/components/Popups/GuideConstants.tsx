@@ -447,7 +447,7 @@ export const WelcomeBox = ({ index }: any) => {
                             <br /><br />
                             Character can NOT exceed the max cap of Wisdom required per level, and will receive no further Wisdom until they Level Up to access the next Wisdom cap.
                             <br /><br />
-                            Every Level Up grants 1 free $BOOST. You may use it, trade it, or keep it for future use.
+                            Every Level Up grants 1 free $BOOST. You may use it, trade it, or keep it for future use. Additionally, +500 HP is added permanently to your character.
                             <br /><br />
                             Most actions in the game yield Wisdom in varying degrees. Below is the current available Wisdom yielding features:
                             <br /><br />
