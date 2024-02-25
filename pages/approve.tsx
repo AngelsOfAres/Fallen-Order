@@ -188,6 +188,7 @@ export default function ApproveAssets() {
       toast.error(`Oops! Mass asset approval failed. Please verify asset IDs and try again...`, { id: 'txn' })
     }
   }
+  
 
   return (
     <>
@@ -240,10 +241,10 @@ export default function ApproveAssets() {
             </Box>
           </Center>
 
-          {newList[0] == '' ?
+          {newList[0] !== '' ?
           <Center mt={8}><FullGlowButton text={!loading ? 'Approve All!' : 'Approving...'} onClick={massOptTxns} disabled={loading || idsString == ''}/></Center>
           : null}
-          
+
           <Flex p={4} w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
             {Object.entries(assetData).map(([id, data]: any) => (
               <AssetApproveCard key={id} assetID={parseInt(id)} name={data.name} supply={data.supply} decimals={data.decimals} unitName={data.unitName} />
