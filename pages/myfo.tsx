@@ -275,130 +275,107 @@ export default function MyFO() {
     }
   }
 
-  
   const handleEditDiscordID = async () => {
     setLoading(true)
     try {
         if (!activeAddress) {
-        throw new Error('Log In First Please!!')
-        }
-
-        toast.loading('Equipping Tool...', { id: 'txn', duration: Infinity })
-
-        try{
-            const data = await createProfile(activeAddress, newDiscordID)
-            if (data && data.includes("Error")) {
-            console.log(data)
-            toast.error('Oops! Discord ID Updated Failed!', { id: 'txn' })
-            return
-            }
-        } catch (error: any) {
-            console.log(error.message)
-            toast.error('Oops! Discord ID Updated Failed!', { id: 'txn' })
-            return
-        } finally {
-            setLoading(false)
-        }
-    } catch (error) {
-        console.error(error)
-        toast.error('Oops! Discord ID Updated Failed!', { id: 'txn' })
-        return
-    }
-    toast.success(`Discord ID Updated Successfully!`, {
-        id: 'txn',
-        duration: 5000
-    })
-    setPopMessage('Discord User ID Updated!')
-    setPopTitle('Success')
-    onSuccessOpen()
-    setTimeout(() => {
-      fetchProfile()
-    }, 8000)
-}
-  
-    const handleEquipTool = async (type: any) => {
-        setLoading(true)
-        try {
-            if (!activeAddress) {
             throw new Error('Log In First Please!!')
-            }
+        }
 
-            toast.loading('Equipping Tool...', { id: 'txn', duration: Infinity })
+        toast.loading('Updating Discord ID...', { id: 'txn', duration: Infinity })
 
-            try{
-                const data = await equipTool(activeAddress, [type, tool.asset.index])
-                if (data && data.includes("Error")) {
-                console.log(data)
-                toast.error('Oops! Tool Equip Failed!', { id: 'txn' })
-                return
-                }
-            } catch (error: any) {
-                console.log(error.message)
-                toast.error('Oops! Tool Equip Failed!', { id: 'txn' })
-                return
-            } finally {
-                setLoading(false)
-            }
-        } catch (error) {
-            console.error(error)
-            toast.error('Oops! Tool Equip Failed!', { id: 'txn' })
+        const data = await createProfile(activeAddress, newDiscordID)
+
+        if (data && data.includes("Error")) {
+            console.error(data);
+            toast.error('Oops! Discord ID Update Failed!', { id: 'txn' })
             return
         }
-        toast.success(`Tool Equipped Successfully!`, {
-            id: 'txn',
-            duration: 5000
-        })
-        if (type === 'equip') {
-          setPopMessage('New Tool Equipped!')
-        } else {
-          setPopMessage('Tool Dequipped and Unfrozen!')
-        }
+
+        toast.success(`Discord ID Updated Successfully!`, { id: 'txn', duration: 5000 })
+        setPopMessage('Discord User ID Updated!')
         setPopTitle('Success')
         onSuccessOpen()
+
         setTimeout(() => {
           fetchProfile()
         }, 8000)
+    } catch (error) {
+        console.error(error);
+        toast.error('Oops! Tool Equip Failed!', { id: 'txn' })
+    } finally {
+        setLoading(false)
     }
-
-    const handleKinshipSub = async () => {
+  }
+  
+  const handleEquipTool = async (type: any) => {
       setLoading(true)
       try {
           if (!activeAddress) {
-          throw new Error('Log In First Please!!')
+              throw new Error('Log In First Please!!')
           }
 
-          toast.loading('Adding To Kinship Subscription...', { id: 'txn', duration: Infinity })
+          toast.loading('Equipping Tool...', { id: 'txn', duration: Infinity })
 
-          try{
-              const data = await subKinship(activeAddress, subCount)
-              if (data && data.includes("Error")) {
-              console.log(data)
-              toast.error('Oops! Kinship Subscription Failed!', { id: 'txn' })
-              return
-              }
-          } catch (error: any) {
-              console.log(error.message)
-              toast.error('Oops! Kinship Subscription Failed!', { id: 'txn' })
-              return
-          } finally {
-              setLoading(false)
+          const data = await equipTool(activeAddress, [type, tool.asset.index])
+  
+          if (data && data.includes("Error")) {
+              console.error(data);
+              toast.error('Oops! Tool Equip Failed!', { id: 'txn' });
+              return;
           }
-      } catch (error) {
-          console.error(error)
-          toast.error('Oops! Kinship Subscription Failed!', { id: 'txn' })
-          return
-      }
-      toast.success(`Kinship Subscription Successful!`, {
-          id: 'txn',
-          duration: 5000
-      })
-      setPopMessage('Kinship Subscription Added!')
-      setPopTitle('Success')
-      onClose4()
-      onSuccessOpen()
+  
+          toast.success(`Tool Equipped Successfully!`, { id: 'txn', duration: 5000 })
+          if (type === 'equip') {
+              setPopMessage('New Tool Equipped!')
+          } else {
+              setPopMessage('Tool Dequipped and Unfrozen!')
+          }
+          setPopTitle('Success')
+          onSuccessOpen()
       setTimeout(() => {
         fetchProfile()
       }, 8000)
+    } catch (error) {
+        console.error(error)
+        toast.error('Oops! Tool Equip Failed!', { id: 'txn' })
+    } finally {
+        setLoading(false)
+    }
+  }
+
+  const handleKinshipSub = async () => {
+    setLoading(true)
+    try {
+        if (!activeAddress) {
+            throw new Error('Log In First Please!!')
+        }
+
+        toast.loading('Adding To Kinship Subscription...', { id: 'txn', duration: Infinity })
+
+        const data = await subKinship(activeAddress, subCount)
+
+        if (data && data.includes("Error")) {
+            console.error(data);
+            toast.error('Oops! Kinship Subscription Failed!', { id: 'txn' })
+            return
+        }
+
+        toast.success(`Kinship Subscription Successful!`, { id: 'txn', duration: 5000 })
+        setPopMessage('Kinship Subscription Added!')
+        setPopTitle('Success')
+        onClose4()
+        onSuccessOpen()
+
+        setTimeout(() => {
+            fetchProfile()
+        }, 8000)
+    } catch (error) {
+        console.error(error)
+        toast.error('Oops! Kinship Subscription Failed!', { id: 'txn' })
+    } finally {
+        setLoading(false)
+    }
   }
   
   return (
