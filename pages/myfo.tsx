@@ -447,7 +447,7 @@ export default function MyFO() {
                         {frozen.map((asset: any, index: any) => (
                               <VStack key={index} justifyContent='center'>
                                 <Image _hover={{ boxSize: '24' }} className={boxGlow} boxSize='20' borderRadius='8px' alt={asset.asset.params.name}
-                                  src={'https://cf-ipfs.com/ipfs/' + asset.asset.params.url.substring(7)} onClick={() => onOpenFrozenPopup(index)} />
+                                  src={'https://gateway.ipfs.io/ipfs/' + asset.asset.params.url.substring(7)} onClick={() => onOpenFrozenPopup(index)} />
                                 <Text fontSize='12px' textColor={buttonText4}>
                                 {asset.asset.params['unit-name']}
                                 </Text>
@@ -599,7 +599,7 @@ export default function MyFO() {
                               {toolList.map((asset: any, index: any) => (
                                   <VStack key={index} justifyContent='center'>
                                     <Image className={boxGlow} boxSize={tool && tool === asset ? '24' : '20'} borderRadius='8px' alt={asset.asset.params.name}
-                                      src={'https://cf-ipfs.com/ipfs/' + asset.asset.params.url.substring(7)}
+                                      src={'https://gateway.ipfs.io/ipfs/' + asset.asset.params.url.substring(7)}
                                       onClick={() => setTool(asset)}
                                     />
                                     <Text fontSize='12px' textColor={buttonText4}>

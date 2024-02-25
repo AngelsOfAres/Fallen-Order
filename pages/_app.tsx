@@ -11,6 +11,9 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react"
 
 import 'styles/globals.css'
 import "@fontsource/orbitron"
+import "@fontsource/press-start-2p"
+import "@fontsource-variable/pixelify-sans"
+import "@fontsource/bai-jamjuree"
 const queryClient = new QueryClient()
 
 export default function App({ Component, pageProps }: AppProps) {

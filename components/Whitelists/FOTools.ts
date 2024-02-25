@@ -186,5 +186,5 @@ export const hatchets = [
 1167891585,
 1167891586,1167891587,1167891588,1167891589,1167891590,1167891591,1167891592,1167891593,1167891594,1167891595,1167891596,1167891597,1167891598,1167891621,1167891622,1167899788,1167900454,1167901665,1167902022,1167902195]
 
-export const woodenHatchetImg = 'https://cf-ipfs.com/ipfs/QmSXLhwWeXDBtA31FDUY9xTiVysMrGmH2nfTJDwHL5Qt25'
-export const ironPickaxeImg = 'https://cf-ipfs.com/ipfs/QmVMqZ3B9xGxEjYu6CmsYFuu1kbpYFKmk5LwYtxDbYX8o1'
+export const woodenHatchetImg = 'https://gateway.ipfs.io/ipfs/QmSXLhwWeXDBtA31FDUY9xTiVysMrGmH2nfTJDwHL5Qt25'
+export const ironPickaxeImg = 'https://gateway.ipfs.io/ipfs/QmVMqZ3B9xGxEjYu6CmsYFuu1kbpYFKmk5LwYtxDbYX8o1'

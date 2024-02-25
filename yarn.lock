@@ -1105,10 +1105,25 @@
   resolved "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.1.4.tgz"
   integrity sha512-qprfWkn82Iw821mcKofJ5Pk9wgioHicxcQMxx+5zt5GSKoqdWvgG5AxVmpmUUjzTLPVSH5auBrhI93Deayn/DA==
 
+"@fontsource-variable/pixelify-sans@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@fontsource-variable/pixelify-sans/-/pixelify-sans-5.0.1.tgz#d4c0d8b633f56913c9c736ea84235adc552fd98a"
+  integrity sha512-CAU9pAYo6/8CCrznnT6WSvgAyuMzQPGDH5JNEmTfk6rpGlEPFjuH4m0klnkwvtLEMFXbApKAQpbLsESEKzZ5YQ==
+
+"@fontsource/bai-jamjuree@^5.0.8":
+  version "5.0.8"
+  resolved "https://registry.yarnpkg.com/@fontsource/bai-jamjuree/-/bai-jamjuree-5.0.8.tgz#3101e16ee789568c30ebe732d2aec64449f6952e"
+  integrity sha512-mWHKKehfM3yyL4Aos4VI+3Tjbc8k3lSkb8ZR9JBNPF/kYE5C2apIzBDP1QqRcvX7WIb67LZGFpvpdBCzsgH//Q==
+
 "@fontsource/orbitron@^5.0.12":
   version "5.0.12"
   resolved "https://registry.npmjs.org/@fontsource/orbitron/-/orbitron-5.0.12.tgz"
   integrity sha512-r+uR4TTwhGYe3Rtvs3LDxtofH2gDFazJqnyFExy5Od1RWnsWPGky2/rn2Tjnvo9WC0L7ki5riGzaJmGvEjsJew==
+
+"@fontsource/press-start-2p@^5.0.18":
+  version "5.0.18"
+  resolved "https://registry.yarnpkg.com/@fontsource/press-start-2p/-/press-start-2p-5.0.18.tgz#cfd82626d6d0f0af8b8b0eaa46a5e2a799507d5c"
+  integrity sha512-6ILWQdS1+qowlQiJYKhlmoUwAd3cHBnPRaO0QtRsSfCxoLqEqDZ0QpdcpokNBHWn4DYy75ZkVB8Sjk630ZwnUg==
 
 "@headlessui/react@^1.7.17":
   version "1.7.17"
