@@ -67,6 +67,7 @@ export async function getProfile(wallet: string): Promise<any> {
             for (const asset of assets) {
                 if (asset.params.reserve === wallet) {
                     const asset_id = asset.index
+                    const asset_name = parseInt(asset.params.name)
                     const metadata_api = `https://mainnet-idx.algonode.cloud/v2/transactions?tx-type=acfg&asset-id=${asset_id}&address=${user_data_wallet}`
                     
                     try {
@@ -150,6 +151,7 @@ export async function getProfile(wallet: string): Promise<any> {
                             const time_remaining = await calculateElapsedSeconds(drip_timer)
                             const user_data = {
                                 asset_id,
+                                asset_name,
                                 main_character,
                                 mainName,
                                 mainImage,

@@ -7,7 +7,6 @@ import ManageCharacter from 'components/FallenOrder/ManageChar'
 import React from 'react'
 import { useWallet } from '@txnlab/use-wallet'
 import Connect from 'components/MainTools/Connect'
-import MyBalances from 'components/FallenOrder/components/MyBalances'
 import { authenticate } from 'utils/auth'
 import { FullGlowButton, IconGlowButton, IconGlowButton2 } from 'components/Buttons'
 import { useState, useEffect, useCallback } from 'react'
@@ -17,7 +16,7 @@ import { algodClient, algodIndexer } from 'lib/algodClient'
 import algosdk from 'algosdk'
 import { SuccessPopup } from '../components/FallenOrder/components/Popups/Success'
 import toast from 'react-hot-toast'
-import { equipTool, getDrip, subKinship, unfreezeAsset } from 'api/backend'
+import { createProfile, equipTool, getDrip, subKinship, unfreezeAsset } from 'api/backend'
 import { motion } from 'framer-motion'
 import { MdOutlineAdd } from 'react-icons/md'
 import { CgProfile } from 'react-icons/cg'
@@ -31,9 +30,10 @@ import CreateUserProfile from 'components/FallenOrder/components/CreateUserProfi
 import { CreateListing } from 'components/FallenOrder/components/CreateListing'
 import { combineImages } from 'components/FallenOrder/components/Tools/combineImages'
 import Link from 'next/link'
-import { BsShop } from 'react-icons/bs'
+import { BsDiscord, BsQuestion, BsShop } from 'react-icons/bs'
 import { GiMeltingIceCube } from 'react-icons/gi'
 import { PiUserCirclePlusFill } from 'react-icons/pi'
+import { CiEdit } from 'react-icons/ci'
 import MyBalancesTab from 'components/FallenOrder/components/MyBalancesTab'
 
 export default function MyFO() {
@@ -52,12 +52,16 @@ export default function MyFO() {
   const [tool, setTool] = useState<any>(null)
   const [subCount, setSubCount] = useState<number>(1)
   const [toolList, setToolList] = useState<any>([])
+  const [newDiscordID, setNewDiscordID] = useState<any>(null)
+  const [ editID, setEditID ] = useState<boolean>(false)
   const { isOpen: isOpen1, onOpen: onOpen1, onClose: onClose1 } = useDisclosure()
   const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure()
   const { isOpen: isOpen3, onOpen: onOpen3, onClose: onClose3 } = useDisclosure()
   const { isOpen: isOpen4, onOpen: onOpen4, onClose: onClose4 } = useDisclosure()
+  const { isOpen: isOpenDiscord, onOpen: onOpenDiscord, onClose: onCloseDiscord } = useDisclosure()
+  const { isOpen: isOpenConfirmDiscord, onOpen: onOpenConfirmDiscord, onClose: onCloseConfirmDiscord } = useDisclosure()
   const { isOpen: isOpenFrozen, onOpen: onOpenFrozen, onClose: onCloseFrozen } = useDisclosure()
-  const [isOpenFrozenPopup, setIsOpenFrozenPopup] = useState(Array(frozen.length).fill(false));
+  const [isOpenFrozenPopup, setIsOpenFrozenPopup] = useState(Array(frozen.length).fill(false))
 
   const onOpenFrozenPopup = (index: any) => {
     const newIsOpenFrozenPopup = [...isOpenFrozenPopup]
@@ -168,6 +172,7 @@ export default function MyFO() {
         if (profile) {
           setFinalImage(profile.mainImage)
           getFinalImage(profile.mainImage, profile.bgImage)
+          setNewDiscordID(profile.asset_name)
         }
         setLoading(false)
       } catch (error) {
@@ -270,6 +275,46 @@ export default function MyFO() {
     }
   }
 
+  
+  const handleEditDiscordID = async () => {
+    setLoading(true)
+    try {
+        if (!activeAddress) {
+        throw new Error('Log In First Please!!')
+        }
+
+        toast.loading('Equipping Tool...', { id: 'txn', duration: Infinity })
+
+        try{
+            const data = await createProfile(activeAddress, newDiscordID)
+            if (data && data.includes("Error")) {
+            console.log(data)
+            toast.error('Oops! Discord ID Updated Failed!', { id: 'txn' })
+            return
+            }
+        } catch (error: any) {
+            console.log(error.message)
+            toast.error('Oops! Discord ID Updated Failed!', { id: 'txn' })
+            return
+        } finally {
+            setLoading(false)
+        }
+    } catch (error) {
+        console.error(error)
+        toast.error('Oops! Discord ID Updated Failed!', { id: 'txn' })
+        return
+    }
+    toast.success(`Discord ID Updated Successfully!`, {
+        id: 'txn',
+        duration: 5000
+    })
+    setPopMessage('Discord User ID Updated!')
+    setPopTitle('Success')
+    onSuccessOpen()
+    setTimeout(() => {
+      fetchProfile()
+    }, 8000)
+}
   
     const handleEquipTool = async (type: any) => {
         setLoading(true)
@@ -462,6 +507,69 @@ export default function MyFO() {
           <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
               <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>My Profile</ModalHeader>
               <ModalBody mx={4} w='full'>
+
+                <div style={{ position: 'absolute', left: 24, top: 24 }}>
+                  <IconGlowButton icon={BsDiscord} onClick={onOpenDiscord} />
+                </div>
+
+                <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpenDiscord} onClose={onCloseDiscord}>
+                <ModalOverlay backdropFilter='blur(10px)'/>
+                <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
+                  <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Discord</ModalHeader>
+                  <ModalBody px={4} w='full'>
+                    <VStack mb={6} w='full' alignItems='center' justifyContent='center'>
+                      {!editID ?
+                      <>
+                        <Text fontSize='18px' textColor={buttonText5}>Current Discord ID</Text>
+                        <HStack mt={4} alignItems='center' justifyContent='center'>
+                          <Text fontSize='20px' textColor={buttonText4}>{userProfile.asset_name == 0 ? 'Not Assigned' : userProfile.asset_name}</Text>
+                          <IconGlowButton icon={CiEdit} onClick={() => setEditID(true)}/>
+                        </HStack>
+                      </>
+                      :
+                      <>
+                        <Text fontSize='18px' textColor={buttonText5}>New Discord ID</Text>
+                        <HStack mb={4}>
+                          <Input ml={10} w='70%' type="text" name="userid" id="userid" maxLength={20} textAlign='center' _hover={{ bgColor: 'black' }} _focus={{ borderColor: medColor }}
+                          textColor={xLightColor} borderColor={medColor} borderRadius='lg' className={`block w-full bg-black sm:text-sm`} value={newDiscordID}
+                          onChange={(e) => setNewDiscordID(e.target.value)} placeholder="Discord User ID" />
+                          <div>
+                            <a href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-" target="_blank"rel="noreferrer">
+                              <IconGlowButton icon={BsQuestion} />
+                            </a>
+                          </div>
+                        </HStack>
+
+                        <HStack alignItems='center' justifyContent='center'>
+                          <FullGlowButton text='EDIT!' onClick={onOpenConfirmDiscord} disabled={newDiscordID == 0 || newDiscordID.length < 18} />
+
+                            <Modal scrollBehavior={'outside'} size='md' isCentered isOpen={isOpenConfirmDiscord} onClose={onCloseConfirmDiscord}>
+                            <ModalOverlay backdropFilter='blur(10px)'/>
+                            <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
+                              <ModalHeader className={gradientText} textAlign='center' fontSize='24px' fontWeight='bold'>Confirm</ModalHeader>
+                              <ModalBody px={4} w='full'>
+                                <VStack textAlign='center' w='full' alignItems='center' justifyContent='center'>
+                                  <Text fontSize='16px' textColor={buttonText4}>Updating Discord User ID costs 5 $EXP</Text>
+                                  <Text fontSize='16px' textColor={buttonText4}>Payment will be automatically charged from your account</Text>
+                                  <Text fontSize='20px' textColor={buttonText5}>New ID: {newDiscordID}</Text>
+                                </VStack>
+                              </ModalBody>
+                              <HStack my={6} alignItems='center' justifyContent='center'>
+                                  <FullGlowButton text='Confirm!'  onClick={handleEditDiscordID} />
+                                  <FullGlowButton text='Cancel' onClick={onCloseConfirmDiscord} />
+                              </HStack>
+                            </ModalContent>
+                            </Modal>
+                          
+                          <FullGlowButton text='X' onClick={onCloseDiscord} />
+                        </HStack>
+                      </>
+                      }
+                    </VStack>
+                  </ModalBody>
+                </ModalContent>
+                </Modal>
+
                 <VStack w='full' alignItems='center' justifyContent='space-between' spacing='12px'>
                   <HStack w='full' justifyContent='space-between'>
                       <Text fontSize='16px' textColor={buttonText4}>Main Character</Text>

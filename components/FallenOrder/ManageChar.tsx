@@ -125,6 +125,7 @@ const process_asset = useCallback(async (assets: any, profile: any) => {
   const processAssetsInBatches = useCallback(async (profile: any) => {
     const allFO = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5]
     const foList = assetList.filter((item: any) => allFO.includes(item['asset-id']))
+    console.log(foList)
     const batches = []
     for (let i = 0; i < foList.length; i += 60) {
       const batch = foList.slice(i, i + 60)

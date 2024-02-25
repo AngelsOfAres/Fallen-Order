@@ -193,7 +193,9 @@ export default function MyBalancesTab() {
     <Center>
         {expBal == -1 || orderBal == -1 || clayOreBal == -1 || oakLogsBal == -1 || boostBal == -1 ? 
         <>
+          <div className='pb-6'>
             <FullGlowButton text={loading ? 'Initializing...' : 'Initialize!'} disabled={loading} onClick={() => sendMassOptIn()}/>
+          </div>
         </>
         :
         <>

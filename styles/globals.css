@@ -276,3 +276,7 @@ transform: scale(1.2);
           filter: alpha(opacity=100); }
     .carousel:hover .slide .legend {
       opacity: 1; }
+
+[data-chakra-tooltip] {
+  display: none;
+}
