@@ -169,7 +169,7 @@ export function ListingCard(props: any) {
             </Container>
             <Container pb={2} pt={0} pl={2} pr={2} centerContent>
                 <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='10px' fontFamily='Orbitron' textAlign='center' hasArrow label={'Listing Owner'} aria-label='Tooltip'>
-                    <a href={'https://algoexplorer.io/address/' + listing_wallet} target='_blank' rel='noreferrer'>
+                    <a href={'https://allo.info/address/' + listing_wallet} target='_blank' rel='noreferrer'>
                         <Text mt={2} textAlign='center' fontFamily='Orbitron' bgColor={buttonText5} bgClip='text' fontSize='9px'>
                             <Icon mr={1} boxSize='10px' color={buttonText3} as={BsFillPersonFill}/>
                             {listing_wallet_short}

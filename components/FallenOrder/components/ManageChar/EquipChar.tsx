@@ -293,7 +293,7 @@ const EquipCharacter = (props: any) => {
             </>
             :
             <>
-              <a href={`https://algoexplorer.io/tx/group/${txnID}`} target='_blank' rel='noreferrer'><Text textColor={xLightColor} align={'center'} className='pb-4 text-md'>View Txn</Text></a>
+              <a href={`https://allo.info/tx/group/${txnID}`} target='_blank' rel='noreferrer'><Text textColor={xLightColor} align={'center'} className='pb-4 text-md'>View Txn</Text></a>
               <FullGlowButton text='Re-Equip!' onClick={() => setTxnID('')} />
             </>
             }

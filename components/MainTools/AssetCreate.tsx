@@ -210,7 +210,7 @@ export default function AssetCreate() {
         {assetID !== 0 ?
         <>
          <Text mb={2} textAlign='center' fontSize='28px' textColor={xLightColor}>Success!</Text>
-         <Center mb={6}><a href={`https:/algoexplorer.io/asset/${assetID}`} target='_blank' rel='noreferrer'><FullGlowButton text='View Asset!' /></a></Center>
+         <Center mb={6}><a href={`https:/allo.info/asset/${assetID}`} target='_blank' rel='noreferrer'><FullGlowButton text='View Asset!' /></a></Center>
         </> : null}
       </div>
     </Box>

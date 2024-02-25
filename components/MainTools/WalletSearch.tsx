@@ -72,7 +72,7 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
             <Tr key={index}>
               <Td textAlign="center"  textColor={mediumColor}>
                 <a
-                  href={`https://algoexplorer.io/tx/${transaction.id}`}
+                  href={`https://allo.info/tx/${transaction.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -86,7 +86,7 @@ const TransactionList: React.FC<TransactionListProps>  = ({ transactions }) => {
                     </Center>
                   ) : (
                     <a
-                    href={`https://algoexplorer.io/asset/${transaction['asset-transfer-transaction']['asset-id']}`}
+                    href={`https://allo.info/asset/${transaction['asset-transfer-transaction']['asset-id']}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     >

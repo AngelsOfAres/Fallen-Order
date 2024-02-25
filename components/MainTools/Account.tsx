@@ -80,7 +80,7 @@ export default function Account() {
               <div className="flex items-center flex-nowrap -my-1">
                 <div className="inline-flex -space-x-px rounded-md shadow-sm ml-3 sm:ml-4">
                   <a
-                    href={`https://algoexplorer.io/address/${activeAccount.address}`}
+                    href={`https://allo.info/address/${activeAccount.address}`}
                     className={`relative inline-flex items-center first:rounded-l-md last:rounded-r-md border ${borderColor} bg-black px-3.5 py-2.5 sm:px-2.5 sm:py-2 text-sm font-medium ${textColor} hover:text-black ${hoverBgColor} focus:z-20`}
                     target="_blank"
                     rel="noreferrer"
