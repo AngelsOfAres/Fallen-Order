@@ -71,11 +71,11 @@ export function AssetApproveCard(props: any) {
                 <IconGlowButton icon={MdAdd} onClick={sendOptIn} disabled={loading} />
             </div>
             <VStack mt={8} mb={6} alignContent='center'>
-                <a href={'https://allo.info/asset/' + assetID} target='_blank' rel='noreferrer'><Text textColor={buttonText5}>ID#{assetID}</Text></a>
-                <Text textColor={buttonText4} fontSize='12px'>Unit: {unitName}</Text>
-                <Text textColor={buttonText4} fontSize='12px'>Name: {name}</Text>
-                <Text textColor={buttonText4} fontSize='12px'>Supply: {formatAssetBalance(supply, 0, true, true, 3)}</Text>
-                <Text textColor={buttonText4} fontSize='12px'>Decimals: {decimals}</Text>
+                <a href={'https://allo.info/asset/' + assetID} target='_blank' rel='noreferrer'><Text textAlign='center' textColor={buttonText5}>ID#{assetID}</Text></a>
+                <Text textAlign='center' textColor={buttonText4} fontSize='12px'>Unit: {unitName}</Text>
+                <Text textAlign='center' textColor={buttonText4} fontSize='12px'>Name: {name}</Text>
+                <Text textAlign='center' textColor={buttonText4} fontSize='12px'>Supply: {formatAssetBalance(supply, 0, true, true, 3)}</Text>
+                <Text textAlign='center' textColor={buttonText4} fontSize='12px'>Decimals: {decimals}</Text>
             </VStack>
         </Box>
     )
