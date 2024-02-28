@@ -12,6 +12,7 @@ import SelectMenu from 'components/SelectMenu'
 import { Listbox } from '@headlessui/react'
 import { classNames } from 'utils'
 import { SuccessPopup } from './Success'
+import Link from 'next/link'
 
 export function AbsorbPop(props: any) {
     const { activeAddress } = useWallet()
@@ -152,26 +153,31 @@ export function AbsorbPop(props: any) {
                                     </div>
                                     <FullGlowButton text={loading ? 'Equipping...' : 'Equip!'} onClick={onSuccessOpen} disabled={loading || selectedPotion.asset_id === 0} />
                                     <Modal scrollBehavior={'outside'} size='xs' isCentered isOpen={isOpen} onClose={onClose}>
-                                        <ModalOverlay backdropFilter='blur(10px)'/>
-                                        <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
-                                            <ModalHeader textAlign='center' className={gradientText} fontFamily='Orbitron' fontSize='20px' fontWeight='bold'>Confirm!</ModalHeader>
-                                            <ModalBody>
-                                            <VStack m={1} alignItems='center' justifyContent='center' fontFamily='Orbitron' spacing='24px'>
-                                                <Text textAlign='center' textColor={buttonText4}><strong>{selectedPotion.value}</strong> will be equipped onto <strong>{asset_id}</strong></Text>
-                                                <Text textAlign='center' textColor={buttonText4}>Cost: <strong>25 $EXP</strong><br />(Clawback)</Text>
-                                                <HStack pb={3}>
-                                                    <FullGlowButton text='Confirm!' disabled={loading || selectedPotion.asset_id === 0} />
-                                                    <FullGlowButton text='X' ref={null} isLoading={null} onClick={onClose} />
-                                                </HStack>
-                                            </VStack>
-                                            </ModalBody>
-                                        </ModalContent>
+                                      <ModalOverlay backdropFilter='blur(10px)'/>
+                                      <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
+                                        <ModalHeader textAlign='center' className={gradientText} fontFamily='Orbitron' fontSize='20px' fontWeight='bold'>Confirm!</ModalHeader>
+                                        <ModalBody>
+                                        <VStack m={1} alignItems='center' justifyContent='center' fontFamily='Orbitron' spacing='24px'>
+                                          <Text textAlign='center' textColor={buttonText4}><strong>{selectedPotion.value}</strong> will be equipped onto <strong>{asset_id}</strong></Text>
+                                          <Text textAlign='center' textColor={buttonText4}>Cost: <strong>25 $EXP</strong><br />(Clawback)</Text>
+                                          <HStack pb={3}>
+                                              <FullGlowButton text='Confirm!' disabled={loading || selectedPotion.asset_id === 0} />
+                                              <FullGlowButton text='X' ref={null} isLoading={null} onClick={onClose} />
+                                          </HStack>
+                                        </VStack>
+                                        </ModalBody>
+                                      </ModalContent>
                                     </Modal>
                                 </>
                                 :
                                 <VStack my={4}>
-                                    <Text textAlign='center' textColor={lightColor}>No Potions Found!</Text>
-                                    <a href='https://www.nftexplorer.app/sellers/fallen-order-backgrounds' target='_blank' rel='noreferrer'><FullGlowButton text='Get BG!' /></a>
+                                  <Text textAlign='center' textColor={lightColor}>No Potions Found!</Text>
+                                  <Link href='/ge'>
+                                    <FullGlowButton text='Buy Potion!' />
+                                  </Link>
+                                  <Link href='/lab'>
+                                    <FullGlowButton text='Craft Potion!' />
+                                  </Link>
                                 </VStack>
                                 }
                                 </>

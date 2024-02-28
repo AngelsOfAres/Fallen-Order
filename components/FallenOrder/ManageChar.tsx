@@ -110,7 +110,6 @@ const process_asset = useCallback(async (assets: any, profile: any) => {
             bg_name = bgInfo.params['name']
             finalImage = await getFinalImage(assetImage, bg_image)
           }
-          console.log(finalImage)
           const kinship_seconds = await getKinship(singleAsset['asset-id'])
           processedAssets.push([metadata_decoded_asset.properties, singleAsset['asset-id'], assetInfo.params['name'], assetInfo.params['unit-name'], finalImage, bg_image, bg_name, kinship_seconds, profile])
         } else {
@@ -125,7 +124,6 @@ const process_asset = useCallback(async (assets: any, profile: any) => {
   const processAssetsInBatches = useCallback(async (profile: any) => {
     const allFO = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5]
     const foList = assetList.filter((item: any) => allFO.includes(item['asset-id']))
-    console.log(foList)
     const batches = []
     for (let i = 0; i < foList.length; i += 60) {
       const batch = foList.slice(i, i + 60)

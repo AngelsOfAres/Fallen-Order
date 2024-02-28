@@ -3,6 +3,7 @@ import { useWallet } from '@txnlab/use-wallet'
 import { useEffect, useState } from 'react'
 import { algodClient } from 'lib/algodClient'
 import { formatAssetBalance } from 'utils'
+import { rateLimiter } from 'lib/ratelimiter'
 
 export default function useWalletBalance() {
   const [walletBalance, setWalletBalance] = useState<string | null>(null)
@@ -19,7 +20,9 @@ export default function useWalletBalance() {
 
   const getAccountInfo = async () => {
     if (!activeAccount) throw new Error('No selected account.')
-    const accountInfo = await algodClient.accountInformation(activeAccount.address).do()
+    const accountInfo = await rateLimiter(
+      () => algodClient.accountInformation('Q327TQBYMB5NMUHKA4PYSY5RXXOX42VNMENHA4IF3DVSJKIEJWEIJKX3JE').do()
+    )
     return accountInfo
   }
 

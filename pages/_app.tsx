@@ -10,6 +10,7 @@ import type { AppProps } from 'next/app'
 import { ChakraProvider, extendTheme } from "@chakra-ui/react"
 
 import 'styles/globals.css'
+import 'styles/stars.css' // Import the stars.css file
 import "@fontsource/orbitron"
 import "@fontsource/press-start-2p"
 import "@fontsource-variable/pixelify-sans"
@@ -47,12 +48,13 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <ChakraProvider theme={theme}>
-      <WalletProvider value={walletProviders}>
-        <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
-          <Toaster />
-        </QueryClientProvider>
-      </WalletProvider>
+        <div className="stars" /> {/* Add the div with the stars class */}
+        <WalletProvider value={walletProviders}>
+          <QueryClientProvider client={queryClient}>
+            <Component {...pageProps} />
+            <Toaster />
+          </QueryClientProvider>
+        </WalletProvider>
       </ChakraProvider>
     </>
   )
