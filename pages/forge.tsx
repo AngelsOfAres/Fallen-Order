@@ -25,7 +25,7 @@ export default function Laboratory() {
   const gradientText = useColorModeValue(styles2.textAnimatedGlowL, styles2.textAnimatedGlowD)
   const { activeAddress, signTransactions } = useWallet()
   const [ allInfo, setAllInfo ] = useState<any>([])
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(true)
   const [type, setType] = useState<string>('')
   const { assetList } = useWalletBalance()
   
@@ -127,8 +127,8 @@ export default function Laboratory() {
           {activeAddress && allInfo.length > 0 ? 
             <>
               <HStack w='full' justifyContent='center'>
-                <FullGlowButton text='Craft' isLoading={loading} onClick={() => setType('Craft')}/>
-                <FullGlowButton text='Fusion' isLoading={loading} onClick={() => setType('Fusion')} />
+                <FullGlowButton text='Craft' isLoading={loading} onClick={() => setType('Craft')} disabled={type == 'Craft'}/>
+                <FullGlowButton text='Fusion' isLoading={loading} onClick={() => setType('Fusion')} disabled={type == 'Fusion'}/>
               </HStack>
 
               {type === 'Craft' && <CraftModule assets={allInfo} />}
