@@ -48,7 +48,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <ChakraProvider theme={theme}>
-        <div className="stars" /> {/* Add the div with the stars class */}
+        <div className="stars" />
         <WalletProvider value={walletProviders}>
           <QueryClientProvider client={queryClient}>
             <Component {...pageProps} />

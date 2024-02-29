@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Navbar from 'components/Navbar'
-import { Center, useColorModeValue, Text, HStack } from '@chakra-ui/react'
+import { Center, useColorModeValue, Text, HStack, Box, Progress } from '@chakra-ui/react'
 import styles2 from '../styles/glow.module.css'
 import { useState, useEffect, useCallback } from 'react'
 import React from 'react'
@@ -28,14 +28,19 @@ export default function Laboratory() {
   const [loading, setLoading] = useState<boolean>(false)
   const [type, setType] = useState<string>('')
   const { assetList } = useWalletBalance()
+  
+  const xLightColor = useColorModeValue('orange.100','cyan.100')
+  const lightColor = useColorModeValue('orange.300','cyan.300')
+  const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
+  const buttonText5 = useColorModeValue('yellow','cyan')
 
   const processAssetsInBatches = async () => {
     const allFO = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5]
     const foList = assetList.filter((item: any) => allFO.includes(item['asset-id']))
     const processedAssets = []
   
-    for (let i = 0; i < foList.length; i += 20) {
-      const batch = foList.slice(i, i + 20)
+    for (let i = 0; i < foList.length; i += 10) {
+      const batch = foList.slice(i, i + 10)
       const batchResults = await Promise.all(batch.map(process_asset_with_retry))
       processedAssets.push(...batchResults.filter(asset => asset !== null))
     }
@@ -43,7 +48,7 @@ export default function Laboratory() {
     setAllInfo(processedAssets.reverse())
     setLoading(false)
     return processedAssets.reverse()
-  };
+  }
   
   const process_asset_with_retry = async (singleAsset: any) => {
     const metadata_api = `https://mainnet-idx.algonode.cloud/v2/transactions?tx-type=acfg&asset-id=${singleAsset['asset-id']}&address=CHARX2GZKNZZORNV2WROPUTSB5QBVRIC62QXXLABFCKA2QALEA3OHVIDYA`;
@@ -68,7 +73,7 @@ export default function Laboratory() {
         }
       } catch (error: any) {
         if (error.response && error.response.status === 429) {
-          const waitTime = 1000
+          const waitTime = 2000
           await new Promise(resolve => setTimeout(resolve, waitTime))
           retries++;
         } else {
@@ -109,30 +114,43 @@ export default function Laboratory() {
   return (
     <>
       <Head>
-        <title>Fallen Order - Laboratory</title>
+        <title>Fallen Order - The Forge</title>
         <meta name="description" content="Developed by Angels Of Ares" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
       <Center mt={6}><MyBalancesTab /></Center>
-      <Text mb='30px' className={`${gradientText} responsive-font`}>Laboratory</Text>
-        {activeAddress && allInfo.length > 0 ? 
-          <>
-            <HStack w='full' justifyContent='center'>
-              <FullGlowButton text='Craft' isLoading={loading} onClick={() => setType('Craft')}/>
-              <FullGlowButton text='Fusion' isLoading={loading} onClick={() => setType('Fusion')} />
-            </HStack>
+      <Text mb='30px' className={`${gradientText} responsive-font`}>The Forge</Text>
+        {!loading ?
+        <>
+          {activeAddress && allInfo.length > 0 ? 
+            <>
+              <HStack w='full' justifyContent='center'>
+                <FullGlowButton text='Craft' isLoading={loading} onClick={() => setType('Craft')}/>
+                <FullGlowButton text='Fusion' isLoading={loading} onClick={() => setType('Fusion')} />
+              </HStack>
 
-            {type === 'Craft' && <CraftModule assets={allInfo} />}
-            {type === 'Fusion' && <FusionModule assets={allInfo} />}
+              {type === 'Craft' && <CraftModule assets={allInfo} />}
+              {type === 'Fusion' && <FusionModule assets={allInfo} />}
 
-          </>
-          :
-          <>
-            <Text my='40px' fontSize='18px' className={gradientText}>Connect Wallet</Text>
-            <Center><Connect /></Center>
-          </>
+            </>
+            :
+            <>
+              <Text my='40px' fontSize='18px' className={gradientText}>Connect Wallet</Text>
+              <Center><Connect /></Center>
+            </>
+          }
+        </>
+        :
+        <>
+          <Text mb={-4} textColor={xLightColor} align={'center'} className='pt-4 text-sm'>Loading Inventory...</Text>
+          <Center>
+            <Box w='250px' my='24px'>
+                <Progress size='xs' bgGradient={progress} colorScheme={buttonText5} isIndeterminate borderRadius='xl'/>
+            </Box>
+          </Center>
+        </>
         }
     </>
   )

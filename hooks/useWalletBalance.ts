@@ -21,7 +21,7 @@ export default function useWalletBalance() {
   const getAccountInfo = async () => {
     if (!activeAccount) throw new Error('No selected account.')
     const accountInfo = await rateLimiter(
-      () => algodClient.accountInformation('Q327TQBYMB5NMUHKA4PYSY5RXXOX42VNMENHA4IF3DVSJKIEJWEIJKX3JE').do()
+      () => algodClient.accountInformation(activeAccount.address).do()
     )
     return accountInfo
   }
