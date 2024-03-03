@@ -113,6 +113,8 @@ export default function FusionModule(props: any) {
       5: 'Immortal'
     }
 
+    const fusedPoints = selectedChar1 && selectedChar2 ? (selectedChar1[0]['ATK'] + selectedChar1[0]['DEF'] + selectedChar1[0]['AP'] + selectedChar1[0]['Points'] + selectedChar2[0]['ATK'] + selectedChar2[0]['DEF'] + selectedChar2[0]['AP'] + selectedChar2[0]['Points'])/2 : 0
+
     const handleCharacterSelection = (asset: any) => {
 
       const isSameRank = (asset1: any, asset2: any) => {
@@ -151,7 +153,7 @@ export default function FusionModule(props: any) {
                     <Box m={6} p={4} className={boxGlow} bgGradient={bgCardOff} borderColor={buttonText3} borderWidth='1.5px'
                       borderRadius='13px'>
                       <Text textColor={buttonText4} textAlign='center' fontSize='16px'>Chosen Characters</Text>
-                      <HStack mt={4} alignItems='center' justifyContent='center' spacing='24px'>
+                      <HStack mt={4} alignItems='center' justifyContent='center' spacing='16px'>
 
                         {selectedChar1 ?
                           <VStack>
@@ -163,7 +165,7 @@ export default function FusionModule(props: any) {
                             </Container>
                             <Box m={2} p={2} className={boxGlow} bgGradient={bgCardOff} borderColor={buttonText3} borderWidth='1.5px'
                             borderRadius='13px'>
-                              <VStack>
+                              <VStack textAlign='center'>
                                 <Text textColor={buttonText4} fontSize='10px'>LVL | Wisdom | Kinship</Text>
                                 <Text mt={-2} textColor={buttonText5} fontSize='10px'>{selectedChar1[0]['Level'].split('/')[0]} | {selectedChar1[0]['Level'].split('/')[1]} | {selectedChar1[0]['Kinship']}</Text>
                                 <Text textColor={buttonText4} fontSize='10px'>ATK | AP | DEF | POINTS</Text>
@@ -186,7 +188,7 @@ export default function FusionModule(props: any) {
                             </Container>
                             <Box m={2} p={2} className={boxGlow} bgGradient={bgCardOff} borderColor={buttonText3} borderWidth='1.5px'
                               borderRadius='13px'>
-                              <VStack>
+                              <VStack textAlign='center'>
                                 <Text textColor={buttonText4} fontSize='10px'>LVL | Wisdom | Kinship</Text>
                                 <Text mt={-2} textColor={buttonText5} fontSize='10px'>{selectedChar2[0]['Level'].split('/')[0]} | {selectedChar2[0]['Level'].split('/')[1]} | {selectedChar2[0]['Kinship']}</Text>
                                 <Text textColor={buttonText4} fontSize='10px'>ATK | AP | DEF | POINTS</Text>
@@ -207,14 +209,14 @@ export default function FusionModule(props: any) {
                         <VStack>
                           <Box m={4} p={2} className={boxGlow} bgGradient={bgCardOff} borderColor={buttonText3} borderWidth='1.5px'
                             borderRadius='13px'>
-                            <VStack>
+                            <VStack textAlign='center'>
 
                               <Text textColor={buttonText5} fontSize='10px'>R{fusedRank} - {rankTypes[fusedRank]}</Text>
                               <Text textColor={buttonText4} fontSize='10px'>LVL | Wisdom | Kinship</Text>
                               <Text mt={-2} textColor={buttonText5} fontSize='10px'>{fusedLVL} | {fusedWisdom} | {selectedChar1[0]['Kinship'] + selectedChar2[0]['Kinship']}</Text>
                                 <Divider w='75%' borderColor={buttonText3}/>
-                              <Text textColor={buttonText4} fontSize='10px'>ATK | AP | DEF | POINTS</Text>
-                              <Text mt={-2} textColor={buttonText5} fontSize='10px'>{(selectedChar1[0]['ATK'] + selectedChar2[0]['ATK'])/2} | {(selectedChar1[0]['DEF'] + selectedChar2[0]['DEF'])/2} | {(selectedChar1[0]['AP'] + selectedChar2[0]['AP'])/2} | {(selectedChar1[0]['Points'] + selectedChar2[0]['Points'])/2}</Text>
+                              <Text textColor={buttonText4} fontSize='10px'>POINTS</Text>
+                              <Text mt={-2} textColor={buttonText5} fontSize='10px'>{fusedPoints}</Text>
                                 <Divider w='75%' borderColor={buttonText3}/>
                               <Text textColor={buttonText4} fontSize='10px'>Skills</Text>
                               <Text mt={-2} textColor={buttonText5} fontSize='10px'>WC {fusedWCLVL} | {fusedWC}</Text>

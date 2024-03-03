@@ -71,7 +71,10 @@ export default function Home() {
                   <Text fontSize={'20px'}>{head3}</Text>
                   <Text fontSize={'20px'}>{head4}</Text>
                 </VStack>
-                  <Link href='https://algoxnft.com/shuffle/2467'><FullGlowButton fontsize='16px' text='JOIN THE ORDER!' /></Link>
+                
+                <Link href='/shuffle'>
+                  <FullGlowButton fontsize='16px' text='JOIN THE ORDER!' />
+                </Link>
 
                 <Divider w='60%' maxWidth='350px' borderColor={divider}/>
                   <VStack className='responsive-text'  w='80%' maxW='800px' p={2}>

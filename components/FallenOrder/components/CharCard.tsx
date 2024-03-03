@@ -445,7 +445,7 @@ export function CharCard(props: any) {
                             <ModalBody>
                             <VStack m={1} alignItems='center' justifyContent='center'>
                                 <Box mb={4} borderColor={buttonText3} borderWidth='1px' borderRadius='8px'>
-                                    <Image borderRadius='9px' boxSize={24} onClick={onToggle} alt={'Stat Booster - $BOOST'} src={'https://ipfs.algonode.xyz/ipfs/bafybeibdnf2qn7a3w5ckxecv4svykpntufjkqh2zank6kx6mn2idik2nz4'} />
+                                    <Image borderRadius='9px' boxSize={24} onClick={onToggle} alt={'Stat Booster - $BOOST'} src={'https://gateway.ipfs.io/ipfs/bafybeibdnf2qn7a3w5ckxecv4svykpntufjkqh2zank6kx6mn2idik2nz4'} />
                                 </Box>
                                 <Text fontSize='16px' textAlign='center' textColor={buttonText4}>New Points</Text>
                                 <Text pb={4} fontSize='20px' textAlign='center' textColor={buttonText5}>{parseInt(metadata.Points) + 50}</Text>

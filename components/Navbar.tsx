@@ -25,7 +25,7 @@ import GuideBoxPopup from './FallenOrder/components/Popups/GuideBox'
 import { BsShop } from 'react-icons/bs'
 import { GoPerson } from 'react-icons/go'
 import { AiFillThunderbolt } from "react-icons/ai"
-import { GiAnvilImpact } from 'react-icons/gi';
+import { GiAnvilImpact, GiRollingDices } from 'react-icons/gi';
 import { IconGlowButton } from './Buttons';
 import { FaTools } from "react-icons/fa";
 import { MdOutlineWavingHand } from "react-icons/md"
@@ -100,6 +100,10 @@ import { MdOutlineWavingHand } from "react-icons/md"
 
                 <Link href='/ge'>
                     <IconGlowButton icon={BsShop} />
+                </Link>
+
+                <Link href='/shuffle'>
+                    <IconGlowButton icon={GiRollingDices} />
                 </Link>
 
                 <Link href='/forge'>

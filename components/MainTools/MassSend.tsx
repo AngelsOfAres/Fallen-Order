@@ -13,7 +13,7 @@ export default function MassSend() {
   const { activeAddress, signTransactions } = useWallet()
   const [assetIDs, setAssetIDs] = useState<any>([])
   const [addressList, setAddressList] = useState<any>([])
-  const [rawAmounts, setRawAmounts] = useState<any>([])
+  const [rawAmount, setRawAmount] = useState<any>(0.00)
   const [status, setStatus] = useState<string>('Generating')
   const [customNote, setCustomNote] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
@@ -52,138 +52,158 @@ export default function MassSend() {
         }
     }
 
-  const massSend = async () => {
-    setLoading(true)
-    const extractedNumbers = assetIDs.flatMap((line: any) => {
-      const numbers = line.split(/[, ]+/);
-      return numbers.filter((num: any) => num !== '')
-    })
-    setAssetIDs(extractedNumbers)
-    const extractedAddresses = addressList.flatMap((line: any) => {
-        const strings = line.split(/[, ]+/);
-        return strings.filter((str: any) => str !== '')
-      })
-    setAddressList(extractedAddresses)
-    await getOptedIn()
-    const extractedAmounts = rawAmounts.flatMap((line: any) => {
-        const am = line.split(/[, ]+/);
-        return am.filter((a: any) => a !== '')
-      })
-    setRawAmounts(extractedAmounts)
-    try {
-      if (!activeAddress) {
-        throw new Error('Wallet Not Connected!')
+    const massSend = async () => {
+      try {
+          setLoading(true);
+  
+          const extractedNumbers = extractValues(assetIDs);
+          const extractedAddresses = extractValues(addressList);
+  
+          setAssetIDs(extractedNumbers);
+          setAddressList(extractedAddresses);
+  
+          await getOptedIn();
+  
+          if (!activeAddress) {
+              throw new Error('Wallet Not Connected!');
+          }
+  
+          const suggestedParams = await getTransactionParams();
+          const batchSize = 16;
+          const batchTransactions = await createBatchTransactions(extractedNumbers, extractedAddresses, suggestedParams);
+  
+          const encodedBatches = splitIntoEncodedBatches(batchTransactions, batchSize);
+  
+          await sendBatches(encodedBatches);
+  
+          toast.success(`Successfully sent ${assetIDs.length} assets to ${batchTransactions.length} accounts!`, {
+              id: 'txn',
+              duration: 5000
+          });
+  
+          setLoading(false);
+          setCounter(0);
+          setStatus('Generating');
+      } catch (error) {
+          handleError(error);
       }
+  };
   
-      const suggestedParams = await algodClient.getTransactionParams().do()
-      suggestedParams.fee = 1000
-      suggestedParams.flatFee = true
-      const note = Uint8Array.from((customNote + '\n\nAbyssal Portal - Mass Send Tool\n\nDeveloped by Angels Of Ares').split("").map(x => x.charCodeAt(0)));
+  const extractValues = (list: any) => {
+      return list.flatMap((line: any) => line.split(/[, ]+/).filter((value: any) => value !== ''));
+  };
   
-      const batchSize = 16
-      const batchSize2 = 80
-      const maxRetries = 5
-      const delayBetweenRetries = 150
-      
-      const batchTransactions = []
-      const totalAssets = extractedNumbers.length
-      let index = 0
-      
-      for (const address of addressList) {
-        const to = address
-        for (let i = 0; i < totalAssets; i += batchSize2) {
-            const batchEndIndex = Math.min(i + batchSize2, totalAssets)
-            const assetIDsBatch = extractedNumbers.slice(i, batchEndIndex)
-        
-            let retries = 0
-            let success = false
-            let batchResult = []
-        
-            while (retries < maxRetries && !success) {
-                try {
-                    batchResult = await Promise.all(
-                    assetIDsBatch.map(async (assetID: any, index: any) => {
-                        const assetInfo = await rateLimiter(
-                          () => algodClient.getAssetByID(assetID).do()
-                        );
-                        const decimals = assetInfo.params.decimals
-                        setCounter((counter) => counter+1)
-                        const amount = (parseFloat(rawAmounts[index]))*(10**decimals)
-                        const assetIndex = parseInt(assetID)
+  const getTransactionParams = async () => {
+      const suggestedParams = await algodClient.getTransactionParams().do();
+      suggestedParams.fee = 1000;
+      suggestedParams.flatFee = true;
+      return suggestedParams;
+  };
+  
+  const createBatchTransactions = async (extractedNumbers: any, extractedAddresses: any, suggestedParams: any) => {
+      const batchSize2 = 80;
+      const maxRetries = 5;
+      const delayBetweenRetries = 150;
+      const batchTransactions = [];
+      const totalAssets = extractedNumbers.length;
+  
+      for (const address of extractedAddresses) {
+          const to = address;
+  
+          for (let i = 0; i < totalAssets; i += batchSize2) {
+              const batchEndIndex = Math.min(i + batchSize2, totalAssets);
+              const assetIDsBatch = extractedNumbers.slice(i, batchEndIndex);
+  
+              let retries = 0;
+              let success = false;
+              let batchResult = [];
 
-                        return algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-                        from,
-                        to,
-                        amount,
-                        assetIndex,
-                        suggestedParams,
-                        note,
-                        })
-                    }))
-                    success = true
-                } catch (error: any) {
-                    if (error.response && error.response.status === 429) {
-                    retries++
-                    await new Promise((resolve) => setTimeout(resolve, delayBetweenRetries))}
-                }
-            }
-        
-            if (!success) {
-                throw new Error(`Failed to fetch asset data after ${maxRetries} retries.`)
-            }
-        
-            batchTransactions.push(...batchResult)
-        
-            if (i + batchSize2 < totalAssets) {
-            await new Promise((resolve) => setTimeout(resolve, 750))
-            }
-        }
-        index++
-        }
-    const filteredTransactions = batchTransactions.filter((transaction: any) => transaction !== null && transaction !== undefined)
-      
-      let groupcount = 1
-      const encodedBatches = []
+              const note = Uint8Array.from((customNote + '\n\nFallen Order - Tools\n\nDeveloped by Angels Of Ares').split("").map(x => x.charCodeAt(0)));
   
-      const numTransactions = filteredTransactions.length
-      const adjustedBatchSize = numTransactions < batchSize ? numTransactions : batchSize
+              while (retries < maxRetries && !success) {
+                  try {
+                      batchResult = await Promise.all(
+                          assetIDsBatch.map(async (assetID: any) => {
+                              const assetInfo = await rateLimiter(() => algodClient.getAssetByID(assetID).do());
+                              const decimals = assetInfo.params.decimals;
+                              setCounter((counter) => counter + 1);
+                              const amount = parseFloat(rawAmount) * (10 ** decimals);
+                              const assetIndex = parseInt(assetID);
   
-      for (let i = 0; i < filteredTransactions.length; i += adjustedBatchSize) {
-        const batch: any[] = filteredTransactions.slice(i, i + adjustedBatchSize)
-        algosdk.assignGroupID(batch)
-        const encodedBatch = batch.map(txn => algosdk.encodeUnsignedTransaction(txn))
-        encodedBatches.push(encodedBatch)
+                              return algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+                                  from,
+                                  to,
+                                  amount,
+                                  assetIndex,
+                                  suggestedParams,
+                                  note,
+                              });
+                          })
+                      );
+                      success = true;
+                  } catch (error: any) {
+                      if (error.response && error.response.status === 429) {
+                          retries++;
+                          await new Promise((resolve) => setTimeout(resolve, delayBetweenRetries));
+                      }
+                  }
+              }
+  
+              if (!success) {
+                  throw new Error(`Failed to fetch asset data after ${maxRetries} retries.`);
+              }
+  
+              batchTransactions.push(...batchResult);
+  
+              if (i + batchSize2 < totalAssets) {
+                  await new Promise((resolve) => setTimeout(resolve, 750));
+              }
+          }
       }
+      return batchTransactions;
+  };
+  
+  const splitIntoEncodedBatches = (batchTransactions: any, batchSize: any) => {
+      let groupcount = 1;
+      const encodedBatches = [];
+      const numTransactions = batchTransactions.length;
+      const adjustedBatchSize = numTransactions < batchSize ? numTransactions : batchSize;
+  
+      for (let i = 0; i < batchTransactions.length; i += adjustedBatchSize) {
+          const batch = batchTransactions.slice(i, i + adjustedBatchSize);
+          algosdk.assignGroupID(batch);
+          const encodedBatch = batch.map((txn: any) => algosdk.encodeUnsignedTransaction(txn));
+          encodedBatches.push(encodedBatch);
+      }
+      return encodedBatches;
+  };
+  
+  const sendBatches = async (encodedBatches: any) => {
+      let groupcount = 1;
+  
       for (let i = 0; i < encodedBatches.length; i += 4) {
-        toast.loading(`Awaiting Signature #${groupcount}...`, { id: 'txn', duration: Infinity })
-        setStatus((status) => status = 'Signing')
-        const batchToSign = encodedBatches.slice(i, i + 4)
-        const flattenedBatchToSign = batchToSign.reduce((acc, curr) => [...acc, ...curr], [])
-        console.log(flattenedBatchToSign)
-        const signedBatch = await signTransactions(flattenedBatchToSign)
-        groupcount++
-        
-        for (let j = 0; j < signedBatch.length; j += 16) {
-          const groupToSend = signedBatch.slice(j, j + 16)
-          algodClient.sendRawTransaction(groupToSend).do()
-        }
-      }   
-
-      toast.success(`Successfully sent ${assetIDs.length} assets to ${filteredTransactions.length} accounts!}`, {
-        id: 'txn',
-        duration: 5000
-      })
-      setLoading(false)
-      setCounter(0)
-      setStatus((status) => status = 'Generating')
-    } catch (error) {
-      console.error(error)
-      setLoading(false)
-      setCounter(0)
-      setStatus((status) => status = 'Generating')
-      toast.error(`Oops! Mass send failed. Please verify addresses/IDs and try again...`, { id: 'txn' })
-    }
-  }
+          toast.loading(`Awaiting Signature #${groupcount}...`, { id: 'txn', duration: Infinity });
+          setStatus('Signing');
+          const batchToSign = encodedBatches.slice(i, i + 4);
+          const flattenedBatchToSign = batchToSign.reduce((acc: any, curr: any) => [...acc, ...curr], []);
+          const signedBatch = await signTransactions(flattenedBatchToSign);
+          groupcount++;
+  
+          for (let j = 0; j < signedBatch.length; j += 16) {
+              const groupToSend = signedBatch.slice(j, j + 16);
+              await algodClient.sendRawTransaction(groupToSend).do();
+          }
+      }
+  };
+  
+  const handleError = (error: any) => {
+      console.error(error);
+      setLoading(false);
+      setCounter(0);
+      setStatus('Generating');
+      toast.error('Oops! Mass send failed. Please verify addresses/IDs and try again...', { id: 'txn' });
+  };
+  
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -226,18 +246,21 @@ export default function MassSend() {
             borderColor={medColor}
           />
           <Text textColor={lightColor} mb="1" fontWeight="semibold">
-            Amounts
+            Amount
           </Text>
-          <Textarea
-            minH='85px'
-            mb={4}
-            value={rawAmounts.join('\n')}
-            onChange={(e) => setRawAmounts(e.target.value.split('\n'))}
-            placeholder={`3.5 12 100 0.15 25`}
-            _hover={{bgColor: 'black'}}
-            _focus={{borderColor: medColor}}
+          <Input
+            type="number"
+            name="amount"
+            id="amount"
+            _hover={{ bgColor: 'black' }}
+            _focus={{ borderColor: medColor }}
             textColor={xLightColor}
             borderColor={medColor}
+            className={`block w-full rounded-none rounded-l-md bg-black sm:text-sm`}
+            mb={4}
+            value={rawAmount}
+            onChange={(e) => setRawAmount(e.target.value)}
+            placeholder={`3.56`}
           />
           <Text textColor={lightColor} mb="1" fontWeight="semibold">
             Note

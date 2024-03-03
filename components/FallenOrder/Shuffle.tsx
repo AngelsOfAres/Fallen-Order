@@ -36,7 +36,7 @@ const Shuffle: React.FC = () => {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const shuffle_cost = 250
+  const shuffle_cost = 300
   const shuffleEscrow = 'GOT2KEIKQHXVTS5WMIWVCTC4K5HPAYSX6D5FTK5QOEOSVDUYJLHEVYYMYE'
   const totalCount = 792
   const claimToken = localStorage.getItem("shuffle")
@@ -52,7 +52,7 @@ const Shuffle: React.FC = () => {
     return list.slice(0, 4)
   }, [])
 
-  const shufflePayment = async (amt: any) => {
+  const shufflePayment = async () => {
     try {
       if (!activeAddress) {
         throw new Error('Wallet Not Connected!')
@@ -64,7 +64,7 @@ const Shuffle: React.FC = () => {
       const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
         from: activeAddress,
         to: shuffleEscrow,
-        amount: amt*1000000*amount,
+        amount: shuffle_cost*1000000*amount,
         suggestedParams,
         note
       })
@@ -115,15 +115,15 @@ const Shuffle: React.FC = () => {
           const assetInfo = await algodIndexer.lookupAssetByID(random).do()
           const cid = getIpfsFromAddress(assetInfo.asset.params)
           if (cid) {
-            const response = await fetch(`https://ipfs.algonode.xyz/ipfs/${cid}`)
+            const response = await fetch(`https://gateway.ipfs.io/ipfs/${cid}`)
             if (!response.ok) {
               throw new Error(`Failed to fetch data from IPFS: ${response.status} ${response.statusText}`)
             }
             if (assetInfo.asset.params.url.includes('template')) {
               const textData = await response.text()
-              images.push('https://ipfs.algonode.xyz/ipfs/' + JSON.parse(textData).image.substring(7))
+              images.push('https://gateway.ipfs.io/ipfs/' + JSON.parse(textData).image.substring(7))
             } else {
-              images.push('https://ipfs.algonode.xyz/ipfs/' + cid)
+              images.push('https://gateway.ipfs.io/ipfs/' + cid)
             }
           }
         }
@@ -201,15 +201,15 @@ const Shuffle: React.FC = () => {
                 const assetInfo = await algodIndexer.lookupAssetByID(choice).do()
                 const cid = getIpfsFromAddress(assetInfo.asset.params)
                 if (cid) {
-                  const response = await fetch(`https://ipfs.algonode.xyz/ipfs/${cid}`)
+                  const response = await fetch(`https://gateway.ipfs.io/ipfs/${cid}`)
                   if (!response.ok) {
                     throw new Error(`Failed to fetch data from IPFS: ${response.status} ${response.statusText}`)
                   }
                   if (assetInfo.asset.params.url.includes('template')) {
                       const textData = await response.text()
-                      images.push('https://ipfs.algonode.xyz/ipfs/' + JSON.parse(textData).image.substring(7))
+                      images.push('https://gateway.ipfs.io/ipfs/' + JSON.parse(textData).image.substring(7))
                   } else {
-                      images.push('https://ipfs.algonode.xyz/ipfs/' + cid)
+                      images.push('https://gateway.ipfs.io/ipfs/' + cid)
                   }
                 }
                 names += assetInfo.asset.params.name + '\n'
@@ -279,7 +279,7 @@ const Shuffle: React.FC = () => {
                       </NumberInputStepper>
                       </NumberInput>
                       <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText3} bgColor='black' textColor={buttonText4} fontSize='16px' fontFamily='Orbitron' textAlign='center' hasArrow label={`${amount}X SHUFFLE!`} aria-label='Tooltip'>
-                        <div><IconGlowButton2 icon={GiRollingDices} onClick={() => shufflePayment(shuffle_cost)} disabled={claiming} /></div>
+                        <div><IconGlowButton2 icon={GiRollingDices} onClick={() => shufflePayment()} disabled={claiming} /></div>
                       </Tooltip>
                     </HStack>
                 </>

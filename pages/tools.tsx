@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import Connect from 'components/MainTools/Connect'
 import Navbar from 'components/Navbar'
 import Transact from 'components/MainTools/Transact'
-import { Center, useColorModeValue, SimpleGrid, Text } from '@chakra-ui/react'
+import { Center, useColorModeValue, SimpleGrid, Text, HStack } from '@chakra-ui/react'
 import { FullGlowButton } from 'components/Buttons'
 import styles2 from '../styles/glow.module.css'
 import Footer from 'components/Footer'
@@ -58,7 +58,10 @@ export default function Tools() {
         </Center>
       )}
       <Center my={6}>
-        <Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link>
+        <HStack spacing='12px'>
+          <Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link>
+          <Link href='/approve'><FullGlowButton fontsize='16px' text='Mass Approve' /></Link>
+        </HStack>
       </Center>
       <Center mb='48px'>
         <SimpleGrid w='95%' minChildWidth='360px' spacing='24px' justifyItems='center'>
