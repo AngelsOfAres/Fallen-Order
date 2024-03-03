@@ -9,7 +9,7 @@ import Connect from 'components/MainTools/Connect'
 import algosdk from 'algosdk'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
-import { Rank1, Rank2, Rank3, Rank4 } from '../Whitelists/FOChars'
+import { Rank1, Rank2, Rank3, Rank4, Rank5 } from '../Whitelists/FOChars'
 import { getIpfsFromAddress } from './components/Tools/getIPFS'
 import createGifFromImages from './components/Tools/makeGIF'
 import { GiRollingDices } from 'react-icons/gi'
@@ -38,7 +38,6 @@ const Shuffle: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const shuffle_cost = 300
   const shuffleEscrow = 'GOT2KEIKQHXVTS5WMIWVCTC4K5HPAYSX6D5FTK5QOEOSVDUYJLHEVYYMYE'
-  const totalCount = 792
   const claimToken = localStorage.getItem("shuffle")
 
   const pickFourRandomEntries = useCallback((list: any) => {
@@ -86,7 +85,7 @@ const Shuffle: React.FC = () => {
     try{
         const shuffle_info = await algodIndexer.lookupAccountAssets(shuffleEscrow).do()
         let available_nfts = []
-        let ranks: any = [[], [], [], []]
+        let ranks: any = [[], [], [], [], []]
         for (const item of shuffle_info.assets) {
             const assetID = item['asset-id']
             if (item.amount > 0) {
@@ -104,10 +103,13 @@ const Shuffle: React.FC = () => {
                 if (Rank4.includes(assetID)) {
                     ranks[3].push(assetID)
                 }
+                if (Rank5.includes(assetID)) {
+                    ranks[4].push(assetID)
+                }
             }
         }
         setAv(available_nfts)
-        setAvFO([ranks[0], ranks[1], ranks[2], ranks[3]])
+        setAvFO([ranks[0], ranks[1], ranks[2], ranks[3], ranks[4]])
 
         const randomFour = pickFourRandomEntries(available_nfts)
         let images: any = []
@@ -267,7 +269,7 @@ const Shuffle: React.FC = () => {
                       <Text textColor={lightColor} className='text-xl'>Available:</Text>
                       <Text textColor={xLightColor} className='text-xl whitespace-nowrap text-center'><strong className='text-2xl'>{av.length}</strong></Text>
                     </HStack>
-                    <Text textColor={xLightColor} className='text-lg whitespace-nowrap text-center'>R1: <strong className='text-xl'>{avFO[0].length}</strong> | R2: <strong className='text-xl'>{avFO[1].length}</strong> | R3: <strong className='text-xl'>{avFO[2].length}</strong> | R4: <strong className='text-xl'>{avFO[3].length}</strong></Text>
+                    <Text textColor={xLightColor} className='text-lg whitespace-nowrap text-center'>R1: <strong className='text-xl'>{avFO[0].length}</strong> | R2: <strong className='text-xl'>{avFO[1].length}</strong> | R3: <strong className='text-xl'>{avFO[2].length}</strong> | R4: <strong className='text-xl'>{avFO[3].length}</strong> | R5: <strong className='text-xl'>{avFO[4].length}</strong></Text>
                       <Image className={boxGlow} my='24px' boxSize='200px' borderRadius='12px' alt='Fallen Order - SHUFFLE!' src={gifDataUrl ? gifDataUrl : avImgs[0]} />
                     <Text mt='-12px' mb='12px' textColor={lightColor} className='text-lg'>Cost: <strong className='text-xl'>{shuffle_cost}A</strong></Text>
                     <HStack mb={5} spacing='12px'>
