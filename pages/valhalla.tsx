@@ -18,8 +18,8 @@ export default function test() {
       <Navbar />
       <Center>
         <VStack className={gradientText} m={4} w='80%' maxWidth='800px' alignItems='center' textAlign='center' justifyContent='center'>
-          <Text fontSize={'20px'}>WELCOME TO VALHALLA!</Text>
-          <Text fontSize={'20px'}>Thanks. Come Again...</Text>
+          <Text fontSize={'28px'}>WELCOME TO VALHALLA!</Text>
+          <Text fontSize={'24px'}>Thanks. Come Again...</Text>
         </VStack>
       </Center>
     </>
