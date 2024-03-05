@@ -2,7 +2,7 @@ import { Box, VStack, HStack, useColorModeValue, Text, Textarea, Tooltip, useBre
 import * as React from 'react'
 import styles from '../../../styles/glow.module.css'
 import { useState, useEffect, useCallback } from 'react'
-import { FullGlowButton, IconGlowButton } from 'components/Buttons'
+import { FullGlowButton, IconGlowButton, IconGlowButton2 } from 'components/Buttons'
 import { RiSendPlaneFill } from 'react-icons/ri'
 import { useWallet } from '@txnlab/use-wallet'
 import toast from 'react-hot-toast'
@@ -10,10 +10,13 @@ import { TfiMoreAlt } from 'react-icons/tfi'
 import useWalletBalance from 'hooks/useWalletBalance'
 import { Rank1, Rank2, Rank3, Rank4, Rank5 } from '../../Whitelists/FOChars'
 import { GiFireShrine } from 'react-icons/gi'
+import { algodIndexer } from 'lib/algodClient'
+import Link from 'next/link'
+import { castFusion1 } from 'api/backend'
+import { getIpfsFromAddress } from './Tools/getIPFS'
 
 export default function FusionModule(props: any) {
     const { assets } = props
-    console.log(assets)
     const allFO = [...Rank1, ...Rank2, ...Rank3, ...Rank4, ...Rank5]
     const filteredAssets = assets.filter((asset: any) => allFO.includes(asset[1]))
     const buttonText3 = useColorModeValue('orange.500','cyan.500')
@@ -26,18 +29,70 @@ export default function FusionModule(props: any) {
     const bgCardOn = useColorModeValue('linear(60deg, whiteAlpha.300 3%, black 50%, whiteAlpha.300 97%)','linear(60deg, whiteAlpha.300 3%, black 50%, whiteAlpha.300 97%)')
     const bgCardOff = useColorModeValue('linear(60deg, whiteAlpha.300 10%, black 35%, black 65%, whiteAlpha.300 90%)','linear(60deg, whiteAlpha.300 10%, black 35%, black 65%, whiteAlpha.300 90%)')
     const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
-    const fontSize1 = useBreakpointValue({ base: '6px', sm: '8px', md: '9px', lg: '10px', xl: '11px' })
-    const fontSize2 = useBreakpointValue({ base: '8px', sm: '9px', md: '10px', lg: '11px', xl: '12px' })
     const [loading, setLoading] = useState<boolean>(false)
+    const [fusing, setFusing] = useState<boolean>(false)
+    const [fusedChar, setFusedChar] = useState<string>('')
     const [errorMessage, setErrorMessage] = useState<string>('')
+    const [av, setAv] = useState<any>([])
     const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
     const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
+
+    const FadingText = ({ text, delay }: any) => {
+      const [opacity, setOpacity] = useState(0);
+    
+      useEffect(() => {
+        const timer = setTimeout(() => {
+          setOpacity(1);
+        }, delay);
+    
+        return () => clearTimeout(timer);
+      }, [delay]);
+    
+      return (
+        <Text mb={3} textColor={buttonText5} textAlign='center' style={{ opacity, transition: 'opacity 0.75s' }}>
+          {text}
+        </Text>
+      );
+    };
+    
+    const FadingImage = ({ src, alt, delay }: any) => {
+      const [opacity, setOpacity] = useState(0);
+    
+      useEffect(() => {
+        const timer = setTimeout(() => {
+          setOpacity(1);
+        }, delay);
+    
+        return () => clearTimeout(timer);
+      }, [delay]);
+    
+      return (
+        <Container style={{ opacity, transition: 'opacity 0.5s' }} centerContent>
+          <Image className={boxGlow} boxSize='120px' borderRadius='12px' alt={alt} src={src} onClick={() => setFusing(false)}/>
+        </Container>
+      );
+    };
+    
+
+  const FadingComponent = () => {
+    return (
+      <>
+        <VStack alignItems='center' justifyContent='center' spacing='20px'>
+          <FadingText text="FUSION IN PROGRESS!" delay={1000} />
+          <FadingText text="A rift opens and your characters are warped through a portal..." delay={4000} />
+          <FadingText text="Your new character emerges from the rift!" delay={10000} />
+          <FadingImage src={fusedChar[4]} alt={fusedChar[2]} delay={11000} />
+        </VStack>
+      </>
+    );
+  };
 
     const errorMessages = {
       Rank: 'Woops...You may only fuse 2 characters of the same Rank!'
     }
 
     const { activeAddress } = useWallet()
+    const fusionAddress = 'BHNCCVQVLX6VVATOBSPUAGJE3WMHP4XQNKZY3QH5OY6ZXY55BYO2NOXV44'
     const [selectedChar1, setSelectedChar1] = useState<any>(null)
     const [selectedChar2, setSelectedChar2] = useState<any>(null)
 
@@ -140,7 +195,56 @@ export default function FusionModule(props: any) {
           setSelectedChar2(asset)
           setErrorMessage('')
       }
-  }
+    }
+
+    const getAvFO = useCallback(async () => {
+      try {
+        const shuffle_info = await algodIndexer.lookupAccountAssets(fusionAddress).do()
+        let available_nfts = []
+        let ranks: any = [[], [], []]
+
+        for (const item of shuffle_info.assets) {
+          const assetID = item['asset-id']
+          if (item.amount > 0) {
+            available_nfts.push(assetID)
+
+            if (Rank2.includes(assetID)) {
+              ranks[0].push(assetID);
+            }
+            if (Rank3.includes(assetID)) {
+              ranks[1].push(assetID);
+            }
+            if (Rank4.includes(assetID)) {
+              ranks[2].push(assetID);
+            }
+          }
+        }
+        setAv(ranks)
+      } catch (error: any) {
+        console.log(error.message)
+      }
+    }, [setAv])
+
+    useEffect(() => {
+      getAvFO();
+    }, [getAvFO])
+
+
+    async function handleFusion() {
+      setFusing(true)
+      try{
+          const data = await castFusion1(activeAddress, selectedChar1[1], selectedChar2[1])
+
+          if (data && data.token && data.chosenChar) {
+            setFusedChar(data.chosenChar)
+            localStorage.setItem("fusion", data.token)
+        }
+      } catch (error: any) {
+          console.log(error.message)
+      } finally {
+        setFusing(false)
+      }
+    }
 
     return (
       <>
@@ -148,8 +252,22 @@ export default function FusionModule(props: any) {
         <>
             {assets.length > 0 ?
             <>
+            {av[0] && av[1] && av[2] ?
+              <>
+                <Center mt={6}>
+                  <Text textColor={xLightColor} className='text-lg whitespace-nowrap text-center'>
+                    R2: <strong className='text-xl'>{av[0].length}</strong> | R3: <strong className='text-xl'>{av[1].length}</strong> | R4: <strong className='text-xl'>{av[2].length}</strong>
+                  </Text>
+                </Center>
+                <Center mt={2}>
+                  <Link href='/gallery'>
+                    <FullGlowButton text='View Characters' />
+                  </Link>
+                </Center>
+              </> : null}
                 {selectedChar1 || selectedChar2 ?
-                  <Center>
+                  <Center mt={8}>
+                    {!fusing ?
                     <Box m={6} p={4} className={boxGlow} bgGradient={bgCardOff} borderColor={buttonText3} borderWidth='1.5px'
                       borderRadius='13px'>
                       <Text textColor={buttonText4} textAlign='center' fontSize='16px'>Chosen Characters</Text>
@@ -270,25 +388,32 @@ export default function FusionModule(props: any) {
                             bgColor='black' textColor={buttonText4} fontSize='18px' fontFamily='Orbitron' textAlign='center' hasArrow
                             label={'CAST FUSION!'} aria-label='Tooltip'>
                             <div>
-                              <IconGlowButton icon={GiFireShrine} />
+                              <IconGlowButton2 icon={GiFireShrine} onClick={() => setFusing(true)} />
                             </div>
                           </Tooltip>
                         </VStack>
                       </>
                       : null}
                     </Box>
+                    :
+                    <>
+                      <FadingComponent />
+                    </>
+                  }
                   </Center>
                 : null}
                 
-                {errorMessage !== '' ?
-                  <Text mt={4} textColor={'red'} textAlign='center' fontSize='16px'>{errorMessage}</Text>
-                  : null}
+              {!fusing ?
+                <>
+                  {errorMessage !== '' ?
+                    <Text mt={4} textColor={'red'} textAlign='center' fontSize='16px'>{errorMessage}</Text>
+                    : null}
 
-                <Text mt={8} textColor={buttonText4} textAlign='center' fontSize='16px'>Total Characters: {filteredAssets.length}</Text>
+                  <Text mt={8} textColor={buttonText4} textAlign='center' fontSize='16px'>Total Characters: {filteredAssets.length}</Text>
 
                   <Flex px='48px' py='24px' w='full' flexDirection="row" flexWrap="wrap" gap='24px' justifyContent='center'>
-                  {filteredAssets
-                  .map((asset: any, index: any) => (
+                    {filteredAssets
+                    .map((asset: any, index: any) => (
                           <VStack key={index} justifyContent='center' onClick={() => handleCharacterSelection(asset)}>
                             <Image
                               _hover={{ boxSize: '24' }}
@@ -304,6 +429,8 @@ export default function FusionModule(props: any) {
                           </VStack>
                       ))}
                   </Flex>
+                </> 
+              : null}
             </>
             : 
             <VStack my={4}>

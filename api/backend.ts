@@ -322,3 +322,19 @@ export async function sendForumMessage(wallet: any, message: any) {
     console.error(error.message)
   }
 }
+
+
+export async function castFusion1(wallet: any, char_id1: any, char_id2: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      char_id1: char_id1,
+      char_id2: char_id2
+    }
+
+    const response = await fetchDataFromBackend('forge/fusion1', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}
