@@ -4,7 +4,7 @@ import Navbar from 'components/Navbar'
 import { Box, Center, Text, VStack, useColorModeValue } from '@chakra-ui/react'
 import styles from '../styles/glow.module.css'
 
-export default function test() {
+export default function Valhalla() {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
 
   return (
