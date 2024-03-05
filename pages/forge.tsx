@@ -108,7 +108,7 @@ export default function Laboratory() {
     if (assetList) {
       fetchAssets()
     }
-  }, [assetList])
+  }, [assetList, fetchAssets])
   
   
   return (

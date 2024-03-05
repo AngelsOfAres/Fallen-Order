@@ -128,7 +128,7 @@ export default function GalleryView() {
     } else if (type === 'Fusion') {
       fetchAssets(foList);
     }
-  }, [type]);
+  }, [type, fetchAssets, foList]);
 
   return (
     <>

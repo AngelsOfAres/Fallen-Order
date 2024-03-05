@@ -17,7 +17,7 @@ export default function Valhalla() {
       </Head>
       <Navbar />
       <Center>
-        <VStack className={gradientText} m={4} w='80%' maxWidth='800px' alignItems='center' textAlign='center' justifyContent='center'>
+        <VStack className={gradientText} m='60px' w='80%' maxWidth='800px' alignItems='center' textAlign='center' justifyContent='center' spacing='36px'>
           <Text fontSize={'28px'}>WELCOME TO VALHALLA!</Text>
           <Text fontSize={'24px'}>Thanks. Come Again...</Text>
         </VStack>
