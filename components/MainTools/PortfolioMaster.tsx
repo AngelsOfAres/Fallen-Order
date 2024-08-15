@@ -7,8 +7,6 @@ import styles2 from '../../styles/glow.module.css'
 import { formatNumber } from 'utils/formatNumber'
 import { rateLimiter } from 'lib/ratelimiter'
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'
-import { MdAdd } from 'react-icons/md'
-import { IoIosRemoveCircle } from 'react-icons/io'
 import { RxCross2 } from 'react-icons/rx'
 import { LuListX } from "react-icons/lu"
 

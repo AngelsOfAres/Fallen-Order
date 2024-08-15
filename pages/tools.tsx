@@ -58,6 +58,9 @@ export default function Tools() {
         </Center>
       )}
       <Center my={6}>
+        <Link href='/portfolio'><FullGlowButton fontsize='16px' text='Portfolio Master' /></Link>
+      </Center>
+      <Center my={6}>
         <HStack spacing='12px'>
           <Link href='/w2w'><FullGlowButton fontsize='16px' text='W2W Search' /></Link>
           <Link href='/approve'><FullGlowButton fontsize='16px' text='Mass Approve' /></Link>
