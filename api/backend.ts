@@ -28,6 +28,45 @@ async function fetchDataFromBackend(endpoint: string, data: Record<string, any>,
   }
 }
 
+async function getDataFromBackend(endpoint: string, activeAddress: any): Promise<any> {
+  const apiUrl = `https://gorgeous-bunny-sadly.ngrok-free.app/${endpoint}`
+
+  try {
+      const authToken = localStorage.getItem('token_' + activeAddress)
+      const headers = {
+          'Content-Type': 'application/json',
+          'userAuth': `${authToken}`
+      };
+
+      const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: headers,
+      });
+
+      if (!response.ok) {
+          if (response.status === 400) {
+              return 'Error'
+          }
+          console.log("Woops! Backend sent unexpected data...", response)
+      }
+
+      return response.json()
+  } catch (error: any) {
+      console.log(error.message)
+  }
+}
+
+export async function getAngelListings(wallet: any) {
+  try {
+    const response = await getDataFromBackend('emporium/getlistings', wallet);
+    console.log(response); // Log the response to inspect it
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+
 export async function manageChar(wallet: any, data: any) {
   try {
     const requestBody = {

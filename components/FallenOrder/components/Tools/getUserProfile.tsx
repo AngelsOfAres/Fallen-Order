@@ -252,4 +252,3 @@ export async function getListings(): Promise<any> {
     }
   }
   
-  
