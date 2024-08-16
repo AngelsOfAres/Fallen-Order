@@ -552,7 +552,7 @@ console.log(snapshotAssets, filteredAssets)
                             <Text textColor={buttonText3} align="center" className="text-xs">
                               Total Holdings Value
                               <HStack spacing='1px' justifyContent='center'>
-                                <Text textColor={textColor} className="text-sm">
+                                <Text textColor={snapshotTotalHoldingsValue != 0 ? textColor : buttonText4} className="text-sm">
                                   {formatNumber(totalHoldingsValue)}
                                 </Text>
                                 <Image boxSize={{ base: '8px', sm: '8px', md: '9px', lg: '10px', xl: '12px' }} alt={'Algorand'} src={'/algologo.png'} />
