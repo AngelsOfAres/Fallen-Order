@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import { FullGlowButton, IconGlowButton } from '../Buttons'
+import { FullGlowButton, IconGlowButton, IconGlowButtonTiny } from '../Buttons'
 import { Box, Center, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Progress, Text, Tooltip, HStack, useColorMode, useColorModeValue, Table, Thead, Th, Tbody, Td, Tr, Image, VStack, Spacer, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, useDisclosure } from '@chakra-ui/react'
 import NfdLookup from '../NfdLookup'
 import { algodClient } from 'lib/algodClient'
@@ -513,7 +513,7 @@ const removeFromBlacklist = (assetId: number) => {
 
         <Text textColor={lightColor} align={'center'} className='py-3 text-sm'>Aggregated Holdings</Text>
 
-        <Box mt={-10} ml='48px' mb={4}><IconGlowButton icon={LuListX} onClick={onOpen} /></Box>
+        <Box mt={-10} ml='24px' mb={4}><IconGlowButton icon={LuListX} onClick={onOpen} /></Box>
           <Modal isCentered isOpen={isOpen} size={'lg'} onClose={onClose}>
             <ModalOverlay />
             <ModalContent alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
@@ -543,7 +543,7 @@ const removeFromBlacklist = (assetId: number) => {
                                 aria-label='Tooltip'
                               >
                                 <div>
-                                  <IconGlowButton 
+                                  <IconGlowButton
                                     onClick={() => {
                                       if (blacklistedAssets.has(assetDetails.index)) {
                                         removeFromBlacklist(assetDetails.index)
@@ -567,7 +567,7 @@ const removeFromBlacklist = (assetId: number) => {
                             </HStack>
                           </Box>
                         ) :
-                          <IconGlowButton 
+                          <IconGlowButtonTiny
                             onClick={() => {
                               if (blacklistedAssets.has(assetDetails.index)) {
                                 removeFromBlacklist(assetDetails.index)
@@ -671,7 +671,7 @@ const removeFromBlacklist = (assetId: number) => {
               <Tbody>
                 {sortedAssets.map((asset: any) => (
                   <Tr key={asset.key}>
-                    <Td _hover={{ textColor: baseColor }} textAlign='center' textColor={buttonText4} fontSize={{ base: '2xs', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
+                    <Td _hover={{ textColor: baseColor }} textAlign='center' textColor={buttonText4} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
                     <HStack w='full' spacing={4}>
                       <Tooltip
                         py={1}
@@ -689,8 +689,8 @@ const removeFromBlacklist = (assetId: number) => {
                         label={'Blacklist Token'}
                         aria-label='Tooltip'
                       >
-                        <div>
-                          <IconGlowButton 
+                        <div style={{ marginRight: -2 }}>
+                          <IconGlowButtonTiny
                             onClick={() => {
                               if (blacklistedAssets.has(asset.key)) {
                                 removeFromBlacklist(asset.key)
@@ -707,10 +707,10 @@ const removeFromBlacklist = (assetId: number) => {
   
                       <a href={`https://allo.info/asset/${asset.key}`} target='_blank' rel='noreferrer'>
                         <VStack spacing='1px' align='center'>
-                          <Text fontSize={{ base: '2xs', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }} textAlign='center'>
+                          <Text fontSize={{ base: 'xs', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }} textAlign='center'>
                             ${asset.ticker}
                           </Text>
-                          <Text fontSize={{ base: '2xs', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }} textAlign='center'>
+                          <Text fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }} textAlign='center'>
                             {asset.name.length > 16 ? asset.name.substring(0, 16) + '...' : asset.name}
                           </Text>
                         </VStack>
@@ -719,13 +719,13 @@ const removeFromBlacklist = (assetId: number) => {
                       <Spacer />
                     </HStack>
                     </Td>
-                    <Td textAlign='center' textColor={buttonText4} fontSize={{ base: '2xs', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
+                    <Td textAlign='center' textColor={buttonText4} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
                       {formatNumber(asset.balance)}
                     </Td>
                     <Td textAlign='center' textColor={buttonText4}>
                       <HStack spacing='1px' justifyContent='center'>
-                          <Text fontSize={{ base: '2xs', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>{formatNumber(asset.value)}</Text>
-                          <Image boxSize={{ base: '6px', sm: '8px', md: '10px', lg: '14px', xl: '18px' }} alt={'Algorand'} src={'/algologo.png'} />
+                          <Text fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>{formatNumber(asset.value)}</Text>
+                          <Image boxSize={{ base: '8px', sm: '8px', md: '10px', lg: '14px', xl: '18px' }} alt={'Algorand'} src={'/algologo.png'} />
                       </HStack>
                     </Td>
                     <Td textAlign='center'>
@@ -733,7 +733,7 @@ const removeFromBlacklist = (assetId: number) => {
                         {Math.abs(asset.change1h) <= 0.005 ? (
                           <Text _hover={{ textColor: baseColor }} textColor={buttonText4}>-</Text>
                         ) : (
-                          <Text _hover={{ textColor: baseColor }} color={asset.change1h > 0 ? '#00FF00' : '#FF0000'} fontSize={{ base: '2xs', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
+                          <Text _hover={{ textColor: baseColor }} color={asset.change1h > 0 ? '#00FF00' : '#FF0000'} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
                             {asset.change1h.toFixed(2)}%
                           </Text>
                         )}
@@ -744,7 +744,7 @@ const removeFromBlacklist = (assetId: number) => {
                         {Math.abs(asset.change24h) <= 0.005 ? (
                           <Text _hover={{ textColor: baseColor }} textColor={buttonText4}>-</Text>
                         ) : (
-                          <Text _hover={{ textColor: baseColor }} color={asset.change24h > 0 ? '#00FF00' : '#FF0000'} fontSize={{ base: '2xs', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
+                          <Text _hover={{ textColor: baseColor }} color={asset.change24h > 0 ? '#00FF00' : '#FF0000'} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
                             {asset.change24h.toFixed(2)}%
                           </Text>
                         )}
