@@ -458,116 +458,142 @@ console.log(snapshotAssets, filteredAssets)
       )}
       {!loading && allWalletInfo.length > 0 && (
         <>
-          <div>
-            <Text textColor={lightColor} align={'center'} className='pt-4 text-sm'>Addresses</Text>
-            <ul>
-              {allWalletInfo.map((wallet: any) => (
-                <li key={wallet.address}>
-                  <Center>
-                    <Tooltip
-                      py={1}
-                      px={2}
-                      borderWidth='1px'
-                      borderRadius='lg'
-                      arrowShadowColor={iconColor1}
-                      borderColor={buttonText3}
-                      bgColor='black'
-                      textColor={buttonText4}
-                      fontSize='16px'
-                      fontFamily='Orbitron'
-                      textAlign='center'
-                      hasArrow
-                      label={'Remove Address!'}
-                      aria-label='Tooltip'
-                    >
-                      <Text
-                        textColor={xLightColor}
-                        _hover={{ textColor: 'red', cursor: 'pointer' }}
-                        align={'center'}
-                        className='pt-1 text-md'
-                        onClick={() => removeWalletFromCache(wallet.address)}
-                      >
-                        {wallet.address.substring(0, 6)}...{wallet.address.substring(wallet.address.length - 6)}
-                      </Text>
-                    </Tooltip>
-                  </Center>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <Center my={6}>
+          <Box
+            w="min-content"
+          >
+            <Accordion borderColor={buttonText3} allowToggle>
+              <AccordionItem>
+                {({ isExpanded }) => (
+                  <>
+                    <AccordionButton>
+                      <Center w="full">
+                        <AccordionIcon color={medColor} />
+                        <Text textColor={medColor} fontSize="lg" mx={2}>
+                        Addresses
+                        </Text>
+                        <AccordionIcon color={medColor} />
+                      </Center>
+                    </AccordionButton>
+                    <AccordionPanel pb={4}>
+                      <ul>
+                        {allWalletInfo.map((wallet: any) => (
+                          <li key={wallet.address}>
+                            <Center>
+                              <Tooltip
+                                py={1}
+                                px={2}
+                                borderWidth='1px'
+                                borderRadius='lg'
+                                arrowShadowColor={iconColor1}
+                                borderColor={buttonText3}
+                                bgColor='black'
+                                textColor={buttonText4}
+                                fontSize='16px'
+                                fontFamily='Orbitron'
+                                textAlign='center'
+                                hasArrow
+                                label={'Remove Address!'}
+                                aria-label='Tooltip'
+                              >
+                                <Text
+                                  textColor={xLightColor}
+                                  _hover={{ textColor: 'red', cursor: 'pointer' }}
+                                  align={'center'}
+                                  className='pt-1 text-md'
+                                  onClick={() => removeWalletFromCache(wallet.address)}
+                                >
+                                  {wallet.address.substring(0, 6)}...{wallet.address.substring(wallet.address.length - 6)}
+                                </Text>
+                              </Tooltip>
+                            </Center>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionPanel>
+                  </>
+                  )}
+                </AccordionItem>
+              </Accordion>
+            </Box>
+          </Center>
 
           <Center my={6}>
             <Box
               w="min-content"
             >
-              <Accordion borderColor={buttonText3} allowToggle>
+              <Accordion borderColor={buttonText3} allowToggle defaultIndex={[0]}>
                 <AccordionItem>
                   {({ isExpanded }) => (
                     <>
                       <AccordionButton>
                         <Center w="full">
                           <AccordionIcon color={medColor} />
-                          <Text textColor={medColor} fontSize="md" mx={2}>
+                          <Text textColor={medColor} fontSize="lg" mx={2}>
                             Stats
                           </Text>
                           <AccordionIcon color={medColor} />
                         </Center>
                       </AccordionButton>
                       <AccordionPanel pb={4}>
+
                         <HStack w="full" justifyContent="center" spacing="20px">
-                          <Text textColor={buttonText3} align="center" className="text-xs">
+                          <Text textColor={buttonText3} align="center" className="text-sm">
                             Total
                             <HStack spacing='1px' justifyContent='center'>
-                              <Text textColor={buttonText4} className="text-sm">{formatNumber(totalAlgo)}</Text>
-                              <Image boxSize={{ base: '8px', sm: '8px', md: '9px', lg: '10px', xl: '12px' }} alt={'Algorand'} src={'/algologo.png'} />
+                              <Text textColor={buttonText4} className="text-lg">{formatNumber(totalAlgo)}</Text>
+                              <Image boxSize={{ base: '10px', sm: '10px', md: '12px', lg: '14px', xl: '14px' }} alt={'Algorand'} src={'/algologo.png'} />
                             </HStack>
                           </Text>
-                          <Text textColor={buttonText3} align="center" className="text-xs">
+                          <Text textColor={buttonText3} align="center" className="text-sm">
                             Minimum
                             <HStack spacing='1px' justifyContent='center'>
-                              <Text textColor={buttonText4} className="text-sm">{formatNumber(totalMinAlgo)}</Text>
-                              <Image boxSize={{ base: '8px', sm: '8px', md: '9px', lg: '10px', xl: '12px' }} alt={'Algorand'} src={'/algologo.png'} />
+                              <Text textColor={buttonText4} className="text-lg">{formatNumber(totalMinAlgo)}</Text>
+                              <Image boxSize={{ base: '10px', sm: '10px', md: '12px', lg: '14px', xl: '14px' }} alt={'Algorand'} src={'/algologo.png'} />
                             </HStack>
                           </Text>
-                          <Text textColor={buttonText3} align="center" className="text-xs">
+                          <Text textColor={buttonText3} align="center" className="text-sm">
                             Available
                             <HStack spacing='1px' justifyContent='center'>
-                              <Text textColor={buttonText4} className="text-sm">{formatNumber(totalAlgo - totalMinAlgo)}</Text>
-                              <Image boxSize={{ base: '8px', sm: '8px', md: '9px', lg: '10px', xl: '12px' }} alt={'Algorand'} src={'/algologo.png'} />
+                              <Text textColor={buttonText4} className="text-lg">{formatNumber(totalAlgo - totalMinAlgo)}</Text>
+                              <Image boxSize={{ base: '10px', sm: '10px', md: '12px', lg: '14px', xl: '14px' }} alt={'Algorand'} src={'/algologo.png'} />
                             </HStack>
                           </Text>
                         </HStack>
+
                         <HStack mt={4} w="full" justifyContent="center" spacing="12px">
-                          <Text textColor={buttonText3} align="center" className="text-xs">
+                          <Text textColor={buttonText3} align="center" className="text-sm">
                             Holding
-                            <Text textColor={buttonText4} className="text-sm">{totalHeldAssets}</Text>
+                            <Text textColor={buttonText4} className="text-md">{totalHeldAssets}</Text>
                           </Text>
-                          <Text textColor={buttonText3} align="center" className="text-xs">
+                          <Text textColor={buttonText3} align="center" className="text-sm">
                             Created
-                            <Text textColor={buttonText4} className="text-sm">{totalCreatedAssets}</Text>
+                            <Text textColor={buttonText4} className="text-md">{totalCreatedAssets}</Text>
                           </Text>
                         </HStack>
                         
                           <HStack mt={4} w="full" justifyContent="center" spacing="12px">
-                            <Text textColor={buttonText3} align="center" className="text-xs">
+                            <Text textColor={buttonText3} align="center" className="text-sm">
                               Total Holdings Value
                               <HStack spacing='1px' justifyContent='center'>
-                                <Text textColor={snapshotTotalHoldingsValue != 0 ? textColor : buttonText4} className="text-sm">
+                                <Text textColor={snapshotTotalHoldingsValue != 0 ? textColor : buttonText4} className="text-lg">
                                   {formatNumber(totalHoldingsValue)}
                                 </Text>
-                                <Image boxSize={{ base: '8px', sm: '8px', md: '9px', lg: '10px', xl: '12px' }} alt={'Algorand'} src={'/algologo.png'} />
+                                <Image boxSize={{ base: '10px', sm: '10px', md: '12px', lg: '14px', xl: '14px' }} alt={'Algorand'} src={'/algologo.png'} />
                               </HStack>
                             </Text>
                           </HStack>
+
                           {snapshotTotalHoldingsValue != 0 && isDifferenceSignificant(totalHoldingsValue, snapshotTotalHoldingsValue) ?
                             <HStack spacing='1px' justifyContent='center'>
-                              <Icon boxSize={{ base: '9px', sm: '9px', md: '12px', lg: '14px', xl: '15px' }} mr={0.5} as={IoCamera} />
-                              <Text textColor={buttonText4} className="text-xs">
+                              <Icon textColor={medColor} boxSize={{ base: '12px', sm: '12px', md: '15px', lg: '18px', xl: '18px' }} mr={0.5} as={IoCamera} />
+                              <Text textColor={buttonText4} className="text-md">
                                 {formatNumber(snapshotTotalHoldingsValue)}
                               </Text>
-                              <Image boxSize={{ base: '7px', sm: '7px', md: '8px', lg: '9px', xl: '10px' }} alt={'Algorand'} src={'/algologo.png'} />
+                              <Image boxSize={{ base: '9px', sm: '9px', md: '11px', lg: '13px', xl: '13px' }} alt={'Algorand'} src={'/algologo.png'} />
                             </HStack>
                           : null}
+
                       </AccordionPanel>
                     </>
                   )}
@@ -576,9 +602,9 @@ console.log(snapshotAssets, filteredAssets)
             </Box>
           </Center>
 
-        <Text textColor={lightColor} align={'center'} className='py-3 text-sm'>Aggregated Holdings</Text>
+        <Text textColor={lightColor} align={'center'} className='py-3 text-lg'>Aggregated Holdings</Text>
         
-        <HStack mt={-10} ml='24px' mb={4}>
+        <HStack mt={-10} ml={8} mb={4}>
           <Box><IconGlowButton icon={LuListX} onClick={onOpen} /></Box>
           <Tooltip
             py={1}
