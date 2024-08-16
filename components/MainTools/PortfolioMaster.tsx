@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { FullGlowButton, IconGlowButton, IconGlowButtonTiny } from '../Buttons'
-import { Box, Center, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Progress, Text, Tooltip, HStack, useColorMode, useColorModeValue, Table, Thead, Th, Tbody, Td, Tr, Image, VStack, Spacer, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, useDisclosure } from '@chakra-ui/react'
+import { Box, Center, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Progress, Text, Tooltip, HStack, useColorMode, useColorModeValue, Table, Thead, Th, Tbody, Td, Tr, Image, VStack, Spacer, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, useDisclosure, Icon, filter } from '@chakra-ui/react'
 import NfdLookup from '../NfdLookup'
 import { algodClient } from 'lib/algodClient'
 import styles2 from '../../styles/glow.module.css'
@@ -9,6 +9,9 @@ import { rateLimiter } from 'lib/ratelimiter'
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'
 import { RxCross2 } from 'react-icons/rx'
 import { LuListX } from "react-icons/lu"
+import { TbPhotoPlus } from 'react-icons/tb'
+import { GiPhotoCamera } from 'react-icons/gi'
+import { IoCamera } from 'react-icons/io5'
 
 const PortfolioViewer: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
@@ -26,6 +29,7 @@ const PortfolioViewer: React.FC = () => {
   const buttonText3 = useColorModeValue('orange.500', 'cyan.500')
   const buttonText4 = useColorModeValue('orange.100', 'cyan.100')
   const iconColor1 = useColorModeValue('orange', 'cyan')
+
   const gradientText = useColorModeValue(styles2.textAnimatedGlowL, styles2.textAnimatedGlowD)
   const boxGlow = useColorModeValue(styles2.boxGlowL, styles2.boxGlowD)
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -37,6 +41,9 @@ const PortfolioViewer: React.FC = () => {
   const [assetDecimals, setAssetDecimals] = useState<Map<number, number>>(new Map())
   const [blacklistedAssets, setBlacklistedAssets] = useState<Set<number>>(new Set())
   const [blacklistedAssetsDetails, setBlacklistedAssetsDetails] = useState<Map<number, any>>(new Map())
+  const [filteredAssets, setFilteredAssets] = useState<any[]>([])
+  const [snapshotAssets, setSnapshotAssets] = useState<any[]>([])
+  const snapshotAssetsMap = useMemo(() => new Map(snapshotAssets.map(asset => [asset.key, asset])), [snapshotAssets])
 
   const [error, setError] = useState<boolean>(false)
   const [walletInput, setWalletInput] = useState<string>('')
@@ -46,8 +53,20 @@ const PortfolioViewer: React.FC = () => {
   const [totalCreatedAssets, setTotalCreatedAssets] = useState<number>(0)
   const [totalHeldAssets, setTotalHeldAssets] = useState<number>(0)
   const [valueThreshold, setValueThreshold] = useState<number>(0.001)
+  const [totalHoldingsValue, setTotalHoldingsValue] = useState<number>(0)
+  const [snapshotTotalHoldingsValue, setSnapshotTotalHoldingsValue] = useState<number>(0)
   const [sortCriteria, setSortCriteria] = useState('name')
   const [sortDirection, setSortDirection] = useState('asc')
+
+  const isDifferenceSignificant = (value1: any, value2: any) => {
+    const difference = Math.abs(value1 - value2)
+    const roundedDifference = Math.round(difference * 100) / 100
+    return roundedDifference > 0
+  }
+
+  const textColor = isDifferenceSignificant(totalHoldingsValue, snapshotTotalHoldingsValue)
+    ? (totalHoldingsValue > snapshotTotalHoldingsValue ? '#00FF00' : '#FF0000')
+    : buttonText4
 
   useEffect(() => {
     const fetchVestigeAssets = async () => {
@@ -67,6 +86,7 @@ const PortfolioViewer: React.FC = () => {
       }
     }
     fetchVestigeAssets()
+    retrieveSnapshot()
   }, [])
 
   useEffect(() => {
@@ -241,35 +261,41 @@ const PortfolioViewer: React.FC = () => {
     setWalletInput('')
   }
 
-  const filteredAssets = useMemo(() => {
+  const computedFilteredAssets = useMemo(() => {
     return Array.from(combinedAssets.entries())
       .filter(([assetId, amount]) => amount >= valueThreshold && !blacklistedAssets.has(assetId))
       .map(([assetId, amount]) => {
-        const vestigeAsset = vestigeAssets.find((asset: any) => asset.id === assetId)
+        const vestigeAsset = vestigeAssets.find((asset: any) => asset.id === assetId);
         if (vestigeAsset) {
-          const { name, ticker, price, change1h, change24h } = vestigeAsset
-          const decimals = assetDecimals.get(assetId) || 0
-          const balance = (amount / Math.pow(10, decimals))
-          const value = balance * price
-  
+          const { name, ticker, price, change1h, change24h } = vestigeAsset;
+          const decimals = assetDecimals.get(assetId) || 0;
+          const balance = (amount / Math.pow(10, decimals));
+          const value = balance * price;
+
           if (value >= valueThreshold) {
             return {
               key: assetId,
               ticker,
               name,
-              balance: balance,
-              value: value,
+              balance,
+              value,
               change1h,
               change24h,
               price
-            }
+            };
           }
         }
         return null
       })
       .filter((asset: any) => asset !== null)
   }, [combinedAssets, vestigeAssets, assetDecimals, valueThreshold, blacklistedAssets])
-  
+
+  useEffect(() => {
+    const totalValue = computedFilteredAssets.reduce((sum, asset: any) => sum + asset.value, 0)
+    setTotalHoldingsValue(totalValue)
+    setFilteredAssets(computedFilteredAssets)
+  }, [computedFilteredAssets])
+
   const sortedAssets = useMemo(() => {
     return filteredAssets.slice().sort((a: any, b: any) => {
       if (sortCriteria === 'name') {
@@ -369,7 +395,25 @@ const removeFromBlacklist = (assetId: number) => {
   })
 }
 
+const saveSnapshot = () => {
+  const snapshot = {
+    totalHoldingsValue,
+    filteredAssets
+  }
+  localStorage.setItem('holdingsSnapshot', JSON.stringify(snapshot))
+  alert('Snapshot taken!')
+}
 
+const retrieveSnapshot = () => {
+  const savedData = localStorage.getItem('holdingsSnapshot')
+  if (savedData) {
+    const { totalHoldingsValue: savedValue, filteredAssets: savedAssets } = JSON.parse(savedData)
+    setSnapshotTotalHoldingsValue(savedValue)
+    setSnapshotAssets(savedAssets)
+  }
+}
+
+console.log(snapshotAssets, filteredAssets)
 
   return (
     <div className='mt-6'>
@@ -503,6 +547,27 @@ const removeFromBlacklist = (assetId: number) => {
                             <Text textColor={buttonText4} className="text-sm">{totalCreatedAssets}</Text>
                           </Text>
                         </HStack>
+                        
+                          <HStack mt={4} w="full" justifyContent="center" spacing="12px">
+                            <Text textColor={buttonText3} align="center" className="text-xs">
+                              Total Holdings Value
+                              <HStack spacing='1px' justifyContent='center'>
+                                <Text textColor={textColor} className="text-sm">
+                                  {formatNumber(totalHoldingsValue)}
+                                </Text>
+                                <Image boxSize={{ base: '8px', sm: '8px', md: '9px', lg: '10px', xl: '12px' }} alt={'Algorand'} src={'/algologo.png'} />
+                              </HStack>
+                            </Text>
+                          </HStack>
+                          {snapshotTotalHoldingsValue != 0 && isDifferenceSignificant(totalHoldingsValue, snapshotTotalHoldingsValue) ?
+                            <HStack spacing='1px' justifyContent='center'>
+                              <Icon boxSize={{ base: '9px', sm: '9px', md: '12px', lg: '14px', xl: '15px' }} mr={0.5} as={IoCamera} />
+                              <Text textColor={buttonText4} className="text-xs">
+                                {formatNumber(snapshotTotalHoldingsValue)}
+                              </Text>
+                              <Image boxSize={{ base: '7px', sm: '7px', md: '8px', lg: '9px', xl: '10px' }} alt={'Algorand'} src={'/algologo.png'} />
+                            </HStack>
+                          : null}
                       </AccordionPanel>
                     </>
                   )}
@@ -512,8 +577,31 @@ const removeFromBlacklist = (assetId: number) => {
           </Center>
 
         <Text textColor={lightColor} align={'center'} className='py-3 text-sm'>Aggregated Holdings</Text>
+        
+        <HStack mt={-10} ml='24px' mb={4}>
+          <Box><IconGlowButton icon={LuListX} onClick={onOpen} /></Box>
+          <Tooltip
+            py={1}
+            px={2}
+            borderWidth='1px'
+            borderRadius='lg'
+            arrowShadowColor={iconColor1}
+            borderColor={buttonText3}
+            bgColor='black'
+            textColor={buttonText4}
+            fontSize='12px'
+            fontFamily='Orbitron'
+            textAlign='center'
+            hasArrow
+            label={'Snapshot!'}
+            aria-label='Tooltip'
+          >
+            <Box>
+              <IconGlowButton icon={TbPhotoPlus} onClick={saveSnapshot} />
+            </Box>
+          </Tooltip>
+        </HStack>
 
-        <Box mt={-10} ml='24px' mb={4}><IconGlowButton icon={LuListX} onClick={onOpen} /></Box>
           <Modal isCentered isOpen={isOpen} size={'lg'} onClose={onClose}>
             <ModalOverlay />
             <ModalContent alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='lg'>
@@ -666,6 +754,19 @@ const removeFromBlacklist = (assetId: number) => {
                   >
                     {getSortIndicator('change24h')} 24H {getSortIndicator('change24h')}
                   </Th>
+                  <Th
+                    textAlign='center'
+                    textColor={sortCriteria === 'priceDifference' ? baseColor : lightColor}
+                    fontSize={{ base: '3xs', sm: '2xs', md: 'sm', lg: 'md', xl: 'lg' }}
+                    alignItems='center'
+                    justifyContent='center'
+                    whiteSpace='nowrap'
+                    overflow='hidden'
+                    textOverflow='ellipsis'
+                    px={2}
+                  >
+                    <Icon boxSize={{ base: '14px', sm: '14px', md: '18px', lg: '22px', xl: '28px' }} as={IoCamera} />
+                  </Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -750,6 +851,28 @@ const removeFromBlacklist = (assetId: number) => {
                         )}
                       </a>
                     </Td>
+                    <Td textAlign='center'>
+                      {snapshotAssetsMap.has(asset.key) ? (
+                        (() => {
+                          const snapshotPrice = snapshotAssetsMap.get(asset.key)?.price;
+                          const priceDifference = asset.price - snapshotPrice;
+                          const percentageDifference = (priceDifference / snapshotPrice) * 100
+
+                          if (Math.abs(percentageDifference) < 0.05) {
+                            return <Text _hover={{ textColor: baseColor }} textColor={buttonText4}>-</Text>
+                          }
+
+                          return (
+                            <Text color={percentageDifference > 0 ? '#00FF00' : '#FF0000'}>
+                              {percentageDifference.toFixed(2)}%
+                            </Text>
+                          )
+                        })()
+                      ) : (
+                        <Text>-</Text>
+                      )}
+                    </Td>
+
                   </Tr>
                 ))}
               </Tbody>
