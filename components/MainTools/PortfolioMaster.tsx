@@ -885,11 +885,11 @@ console.log(snapshotAssets, filteredAssets)
                           const percentageDifference = (priceDifference / snapshotPrice) * 100
 
                           if (Math.abs(percentageDifference) < 0.05) {
-                            return <Text _hover={{ textColor: baseColor }} textColor={buttonText4}>-</Text>
+                            return <Text _hover={{ textColor: baseColor }} textColor={buttonText4} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>-</Text>
                           }
 
                           return (
-                            <Text color={percentageDifference > 0 ? '#00FF00' : '#FF0000'}>
+                            <Text color={percentageDifference > 0 ? '#00FF00' : '#FF0000'} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
                               {percentageDifference.toFixed(2)}%
                             </Text>
                           )
