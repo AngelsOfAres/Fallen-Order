@@ -85,8 +85,22 @@ const PortfolioViewer: React.FC = () => {
         setLoading(false)
       }
     }
+    
+    const loadBlacklistDetails = () => {
+      const storedBlacklist = localStorage.getItem('blacklistedAssets')
+      if (storedBlacklist) {
+        setBlacklistedAssets(new Set(JSON.parse(storedBlacklist)))
+      }
+  
+      const storedBlacklistDetails = localStorage.getItem('blacklistedAssetsDetails')
+      if (storedBlacklistDetails) {
+        const detailsMap = new Map<number, any>(JSON.parse(storedBlacklistDetails))
+        setBlacklistedAssetsDetails(detailsMap)
+      }
+    }
     fetchVestigeAssets()
     retrieveSnapshot()
+    loadBlacklistDetails()
   }, [])
 
   useEffect(() => {
@@ -131,7 +145,7 @@ const PortfolioViewer: React.FC = () => {
               if (
                 vestigeAssets &&
                 vestigeAssets.find(
-                  (vestige: any) => vestige.id === asset['asset-id']
+                  (vestige: any) => vestige.id === asset['asset-id'] && !blacklistedAssets.has(asset['asset-id'])
                 )
               ) {
                 const currentAmount = assetMap.get(asset['asset-id']) || 0
@@ -152,7 +166,7 @@ const PortfolioViewer: React.FC = () => {
     }
   
     fetchCachedWallets()
-  }, [vestigeAssets])
+  }, [vestigeAssets, blacklistedAssets])
 
   useEffect(() => {
     const checkAddressExists = () => {
@@ -261,16 +275,16 @@ const PortfolioViewer: React.FC = () => {
     setWalletInput('')
   }
 
-  const computedFilteredAssets = useMemo(() => {
-    return Array.from(combinedAssets.entries())
+  const { filteredAssets: computedFilteredAssets, totalValue } = useMemo(() => {
+    const filtered = Array.from(combinedAssets.entries())
       .filter(([assetId, amount]) => amount >= valueThreshold && !blacklistedAssets.has(assetId))
       .map(([assetId, amount]) => {
-        const vestigeAsset = vestigeAssets.find((asset: any) => asset.id === assetId);
+        const vestigeAsset = vestigeAssets.find((asset) => asset.id === assetId)
         if (vestigeAsset) {
-          const { name, ticker, price, change1h, change24h } = vestigeAsset;
-          const decimals = assetDecimals.get(assetId) || 0;
-          const balance = (amount / Math.pow(10, decimals));
-          const value = balance * price;
+          const { name, ticker, price, change1h, change24h } = vestigeAsset
+          const decimals = assetDecimals.get(assetId) || 0
+          const balance = amount / Math.pow(10, decimals)
+          const value = balance * price
 
           if (value >= valueThreshold) {
             return {
@@ -282,19 +296,22 @@ const PortfolioViewer: React.FC = () => {
               change1h,
               change24h,
               price
-            };
+            }
           }
         }
         return null
       })
-      .filter((asset: any) => asset !== null)
+      .filter((asset) => asset !== null)
+
+    const totalValue = filtered.reduce((sum, asset: any) => sum + asset.value, 0)
+
+    return { filteredAssets: filtered, totalValue };
   }, [combinedAssets, vestigeAssets, assetDecimals, valueThreshold, blacklistedAssets])
 
   useEffect(() => {
-    const totalValue = computedFilteredAssets.reduce((sum, asset: any) => sum + asset.value, 0)
     setTotalHoldingsValue(totalValue)
     setFilteredAssets(computedFilteredAssets)
-  }, [computedFilteredAssets])
+  }, [computedFilteredAssets, totalValue])
 
   const sortedAssets = useMemo(() => {
     return filteredAssets.slice().sort((a: any, b: any) => {
@@ -338,24 +355,6 @@ const PortfolioViewer: React.FC = () => {
     }
     return null
   }
-
-
-  useEffect(() => {
-    const loadBlacklistDetails = () => {
-      const storedBlacklist = localStorage.getItem('blacklistedAssets')
-      if (storedBlacklist) {
-        setBlacklistedAssets(new Set(JSON.parse(storedBlacklist)))
-      }
-  
-      const storedBlacklistDetails = localStorage.getItem('blacklistedAssetsDetails')
-      if (storedBlacklistDetails) {
-        const detailsMap = new Map<number, any>(JSON.parse(storedBlacklistDetails))
-        setBlacklistedAssetsDetails(detailsMap)
-      }
-    }
-    loadBlacklistDetails()
-  }, [])
-  
 
   const addToBlacklist = async (assetId: number) => {
     try {
@@ -412,8 +411,6 @@ const retrieveSnapshot = () => {
     setSnapshotAssets(savedAssets)
   }
 }
-
-console.log(snapshotAssets, filteredAssets)
 
   return (
     <div className='mt-6'>
