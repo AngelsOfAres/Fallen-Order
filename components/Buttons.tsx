@@ -47,10 +47,26 @@ import {
     )
   }
 
+  export const IconGlowButtonSmall = ({ icon, onClick, disabled }: textProp) => {
+    return (
+        <Button p='1.5px' className={useColorModeValue(styles.fullglowL, styles.fullglowD)} _hover={{textColor:'white'}} textColor='black' size='2xs' onClick={onClick} isDisabled={disabled}>
+            <Icon boxSize={'22px'} as={icon} zIndex={1} />
+        </Button>
+    )
+  }
+
   export const IconGlowButtonTiny = ({ icon, onClick, disabled }: textProp) => {
     return (
         <Button p='1.5px' className={useColorModeValue(styles.fullglowL, styles.fullglowD)} _hover={{textColor:'white'}} textColor='black' size='2xs' onClick={onClick} isDisabled={disabled}>
             <Icon boxSize={4} as={icon} zIndex={1} />
+        </Button>
+    )
+  }
+
+  export const IconGlowButtonMedium = ({ icon, onClick, disabled }: textProp) => {
+    return (
+        <Button p='1.5px' className={useColorModeValue(styles.fullglowL, styles.fullglowD)} _hover={{textColor:'white'}} textColor='black' size='2xs' onClick={onClick} isDisabled={disabled}>
+            <Icon boxSize={'28px'} as={icon} zIndex={1} />
         </Button>
     )
   }
