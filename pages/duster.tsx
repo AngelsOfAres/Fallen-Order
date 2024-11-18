@@ -378,7 +378,7 @@ const sendDustFunding = async () => {
                         This tool allows you to efficiently add holders to any Algorand asset
                         <br />
                         <br />
-                        Each user has a unique dusting wallet created for them, stored locally on their browser's storage, with seedphrase accessible for manual functionality
+                        Each user has a unique dusting wallet created for them, stored locally on their browser&apos;s storage, with seedphrase accessible for manual functionality
                         <br />
                         <br />
                         You may connect your personal wallet to fund the dusting wallet, or copy the address for manual sending
