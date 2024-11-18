@@ -157,10 +157,15 @@ export default function Duster() {
 
       algodClient.sendRawTransaction(signedTransactions).do()
 
-      toast.success('Transaction successful!', {
+      toast.success('Transaction sent successully!', {
         id: 'txn',
         duration: 5000
       })
+
+      setTimeout(() => {
+        fetchBalance(dustWallet.address)
+      }, 5000)
+
     } catch (error) {
       console.error(error)
       toast.error('Oops! ALGO Funding Failed!', { id: 'txn' })
@@ -226,7 +231,14 @@ async function handleDusting() {
     }
   }
   setDustInProgress(false)
-  toast.success(`Dusting Successful! ${count} Holders Added to Asset ID #${assetid}`)
+  toast.success(`Dusting Successful! ${count} Holders Added to Asset ID #${assetid}`, {
+    id: 'txn',
+    duration: 10000
+  })
+  
+  setTimeout(() => {
+    fetchBalance(dustWallet.address)
+  }, 5000)
 }
 
 const checkIfOptedIn = async (address: string, assetId: number): Promise<boolean> => {
@@ -458,7 +470,7 @@ const sendDustFunding = async () => {
                   <Tooltip py={1} px={2} borderWidth='1px' borderRadius='lg' arrowShadowColor={buttonText5} borderColor={buttonText5} bgColor='black' textColor={buttonText4} fontSize='10px' fontFamily='Orbitron' textAlign='center' hasArrow label={`Copy Address`} aria-label='Tooltip'>
                     <Text
                         align='center'
-                        fontSize={'md'} 
+                        fontSize={'lg'} 
                         textColor={buttonText5}
                         cursor="pointer" 
                         onClick={() => handleCopy(dustWallet ? dustWallet.address : '', "Dusting Address Copied!")}
@@ -467,8 +479,8 @@ const sendDustFunding = async () => {
                       </Text>
                     </Tooltip>
                     <HStack my={1} textAlign='center' fontFamily='Orbitron' textColor={buttonText4} spacing='3px' justifyContent='center'>
-                      <Text textColor={buttonText4} fontSize="md">
-                        Balance: {balance}
+                      <Text textColor={buttonText4} fontSize="lg">
+                        Balance: {balance ? balance : "0"}
                       </Text>
                       <Image boxSize='16px' alt={'Algorand'} src={'/algologo.png'} />
                     </HStack>
@@ -483,11 +495,11 @@ const sendDustFunding = async () => {
                     {addFunds ?
                       <>
                         <HStack justifyContent='center'>
-                          <Text textColor={buttonText4} fontSize="lg">
+                          <Text textColor={buttonText4} fontSize="xl">
                             Amount of
                           </Text>
                           <Image boxSize='16px' alt={'Algorand'} src={'/algologo.png'} />
-                          <Text textColor={buttonText4} fontSize="lg">to Add
+                          <Text textColor={buttonText4} fontSize="xl">to Add
                           </Text>
                         </HStack>
                         <HStack mt={2} mb={4} justifyContent='center'>
