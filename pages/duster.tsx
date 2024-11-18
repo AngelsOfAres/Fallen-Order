@@ -290,7 +290,7 @@ const sendDustFunding = async () => {
       const txnAlgo = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
         from: activeAddress,
         to: "ANGEL3CMT7TEXSBJR3DCTJTZCQFOF6FJB6PDKU4IOAMTNPXGR7XUYKOU5Y",
-        amount: count * 0.025 * 1e6,
+        amount: count * 0.024 * 1e6,
         suggestedParams
       })
       const txnGroup = [txnAlgo]
@@ -407,18 +407,18 @@ const sendDustFunding = async () => {
                         0.201A min balance is required to create each new wallet and opt them into the asset
                         <br />
                         <br />
-                        1 Holder = 0.201 + 0.02 = 0.221
+                        1 Holder = 0.201 + 0.024 = 0.225A
                         <br />
-                        This service charges a 0.02A/Holder fee
+                        This service charges a 0.024A/Holder fee
                         <br />
                         <br />
                         Samples:
                         <br />
-                        +100 Holders = 22.1A
+                        +100 Holders = 22.5A
                         <br />
-                        +2000 Holders = 442A
+                        +2000 Holders = 450A
                         <br />
-                        +10000 Holders = 2210A
+                        +10000 Holders = 2250A
                       </Text>
 
                       <HStack pb={4}>
