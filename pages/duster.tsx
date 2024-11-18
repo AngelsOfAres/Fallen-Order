@@ -107,9 +107,14 @@ export default function Duster() {
   const fetchBalance = async (address: string) => {
     try {
       const accountInfo = await algodClient.accountInformation(address).do()
-      console.log(accountInfo["min-balance"])
       setBalance((accountInfo.amount-accountInfo["min-balance"]) / 1e6)
-      setMaxCount(Math.floor((accountInfo.amount-accountInfo["min-balance"]) / 1e6 / 0.201))
+
+      if ((accountInfo.amount-accountInfo["min-balance"]) < 200000) {
+        setMaxCount(0)
+      } else {
+        setMaxCount(Math.floor((accountInfo.amount-accountInfo["min-balance"]) / 1e6 / 0.201))
+      }
+
     } catch (error) {
       toast.error("Failed to Fetch Dust Wallet")
     }
@@ -122,7 +127,6 @@ export default function Duster() {
       toast.error("Failed to Copy...")
     })
   }
-  console.log(maxCount)
 
   const handleFunding = async () => {
     try {
@@ -570,7 +574,7 @@ const sendDustFunding = async () => {
                 onChange={(e) => setAssetid(parseInt(e.target.value))}
                 placeholder="0"
               />
-            </Center>{count > maxCount ?
+            </Center>{count > maxCount && balance ?
               <Text mt='10px' fontSize={'sm'} textAlign='center' textColor={'red'}>
                 Please add more funds!
                 <br />
