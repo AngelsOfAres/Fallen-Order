@@ -720,7 +720,7 @@ async function handleAction(type: string) {
                     <Text textAlign='center' fontSize="md" textColor={buttonText4}>
                         No Attacks Yet!
                         <br />
-                        Ares: "I can sense the fear in you..."
+                        Ares: &quot;I can sense the fear in you...&quot;
                     </Text>
                 }
             </Box>
