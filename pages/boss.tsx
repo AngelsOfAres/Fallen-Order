@@ -46,7 +46,7 @@ export default function Thunderdome() {
   const { isOpen: isOpenHowitworks, onOpen: onOpenHowitworks, onClose: onCloseHowitworks } = useDisclosure()
   const imageAlignment = useBreakpointValue<'center' | 'flex-start'>({ base: 'center', lg: 'flex-start' })
   const flexDirection = useBreakpointValue<'column' | 'row'>({ base: 'column', lg: 'row' })
-  const imageSize = useBreakpointValue<'180px' | '240px'>({ base: '180px', lg: '240px' })
+  const imageSize = useBreakpointValue<'200px' | '240px'>({ base: '200px', lg: '240px' })
   const algoSize = useBreakpointValue({ base: '10px', sm: '10px', md: '12px', lg: '16px', xl: '18px' })
 
   
