@@ -518,7 +518,7 @@ async function handleAction(type: string) {
                                         borderRadius="lg"
                                         isIndeterminate={false}
                                     />
-                                    <Text fontSize="2xs" textAlign="center" textColor={colorScheme2}>
+                                    <Text fontSize="md" textAlign="center" textColor={colorScheme2}>
                                         {bossCurrentHP <= 0 ? "☠️" : null} {Math.max(bossCurrentHP, 0)} / {bossBaseHP} {bossCurrentHP <= 0 ? "☠️" : null}
                                     </Text>
                                 </motion.div>
