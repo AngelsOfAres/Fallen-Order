@@ -53,7 +53,7 @@ export default function Thunderdome() {
   const bossMain = "BOSSFBCUG777TNSORWK3ZSKVXGDMRU7JKKKXOB3JZ5P3W4GEAWOAZHRPWM"
   const bossHeal = "HEALLKLVWZ6SLBHPLKWMVJSY4SRPNF2YCLHAEDRBG4BL26LV6FTRDIAVQI"
   const bossTokenId = 2521620385
-  const bossBaseHP = 1000
+  const bossBaseHP = 10000
   const bossName = "Ares"
   const bossTotalBalance = 100000000
   const [bossCurrentHP, setBossCurrentHP] = useState<number>(bossBaseHP)
