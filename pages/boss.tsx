@@ -136,7 +136,7 @@ export default function Thunderdome() {
   }
 
 async function getMostRecentAttack() {
-    const apiEndpoint = `https://mainnet-idx.algonode.cloud/v2/assets/${bossTokenId}/transactions?tx-type=axfer&currency-greater-than=0`
+    const apiEndpoint = `https://mainnet-idx.algonode.cloud/v2/assets/${bossTokenId}/transactions?tx-type=axfer&currency-greater-than=0&address=${bossMain}`
   
     try {
       const response = await axios.get(apiEndpoint)
@@ -192,7 +192,7 @@ async function checkOptIn() {
 
 async function getBattleData() {
     try {
-      const apiEndpoint = `https://mainnet-idx.algonode.cloud/v2/assets/${bossTokenId}/balances?currency-greater-than=0&address=${bossMain}`
+      const apiEndpoint = `https://mainnet-idx.algonode.cloud/v2/assets/${bossTokenId}/balances?currency-greater-than=0`
       const response = await axios.get(apiEndpoint)
   
       if (response.status === 200 && response.data['balances']) {
