@@ -192,7 +192,7 @@ async function checkOptIn() {
 
 async function getBattleData() {
     try {
-      const apiEndpoint = `https://mainnet-idx.algonode.cloud/v2/assets/${bossTokenId}/balances?currency-greater-than=0`
+      const apiEndpoint = `https://mainnet-idx.algonode.cloud/v2/assets/${bossTokenId}/balances?currency-greater-than=0&address=${bossMain}`
       const response = await axios.get(apiEndpoint)
   
       if (response.status === 200 && response.data['balances']) {
