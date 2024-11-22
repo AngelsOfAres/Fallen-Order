@@ -377,3 +377,17 @@ export async function castFusion1(wallet: any, char_id1: any, char_id2: any) {
     console.error(error.message)
   }
 }
+
+export async function finalizeBossAction(wallet: any, stxn: any) {
+  try {
+    const requestBody = {
+      wallet: wallet,
+      stxn: stxn
+    }
+
+    const response = await fetchDataFromBackend('boss/bossaction', requestBody, wallet)
+    return response
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}

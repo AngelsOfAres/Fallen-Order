@@ -50,6 +50,7 @@
     "gifshot": "^0.4.5",
     "ipfs-http-client": "^60.0.1",
     "leaflet": "^1.9.4",
+    "lucide-react": "^0.460.0",
     "minimist": "^1.2.8",
     "moment-timezone": "^0.5.43",
     "multiformats": "^12.1.2",
