@@ -724,7 +724,7 @@ async function handleAction(type: string) {
                             <Tr key={asset.address}>
                                 <Td w='50%' textAlign='center' _hover={{textColor: baseTextColor}} textColor={xLightTextColor} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
                                     <a href={`https://allo.info/account/${asset.address}`} target='_blank' rel='noreferrer'>
-                                        {asset.nfd ? asset.nfd : asset.address.substring(0, 5) + "..." + asset.address.substring(asset.address.length - 5)}
+                                        {asset.nfd ? asset.nfd.replace('.algo', '') : asset.address.substring(0, 5) + "..." + asset.address.substring(asset.address.length - 5)}
                                     </a>
                                 </Td>
                                 <Td w='50%' textAlign='center' textColor={xLightTextColor} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
