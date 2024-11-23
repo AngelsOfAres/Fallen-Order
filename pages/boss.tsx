@@ -434,7 +434,7 @@ async function handleAction(type: string) {
                             All battle stats and rankings are held on-chain and battle updates every 5sec globally for all players, creating a seamless client-side experience
                             <br />
                             <br />
-                            At the end of the battle,  an END BATTLE button will appear for anyone to click, this will reset the boss and handle reward distribution on the spot
+                            At the end of each battle, the boss will automatically reset and handle reward distribution on the spot
                             <br />
                             <br />
                             Best of luck, let&apos;s kick some boss ass!
