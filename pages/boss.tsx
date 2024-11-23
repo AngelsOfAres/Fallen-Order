@@ -399,7 +399,7 @@ async function handleAction(type: string) {
                             5 Random Winners - 10%/each
                         </Text>
                         <Text fontSize="sm" textColor={buttonText4}>
-                            Rollover to Next Pool = 10%
+                            Rollover to Next Pool - 10%
                         </Text>
                         <Text fontSize="sm" textColor={buttonText4}>
                             Service Fee - 5%
