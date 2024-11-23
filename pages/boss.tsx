@@ -8,20 +8,19 @@ import algosdk from 'algosdk'
 import { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import { algodClient } from 'lib/algodClient'
-import { FullGlowButton, IconGlowButton, IconGlowButton2, IconGlowButtonMedium, IconGlowButtonSmall, IconGlowButtonTiny } from 'components/Buttons'
-import { IoIosAdd, IoIosRemove, IoIosSettings, IoMdSettings } from 'react-icons/io'
+import { FullGlowButton, IconGlowButton2, IconGlowButtonMedium } from 'components/Buttons'
+import { IoIosAdd, IoIosRemove } from 'react-icons/io'
 import { convertAlgosToMicroalgos } from 'utils'
-import { FaQuestion } from 'react-icons/fa'
 import { MdOutlineQuestionMark } from 'react-icons/md'
-import { CiBoxList } from 'react-icons/ci'
-import { GiBattleGear, GiFallingBomb, GiHealthPotion, GiPointySword, GiSwordSlice } from 'react-icons/gi'
+import { GiBattleGear, GiFallingBomb, GiHealthPotion, GiPointySword } from 'react-icons/gi'
 import axios from 'axios'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { GoPerson } from 'react-icons/go'
 import Connect from 'components/MainTools/Connect'
 import { GiStarsStack } from "react-icons/gi"
 import { BsFillPersonFill } from 'react-icons/bs'
 import { finalizeBossAction } from 'api/backend'
+import getNFD from 'components/NfdLookup/singleNfdSearch'
 
 export default function Thunderdome() {
   const { activeAddress, signTransactions } = useWallet()
@@ -35,18 +34,15 @@ export default function Thunderdome() {
   const gradientText = useColorModeValue(styles.textAnimatedGlowL, styles.textAnimatedGlowD)
   const boxGlow = useColorModeValue(styles.boxGlowL, styles.boxGlowD)
   const fullGlow = useColorModeValue(styles.fullglowL, styles.fullglowD)
-  const buttonText3 = useColorModeValue('orange.500','cyan.500')
-  const buttonText4 = useColorModeValue('orange.200','cyan.100')
-  const buttonText5 = useColorModeValue('orange','cyan')
-  const xLightColor = useColorModeValue('orange.100', 'cyan.100')
-  const lightColor = useColorModeValue('orange.300', 'cyan.300')
-  const medColor = useColorModeValue('orange.500', 'cyan.500')
-  const progress = useColorModeValue('linear(to-r, orange, red)', 'linear(to-r, purple.600, cyan)')
+  const baseTextColor = useColorModeValue('orange','cyan')
+  const xLightTextColor = useColorModeValue('orange.200','cyan.100')
+  const lightTextColor = useColorModeValue('orange.300', 'cyan.300')
+  const medTextColor = useColorModeValue('orange.500','cyan.500')
   const { isOpen: isOpenPrizelist, onOpen: onOpenPrizelist, onClose: onClosePrizelist } = useDisclosure()
   const { isOpen: isOpenHowitworks, onOpen: onOpenHowitworks, onClose: onCloseHowitworks } = useDisclosure()
   const imageAlignment = useBreakpointValue<'center' | 'flex-start'>({ base: 'center', lg: 'flex-start' })
   const flexDirection = useBreakpointValue<'column' | 'row'>({ base: 'column', lg: 'row' })
-  const imageSize = useBreakpointValue<'200px' | '240px'>({ base: '200px', lg: '240px' })
+  const imageSize = useBreakpointValue<'240px' | '280px'>({ base: '240px', lg: '280px' })
   const algoSize = useBreakpointValue({ base: '10px', sm: '10px', md: '12px', lg: '16px', xl: '18px' })
 
   
@@ -77,7 +73,6 @@ export default function Thunderdome() {
   if (hpPercentage < 25) colorScheme2 = 'red.400'
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
-  const [isPressing, setIsPressing] = useState(false)
 
   useEffect(() => {
     checkOptIn()
@@ -116,22 +111,18 @@ export default function Thunderdome() {
   }
 
   const handleMouseDown = (increase: boolean) => {
-    setIsPressing(true)
     startUpdating(increase)
   }
 
   const handleMouseUp = () => {
-    setIsPressing(false)
     stopUpdating()
   }
 
   const handleTouchStart = (increase: boolean) => {
-    setIsPressing(true)
     startUpdating(increase)
   }
 
   const handleTouchEnd = () => {
-    setIsPressing(false)
     stopUpdating()
   }
 
@@ -148,6 +139,7 @@ async function getMostRecentAttack() {
   
         const mostRecentTransaction = sortedTransactions[0]
         const mostRecentAddress = mostRecentTransaction["asset-transfer-transaction"].receiver
+        const nfd = await getNFD(mostRecentAddress)
         const mostRecentAmount = mostRecentTransaction["asset-transfer-transaction"].amount
         let mostRecentAction = "SLASH"
 
@@ -164,7 +156,8 @@ async function getMostRecentAttack() {
         setMostRecentData({
             address: mostRecentAddress,
             action: mostRecentAction,
-            amount: mostRecentAmount
+            amount: mostRecentAmount,
+            nfd: nfd
         })
   
       } else {
@@ -190,6 +183,23 @@ async function checkOptIn() {
     }
 }
 
+async function getDomainsForAddresses(filteredData: any[]) {
+    const addressToNFDMap: { [key: string]: string } = {}
+
+    const promises = filteredData.map(async (item) => {
+        try {
+            const nfd = await getNFD(item.address)
+            addressToNFDMap[item.address] = nfd
+        } catch (error: any) {
+            console.error(`Error fetching NFD for address ${item.address}: ${error.message}`)
+            addressToNFDMap[item.address] = 'Unknown'
+        }
+    })
+
+    await Promise.all(promises)
+    return addressToNFDMap
+}
+
 async function getBattleData() {
     try {
       const apiEndpoint = `https://mainnet-idx.algonode.cloud/v2/assets/${bossTokenId}/balances?currency-greater-than=0`
@@ -203,7 +213,14 @@ async function getBattleData() {
             .filter((item: any) => item.address !== bossMain && item.address !== bossHeal)
             .sort((a: any, b: any) => b.amount - a.amount)
 
-        setPlayerData(filteredData)
+        const addressToNFDMap = await getDomainsForAddresses(filteredData)
+
+        const enrichedData = filteredData.map((item: any) => ({
+            ...item,
+            nfd: addressToNFDMap[item.address] || null
+        }))
+
+        setPlayerData(enrichedData)
         const totalDamage = bossTotalBalance - bossMainBalance - bossHealBalance*2
         setBossCurrentHP(bossBaseHP - totalDamage + bossHealBalance)
       }
@@ -382,26 +399,26 @@ async function handleAction(type: string) {
         
             <Modal scrollBehavior={'inside'} size='sm' isCentered isOpen={isOpenPrizelist} onClose={onClosePrizelist}>
                 <ModalOverlay backdropFilter='blur(10px)'/>
-                <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
+                <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={medTextColor} borderRadius='2xl'>
                     <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>Pool Distribution</ModalHeader>
                     <ModalBody w='100%'>
                     <VStack w='full' spacing='6px'>
-                        <Text fontSize="sm" textColor={buttonText4}>
+                        <Text fontSize="sm" textColor={xLightTextColor}>
                             1st - 15%
                         </Text>
-                        <Text fontSize="sm" textColor={buttonText4}>
+                        <Text fontSize="sm" textColor={xLightTextColor}>
                             2nd - 12.5%
                         </Text>
-                        <Text fontSize="sm" textColor={buttonText4}>
+                        <Text fontSize="sm" textColor={xLightTextColor}>
                             3rd - 7.5%
                         </Text>
-                        <Text fontSize="sm" textColor={buttonText4}>
+                        <Text fontSize="sm" textColor={xLightTextColor}>
                             5 Random Winners - 10%/each
                         </Text>
-                        <Text fontSize="sm" textColor={buttonText4}>
+                        <Text fontSize="sm" textColor={xLightTextColor}>
                             Rollover to Next Pool - 10%
                         </Text>
-                        <Text fontSize="sm" textColor={buttonText4}>
+                        <Text fontSize="sm" textColor={xLightTextColor}>
                             Service Fee - 5%
                         </Text>
                     </VStack>
@@ -414,11 +431,11 @@ async function handleAction(type: string) {
 
             <Modal scrollBehavior={'inside'} size='lg' isCentered isOpen={isOpenHowitworks} onClose={onCloseHowitworks}>
                 <ModalOverlay backdropFilter='blur(10px)'/>
-                <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={buttonText3} borderRadius='2xl'>
+                <ModalContent m='auto' alignItems='center' bgColor='black' borderWidth='1.5px' borderColor={medTextColor} borderRadius='2xl'>
                     <ModalHeader className={gradientText} textAlign='center' fontSize='20px' fontWeight='bold'>How It Works</ModalHeader>
                     <ModalBody w='100%'>
                     <VStack w='full' spacing='6px'>
-                        <Text textAlign='center' fontSize="sm" textColor={buttonText4}>
+                        <Text textAlign='center' fontSize="sm" textColor={xLightTextColor}>
                             This platform represents a gamified lottery in the form of a boss battle with inner mechanics
                             <br />
                             <br />
@@ -449,25 +466,25 @@ async function handleAction(type: string) {
 
         <Text mt='44px' className={`${gradientText} responsive-font`}>THUNDERDOME</Text>
         
-            <HStack my={2} textAlign='center' fontFamily='Orbitron' textColor={buttonText4} spacing='3px' justifyContent='center'>
-                <Text mr={1} fontSize="sm" textAlign="center" textColor={buttonText5}>Prize Pool:</Text>
-                <Text fontSize="lg" textColor={buttonText4}>{currentPool.toFixed(3)}</Text>
+            <HStack my={2} textAlign='center' fontFamily='Orbitron' textColor={xLightTextColor} spacing='3px' justifyContent='center'>
+                <Text mr={1} fontSize="sm" textAlign="center" textColor={baseTextColor}>Prize Pool:</Text>
+                <Text fontSize="lg" textColor={xLightTextColor}>{currentPool.toFixed(3)}</Text>
                 <Image boxSize={algoSize} alt={'Algorand'} src={'/algologo.png'} />
             </HStack>
 
             {mostRecentData && bossCurrentHP !== bossBaseHP ?
                 <Center my={2}> 
-                    <Box cursor="default" px={2.5} py={1} textAlign='center' className={boxGlow} borderRadius='20px' background='black' borderColor={buttonText3}>
-                        <Text mb={1} fontSize="2xs" textColor={buttonText5}>
+                    <Box cursor="default" px={2.5} py={1} textAlign='center' className={boxGlow} borderRadius='20px' background='black' borderColor={medTextColor}>
+                        <Text mb={1} fontSize="2xs" textColor={baseTextColor}>
                             Most Recent Action
                         </Text>
                         <Text fontSize="lg" textColor={mostRecentData.action === "SLASH" ? 'red' : mostRecentData.action === "HEAL" ? 'lime' : 'yellow'}>
                             {mostRecentData.action === "SLASH" ? "⚔️ SLASH 🗡️" : mostRecentData.action === "HEAL" ? '💖 HEAL 🧪' : '💣 !NUKE! ☠️'}
                         </Text>
                         <HStack w='full' justifyContent='center' spacing='2px'>
-                            <Icon boxSize={4} color={buttonText3} as={BsFillPersonFill}/>
-                            <Text textAlign='center' fontSize="sm" textColor={buttonText4}>
-                                {mostRecentData.address?.substring(0, 5) + "..." + mostRecentData.address?.substring(mostRecentData.address?.length - 5)}
+                            <Icon boxSize={4} color={medTextColor} as={BsFillPersonFill}/>
+                            <Text textAlign='center' fontSize="sm" textColor={xLightTextColor}>
+                                {mostRecentData.nfd ? mostRecentData.nfd : mostRecentData.address?.substring(0, 5) + "..." + mostRecentData.address?.substring(mostRecentData.address?.length - 5)}
                             </Text>
                         </HStack>
                         <Text fontSize="sm" textColor={mostRecentData.action === "SLASH" ? 'red' : mostRecentData.action === "HEAL" ? 'lime' : 'yellow'}>
@@ -485,7 +502,7 @@ async function handleAction(type: string) {
                     w="full"
                     >
                         <VStack mx={4}>
-                            <Text mb={-4} textAlign='center' fontSize="sm" textColor={buttonText4}>
+                            <Text mb={-4} textAlign='center' fontSize="sm" textColor={xLightTextColor}>
                                 Ares, God of War
                             </Text>
                             <Box
@@ -536,10 +553,10 @@ async function handleAction(type: string) {
                                     alignItems="center"
                                     justifyContent="center"
                                 >
-                                    <Divider mt={4} mb={1} w='200px' borderColor={buttonText3} />
-                                    <Text fontSize="lg" textColor={buttonText5}>Choose Ability</Text>
+                                    <Divider mt={4} mb={1} w='200px' borderColor={medTextColor} />
+                                    <Text fontSize="lg" textColor={baseTextColor}>Choose Ability</Text>
 
-                                    <Divider mt={1} mb={4} w='200px' borderColor={buttonText3} />
+                                    <Divider mt={1} mb={4} w='200px' borderColor={medTextColor} />
 
                                     <HStack justifyContent="center" spacing='20px' alignItems="flex-start">
                                         
@@ -572,7 +589,7 @@ async function handleAction(type: string) {
                                                 >
                                                     <Icon boxSize={4} as={IoIosRemove} zIndex={1} />
                                                 </Button>
-                                                    <Text fontSize={'sm'} textColor={buttonText4}>{attackAmount}</Text>
+                                                    <Text fontSize={'sm'} textColor={xLightTextColor}>{attackAmount}</Text>
                                                 <Button 
                                                     p='1.5px' 
                                                     className={fullGlow}
@@ -591,14 +608,14 @@ async function handleAction(type: string) {
                                                 </Button>
                                             </HStack>
                                             
-                                            <HStack mb={1} textAlign='center' fontFamily='Orbitron' textColor={buttonText4} spacing='3px' justifyContent='center'>
-                                                <Text fontSize="md" textColor={buttonText4}>{(attackAmount*0.01).toFixed(2)}</Text>
+                                            <HStack mb={1} textAlign='center' fontFamily='Orbitron' textColor={xLightTextColor} spacing='3px' justifyContent='center'>
+                                                <Text fontSize="md" textColor={xLightTextColor}>{(attackAmount*0.01).toFixed(2)}</Text>
                                                 <Image boxSize={algoSize} alt={'Algorand'} src={'/algologo.png'} />
                                             </HStack>
                                             
                                         </VStack>
 
-                                        <Divider p={1} h='100px' borderColor={buttonText3} orientation='vertical'/>
+                                        <Divider p={1} h='100px' borderColor={medTextColor} orientation='vertical'/>
 
                                         <VStack justifyContent='flex-start' alignItems="center" spacing={2}>
                                             <Text fontSize="lg" textColor={'lime'}>HEAL</Text>
@@ -612,13 +629,13 @@ async function handleAction(type: string) {
                                                     }}>
                                                 <IconGlowButton2 icon={GiHealthPotion}  onClick={() => handleAction("HEAL")} disabled={bossCurrentHP <= 0 || loading}/>
                                             </motion.div>
-                                            <HStack my={1} textAlign='center' fontFamily='Orbitron' textColor={buttonText4} spacing='3px' justifyContent='center'>
-                                                <Text fontSize="md" textColor={buttonText4}>0.8</Text>
+                                            <HStack my={1} textAlign='center' fontFamily='Orbitron' textColor={xLightTextColor} spacing='3px' justifyContent='center'>
+                                                <Text fontSize="md" textColor={xLightTextColor}>0.8</Text>
                                                 <Image boxSize={algoSize} alt={'Algorand'} src={'/algologo.png'} />
                                             </HStack>
                                         </VStack>
 
-                                        <Divider p={1} h='100px' borderColor={buttonText3} orientation='vertical'/>
+                                        <Divider p={1} h='100px' borderColor={medTextColor} orientation='vertical'/>
 
                                         <VStack justifyContent='flex-start' alignItems="center" spacing={2}>
                                             <Text fontSize="lg" textColor={'yellow'}>NUKE!</Text>
@@ -632,8 +649,8 @@ async function handleAction(type: string) {
                                                     }}>
                                                 <IconGlowButton2 icon={GiFallingBomb}  onClick={() => handleAction("NUKE")} disabled={bossCurrentHP <= 0 || loading}/>
                                             </motion.div>
-                                            <HStack my={1} textAlign='center' fontFamily='Orbitron' textColor={buttonText4} spacing='3px' justifyContent='center'>
-                                                <Text fontSize="md" textColor={buttonText4}>1.33</Text>
+                                            <HStack my={1} textAlign='center' fontFamily='Orbitron' textColor={xLightTextColor} spacing='3px' justifyContent='center'>
+                                                <Text fontSize="md" textColor={xLightTextColor}>1.33</Text>
                                                 <Image boxSize={algoSize} alt={'Algorand'} src={'/algologo.png'} />
                                             </HStack>
                                         </VStack>
@@ -663,19 +680,20 @@ async function handleAction(type: string) {
                 </Box>
             </Center>
             
-            <Center><Divider mt={1} mb={4} w='80%' borderColor={buttonText3} /></Center>
+            <Center><Divider mt={1} mb={4} w='80%' borderColor={medTextColor} /></Center>
 
-            <Text mb={-3} className={`${gradientText} responsive-font`}>Leaderboard</Text>
+            <Text className={`${gradientText} responsive-font`}>Leaderboard</Text>
+            <Text textAlign='center' textColor={xLightTextColor} fontSize='lg'>Players: {playerData.length}</Text>
 
             <Center m={6}>
-            <Box cursor="default" w='95%' maxH='400px' p={3} borderWidth='1px' borderRadius='xl' borderColor={buttonText3} overflowY='auto' className={boxGlow}>
+            <Box cursor="default" w='95%' maxH='600px' p={3} borderWidth='1px' borderRadius='xl' borderColor={medTextColor} overflowY='auto' className={boxGlow}>
                 {playerData.length > 0 ? (
                     <Table variant='simple'>
                         <Thead>
                             <Tr>
                             <Th
                                 textAlign='center'
-                                textColor={lightColor}
+                                textColor={lightTextColor}
                                 fontSize={{ base: '3xs', sm: '2xs', md: 'sm', lg: 'md', xl: 'lg' }}
                                 alignItems='center'
                                 justifyContent='center'
@@ -688,7 +706,7 @@ async function handleAction(type: string) {
                             </Th>
                             <Th
                                 textAlign='center'
-                                textColor={lightColor}
+                                textColor={lightTextColor}
                                 fontSize={{ base: '3xs', sm: '2xs', md: 'sm', lg: 'md', xl: 'lg' }}
                                 alignItems='center'
                                 justifyContent='center'
@@ -704,12 +722,12 @@ async function handleAction(type: string) {
                         <Tbody>
                             {playerData.map((asset: any) => (
                             <Tr key={asset.address}>
-                                <Td w='50%' textAlign='center' _hover={{textColor: buttonText5}} textColor={buttonText4} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
+                                <Td w='50%' textAlign='center' _hover={{textColor: baseTextColor}} textColor={xLightTextColor} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
                                     <a href={`https://allo.info/account/${asset.address}`} target='_blank' rel='noreferrer'>
-                                        {asset.address.substring(0, 5) + "..." + asset.address.substring(asset.address.length - 5)}
+                                        {asset.nfd ? asset.nfd : asset.address.substring(0, 5) + "..." + asset.address.substring(asset.address.length - 5)}
                                     </a>
                                 </Td>
-                                <Td w='50%' textAlign='center' textColor={buttonText4} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
+                                <Td w='50%' textAlign='center' textColor={xLightTextColor} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
                                     {asset.amount}
                                 </Td>
                             </Tr>
@@ -717,7 +735,7 @@ async function handleAction(type: string) {
                         </Tbody>
                     </Table>
                 ) : 
-                    <Text textAlign='center' fontSize="md" textColor={buttonText4}>
+                    <Text textAlign='center' fontSize="md" textColor={xLightTextColor}>
                         No Attacks Yet!
                         <br />
                         Ares: &quot;I can sense the fear in you...&quot;
