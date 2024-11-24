@@ -57,8 +57,6 @@ export default function Thunderdome() {
   const [optIn, setOptIn] = useState<boolean>(false)
   const sleep = (ms: any) => new Promise(resolve => setTimeout(resolve, ms))
 
-  const lastBattleBlock = 44604100
-
   const hpPercentage = (bossCurrentHP/bossBaseHP) * 100
 
   let colorScheme = 'green'
@@ -77,34 +75,19 @@ export default function Thunderdome() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await checkOptIn()
-        await getBattleData()
-        await getMostRecentAttack()
-        await fetchAlgoSpent()
-      } catch (error) {
-        console.error('Error in fetching data:', error)
-      }
-    }
+    checkOptIn()
+    getBattleData()
+    getMostRecentAttack()
+  }, [activeAddress])
 
-    const refreshData = async () => {
-        try {
-          await getBattleData()
-          await getMostRecentAttack()
-        } catch (error) {
-          console.error('Error in fetching data:', error)
-        }
-      }
-  
-    fetchData()
-  
+  useEffect(() => {
     const intervalId = setInterval(() => {
-        refreshData()
+      getBattleData()
+      getMostRecentAttack()
     }, 5000)
   
     return () => clearInterval(intervalId)
-  }, [activeAddress])
+  }, [])
 
   const startUpdating = (increase: boolean) => {
     if (intervalRef.current) return
@@ -143,18 +126,6 @@ export default function Thunderdome() {
     stopUpdating()
   }
 
-async function checkOptIn() {
-    try {
-        if (!activeAddress) {
-          throw new Error('Wallet Not Connected!')
-        }
-        await algodClient.accountAssetInformation(activeAddress, bossTokenId).do()
-        setOptIn(true)
-    } catch {
-        setOptIn(false)
-    }
-}
-
 async function getMostRecentAttack() {
     const apiEndpoint = `https://mainnet-idx.algonode.cloud/v2/assets/${bossTokenId}/transactions?tx-type=axfer&currency-greater-than=0&address=${bossMain}`
   
@@ -168,6 +139,7 @@ async function getMostRecentAttack() {
   
         const mostRecentTransaction = sortedTransactions[0]
         const mostRecentAddress = mostRecentTransaction["asset-transfer-transaction"].receiver
+        const nfd = await getNFD(mostRecentAddress)
         const mostRecentAmount = mostRecentTransaction["asset-transfer-transaction"].amount
         let mostRecentAction = "SLASH"
 
@@ -184,7 +156,8 @@ async function getMostRecentAttack() {
         setMostRecentData({
             address: mostRecentAddress,
             action: mostRecentAction,
-            amount: mostRecentAmount
+            amount: mostRecentAmount,
+            nfd: nfd
         })
   
       } else {
@@ -196,93 +169,17 @@ async function getMostRecentAttack() {
     }
   }
 
-async function fetchAlgoSpent() {
-    const apiEndpoint = `https://mainnet-idx.algonode.cloud/v2/accounts/${bossMain}/transactions?tx-type=pay&min-round=${lastBattleBlock}`
-  
+async function checkOptIn() {
     try {
-      const response = await axios.get(apiEndpoint)
-      
-      if (response.data && response.data.transactions && response.data.transactions.length > 0) {
-        const transactions = response.data.transactions
-        const totalPaidMap: { [key: string]: number } = {}
-
-        for (const transaction of transactions) {
-            const sender = transaction.sender
-            const amount = transaction["payment-transaction"].amount
-
-            const player = playerData.find((player: any) => player.address === sender)
-
-            if (player) {
-                if (!totalPaidMap[sender]) {
-                    totalPaidMap[sender] = 0
-                }
-                totalPaidMap[sender] += amount
-            }
+        if (!activeAddress) {
+          throw new Error('Wallet Not Connected!')
         }
-
-        const updatedPlayerData = playerData.map((player: any) => {
-            return {
-                ...player,
-                totalPaid: totalPaidMap[player.address] || player.totalPaid
-            }
-        })
-        console.log(updatedPlayerData)
-
-        setPlayerData(updatedPlayerData)
-      } else {
-        return null
-      }
-    } catch (error) {
-      console.error("Error fetching transaction data:", error)
-      return null
-    }
-  }
-
-let nfdFetched = false
-let addressToNFDMap: { [key: string]: string } = {}
-
-async function getBattleData() {
-    try {
-      const apiEndpoint = `https://mainnet-idx.algonode.cloud/v2/assets/${bossTokenId}/balances?currency-greater-than=0`
-      const response = await axios.get(apiEndpoint)
-  
-      if (response.status === 200 && response.data['balances']) {
-        const data = response.data['balances']
-        const bossMainBalance = data.find((item: any) => item.address === bossMain)?.amount || 0
-        const bossHealBalance = data.find((item: any) => item.address === bossHeal)?.amount || 0
-        const filteredData = data
-            .filter((item: any) => item.address !== bossMain && item.address !== bossHeal)
-            .sort((a: any, b: any) => b.amount - a.amount)
-
-        if (!nfdFetched) {
-            addressToNFDMap = await getDomainsForAddresses(filteredData)
-            nfdFetched = true
-            mostRecentData.nfd = await getNFD(mostRecentData.address)
-        }
-        
-        const enrichedData = filteredData.map((item: any) => {
-            // Find the player in playerData
-            const player = playerData.find((p: any) => p.address === item.address)
-
-            return {
-                ...item,
-                totalPaid: player ? player.totalPaid : 0,  // Ensure totalPaid is kept
-                nfd: addressToNFDMap[item.address] || null  // Add NFD data
-            }
-        })
-
-        setPlayerData(enrichedData)
-        console.log(enrichedData)
-        const totalDamage = bossTotalBalance - bossMainBalance - bossHealBalance*2
-        setBossCurrentHP(bossBaseHP - totalDamage + bossHealBalance)
-      }
-
-      const accountInfo = await algodClient.accountInformation(bossMain).do()
-      setCurrentPool((accountInfo.amount-accountInfo["min-balance"]-1000000) / 1e6)
-
-    } catch (error: any) {
-      console.error(`Error fetching asset holders for asset ID ${bossTokenId}: ${error.message}`)
-      return []
+        await algodClient.accountAssetInformation(activeAddress, bossTokenId).do()
+        setOptIn(true)
+        console.log("User opted in!")
+    } catch {
+        setOptIn(false)
+        console.log("User not opted in!")
     }
 }
 
@@ -301,6 +198,40 @@ async function getDomainsForAddresses(filteredData: any[]) {
 
     await Promise.all(promises)
     return addressToNFDMap
+}
+
+async function getBattleData() {
+    try {
+      const apiEndpoint = `https://mainnet-idx.algonode.cloud/v2/assets/${bossTokenId}/balances?currency-greater-than=0`
+      const response = await axios.get(apiEndpoint)
+  
+      if (response.status === 200 && response.data['balances']) {
+        const data = response.data['balances']
+        const bossMainBalance = data.find((item: any) => item.address === bossMain)?.amount || 0
+        const bossHealBalance = data.find((item: any) => item.address === bossHeal)?.amount || 0
+        const filteredData = data
+            .filter((item: any) => item.address !== bossMain && item.address !== bossHeal)
+            .sort((a: any, b: any) => b.amount - a.amount)
+
+        const addressToNFDMap = await getDomainsForAddresses(filteredData)
+
+        const enrichedData = filteredData.map((item: any) => ({
+            ...item,
+            nfd: addressToNFDMap[item.address] || null
+        }))
+
+        setPlayerData(enrichedData)
+        const totalDamage = bossTotalBalance - bossMainBalance - bossHealBalance*2
+        setBossCurrentHP(bossBaseHP - totalDamage + bossHealBalance)
+      }
+
+      const accountInfo = await algodClient.accountInformation(bossMain).do()
+      setCurrentPool((accountInfo.amount-accountInfo["min-balance"]-1000000) / 1e6)
+
+    } catch (error: any) {
+      console.error(`Error fetching asset holders for asset ID ${bossTokenId}: ${error.message}`)
+      return []
+    }
 }
 
 const handleToggleMenu = () => {
@@ -791,16 +722,13 @@ async function handleAction(type: string) {
                         <Tbody>
                             {playerData.map((asset: any) => (
                             <Tr key={asset.address}>
-                                <Td w='40%' textAlign='center' _hover={{textColor: baseTextColor}} textColor={xLightTextColor} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
+                                <Td w='50%' textAlign='center' _hover={{textColor: baseTextColor}} textColor={xLightTextColor} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
                                     <a href={`https://allo.info/account/${asset.address}`} target='_blank' rel='noreferrer'>
                                         {asset.nfd ? asset.nfd.replace('.algo', '') : asset.address.substring(0, 5) + "..." + asset.address.substring(asset.address.length - 5)}
                                     </a>
                                 </Td>
-                                <Td w='30%' textAlign='center' textColor={xLightTextColor} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
+                                <Td w='50%' textAlign='center' textColor={xLightTextColor} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
                                     {asset.amount}
-                                </Td>
-                                <Td w='30%' textAlign='center' textColor={xLightTextColor} fontSize={{ base: 'sm', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' }}>
-                                    {asset.totalPaid}
                                 </Td>
                             </Tr>
                             ))}
