@@ -5,7 +5,7 @@ export default async function getNFD(address: string) {
         const response = await fetch(apiUrl)
 
         if (!response.ok) {
-            throw new Error(`Error: ${response.status}`)
+            return null
         }
 
         const data = await response.json()
